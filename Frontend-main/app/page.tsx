@@ -40,7 +40,7 @@ export default function HomePage() {
               One premium control room for every asset, team, and approval.
             </h1>
             <p className="mt-5 max-w-2xl text-lg leading-8 text-slate-600">
-              AssetFlow helps organizations manage laptops, vehicles, furniture, meeting rooms, maintenance,
+              odoo Assetflow helps organizations manage laptops, vehicles, furniture, meeting rooms, maintenance,
               bookings, and audit-ready operations with role-based access for Founder, Admin, Department Head,
               Asset Manager, and Employee.
             </p>
@@ -139,7 +139,7 @@ export default function HomePage() {
       <footer id="contact" className="border-t border-slate-200 bg-white/70">
         <div className="mx-auto flex w-full max-w-7xl flex-col gap-4 px-4 py-8 sm:px-6 lg:flex-row lg:items-center lg:justify-between lg:px-8">
           <div>
-            <div className="text-sm font-black tracking-[0.28em] text-slate-900">ASSETFLOW</div>
+            <div className="text-sm font-black tracking-tight"><span className="text-[#9A528D]">odoo</span> <span className="text-slate-900">Assetflow</span></div>
             <p className="mt-2 text-sm text-slate-500">Enterprise Asset & Resource Management System</p>
           </div>
           <div className="text-sm text-slate-500">

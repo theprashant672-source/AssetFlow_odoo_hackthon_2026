@@ -13,7 +13,7 @@ const geist = Geist({
 });
 
 export const metadata: Metadata = {
-  title: "AssetFlow",
+  title: "odoo Assetflow",
   description: "Enterprise Asset & Resource Management System",
   icons: {
     icon: "/assetflow-logo.svg",

@@ -70,7 +70,7 @@ export default function Navbar({
           </div>
           <div>
             <div className="text-sm font-bold text-slate-900">{ROLE_LABELS[role]}</div>
-            <div className="text-xs text-slate-500">AssetFlow workspace</div>
+            <div className="text-xs text-slate-500">odoo Assetflow workspace</div>
           </div>
         </button>
       </div>

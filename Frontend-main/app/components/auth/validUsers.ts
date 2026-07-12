@@ -1,0 +1,26 @@
+export const VALID_USERS = [
+  { email: "admin@novaassets.in", password: "Admin@123", name: "Ansh", role: "Admin" },
+  { email: "sales@avavbusiness.com", password: "Sales@123", name: "Sales Manager", role: "Sales Manager" },
+  { email: "saleshead@avavbusiness.com", password: "SalesHead@123", name: "Sales Head", role: "Sales" },
+  { email: "sales.up@avavbusiness.com", password: "SalesUP@123", name: "UP Sales", role: "Sales" },
+  { email: "sales.mp@avavbusiness.com", password: "SalesMP@123", name: "MP Sales", role: "Sales" },
+  { email: "sales.east@avavbusiness.com", password: "SalesEast@123", name: "East Sales", role: "Sales" },
+  { email: "sales.north@avavbusiness.com", password: "SalesNorth@123", name: "North Sales", role: "Sales" },
+  { email: "dispatch@avavbusiness.com", password: "Dispatch@123", name: "Dispatch Team", role: "Dispatch" },
+  { email: "inventory@avavbusiness.com", password: "Inventory@123", name: "Inventory Team", role: "Inventory" },
+  { email: "warehouse@avavbusiness.com", password: "Warehouse@123", name: "Warehouse Team", role: "Warehouse Team" },
+  { email: "accountsdept@avavbusiness.com", password: "Accounts@123", name: "Accounts Team", role: "Accounts" },
+  { email: "l1.piyush@avavbusiness.com", password: "PiyushL1@123", name: "Piyush", role: "L1 Engineer" },
+  { email: "l1.neeraj@avavbusiness.com", password: "NeerajL1@123", name: "Neeraj", role: "L1 Engineer" },
+  { email: "l1.nitin@avavbusiness.com", password: "NitinL1@123", name: "Nitin", role: "L1 Engineer" },
+  { email: "l1.prashant.singh@avavbusiness.com", password: "PrashantSinghL1@123", name: "Prashant Singh", role: "L1 Engineer" },
+  { email: "l1.ashutosh@avavbusiness.com", password: "AshutoshL1@123", name: "Ashutosh", role: "L1 Engineer" },
+  { email: "l1.rajat@avavbusiness.com", password: "RajatL1@123", name: "Rajat", role: "L1 Engineer" },
+  { email: "l1.swastik@avavbusiness.com", password: "SwastikL1@123", name: "Swastik", role: "L1 Engineer" },
+  { email: "l1.pradeep@avavbusiness.com", password: "PradeepL1@123", name: "Pradeep", role: "L1 Engineer" },
+  { email: "l2.naveen.maurya@avavbusiness.com", password: "NaveenMauryaL2@123", name: "Naveen Maurya", role: "L2 Technical Team" },
+  { email: "l2.prashant.noida@avavbusiness.com", password: "PrashantNoidaL2@123", name: "Prashant Noida", role: "L2 Technical Team" },
+  { email: "l3.mahesh@avavbusiness.com", password: "MaheshL3@123", name: "Mahesh Choudhary", role: "L3 Advanced OEM Support" },
+] as const;
+
+export type ValidUser = (typeof VALID_USERS)[number];

@@ -2,6 +2,7 @@ import { Router } from "express";
 import { randomUUID } from "crypto";
 import { getCollections } from "../db/collections";
 import type { AssetBooking } from "../types";
+import { broadcast } from "../services/realtime";
 
 const router = Router();
 
@@ -51,6 +52,15 @@ router.post("/", async (req, res, next) => {
         }
       );
     }
+
+    broadcast({
+      type: "booking_created",
+      title: `Asset booked: ${newBooking.assetName}`,
+      body: `${userName} booked until ${expectedReturnDate}`,
+      entityType: "booking",
+      entityId: newBooking.id,
+      severity: "info",
+    });
 
     res.status(201).json(newBooking);
   } catch (err) {

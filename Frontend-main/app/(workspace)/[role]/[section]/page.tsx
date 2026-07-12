@@ -10,14 +10,8 @@ import AuditModule from "@/app/components/assetflow/modules/AuditModule";
 import ReportsModule from "@/app/components/assetflow/modules/ReportsModule";
 import NotificationsModule from "@/app/components/assetflow/modules/NotificationsModule";
 
-import RoleDashboard from "@/app/components/assetflow/dashboard/RoleDashboard";
-import OrganizationSetup from "@/app/components/assetflow/organization/OrganizationSetup";
-import AssetManagement from "@/app/components/assetflow/assets/AssetManagement";
-import BookingManagement from "@/app/components/assetflow/bookings/BookingManagement";
-import MaintenanceManagement from "@/app/components/assetflow/maintenance/MaintenanceManagement";
-import AuditManagement from "@/app/components/assetflow/audit/AuditManagement";
-import ReportsDashboard from "@/app/components/assetflow/reports/ReportsDashboard";
 import AnalyticsDashboard from "@/app/components/assetflow/analytics/AnalyticsDashboard";
+import ProfileManagement from "@/app/components/assetflow/profile/ProfileManagement";
 import SettingsManagement from "@/app/components/assetflow/settings/SettingsManagement";
 import { canAccessSection, isAssetFlowRole, sectionHref, type AssetFlowRole, type AssetFlowSection } from "@/app/lib/assetflow-roles";
 
@@ -51,19 +45,9 @@ function SectionBody({ role, section }: { role: AssetFlowRole; section: AssetFlo
 
   switch (section) {
     case "dashboard":
-      return (
-        <div className="grid gap-10">
-          <DashboardModule role={role} />
-          <RoleDashboard role={role} />
-        </div>
-      );
+      return <DashboardModule role={role} />;
     case "organization":
-      return (
-        <div className="grid gap-10">
-          <OrganizationModule initialTab="departments" canEdit={isAdmin} />
-          <OrganizationSetup />
-        </div>
-      );
+      return <OrganizationModule initialTab="departments" canEdit={isAdmin} />;
     case "departments":
       return <OrganizationModule initialTab="departments" canEdit={isAdmin} />;
     case "categories":
@@ -72,12 +56,7 @@ function SectionBody({ role, section }: { role: AssetFlowRole; section: AssetFlo
     case "roles-permissions":
       return <OrganizationModule initialTab="employees" canEdit={isAdmin} />;
     case "assets":
-      return (
-        <div className="grid gap-10">
-          <AssetsModule canRegister={isManager} />
-          <AssetManagement />
-        </div>
-      );
+      return <AssetsModule canRegister={isManager} />;
     case "my-assets":
       return <AssetsModule canRegister={false} scope="mine" />;
     case "department-assets":
@@ -87,33 +66,13 @@ function SectionBody({ role, section }: { role: AssetFlowRole; section: AssetFlo
     case "approvals":
       return <AllocationModule canApprove={canApprove} />;
     case "bookings":
-      return (
-        <div className="grid gap-10">
-          <BookingModule />
-          <BookingManagement />
-        </div>
-      );
+      return <BookingModule />;
     case "maintenance":
-      return (
-        <div className="grid gap-10">
-          <MaintenanceModule canApprove={isManager} />
-          <MaintenanceManagement />
-        </div>
-      );
+      return <MaintenanceModule canApprove={isManager} />;
     case "audit":
-      return (
-        <div className="grid gap-10">
-          <AuditModule canManage={isManager} />
-          <AuditManagement />
-        </div>
-      );
+      return <AuditModule canManage={isManager} />;
     case "reports":
-      return (
-        <div className="grid gap-10">
-          <ReportsModule />
-          <ReportsDashboard />
-        </div>
-      );
+      return <ReportsModule />;
     case "analytics":
       return (
         <div className="grid gap-10">
@@ -122,6 +81,8 @@ function SectionBody({ role, section }: { role: AssetFlowRole; section: AssetFlo
       );
     case "settings":
       return <SettingsManagement />;
+    case "profile":
+      return <ProfileManagement role={role} />;
     case "notifications":
       return <NotificationsModule />;
     default:
@@ -152,10 +113,6 @@ export default async function RoleSectionPage({
   const activeRole = role as AssetFlowRole;
   const activeSection = section as AssetFlowSection;
   const meta = SECTION_TITLES[activeSection];
-
-  if (activeSection === "profile") {
-    return <ModulePage title={meta.title} subtitle={meta.subtitle} backHref={sectionHref(activeRole, "dashboard")} />;
-  }
 
   return (
     <div className="grid gap-5">

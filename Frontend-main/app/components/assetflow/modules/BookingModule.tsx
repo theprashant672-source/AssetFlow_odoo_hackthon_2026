@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import { createBooking, cancelBooking, bookingLiveStatus, currentUserEmail } from "@/app/lib/store";
-import { useDB, Panel, Button, Field, inputCls, Table, EmptyRow, Badge, Alert, fmtDateTime } from "./shared";
+import { useDB, Panel, Button, Field, inputCls, Table, EmptyRow, Badge, Alert, fmtDateTime, fmtTime, fmtDateLong } from "./shared";
 
 const STATUS_TONE: Record<string, string> = {
   Upcoming: "purple", Ongoing: "green", Completed: "slate", Cancelled: "red",
@@ -84,7 +84,7 @@ export default function BookingModule() {
 
       <Panel
         title={`Schedule — ${selectedResource?.name ?? "resource"}`}
-        subtitle={`Existing bookings on ${new Date(date).toLocaleDateString([], { day: "2-digit", month: "long" })}. Pick a free gap.`}
+        subtitle={`Existing bookings on ${fmtDateLong(date)}. Pick a free gap.`}
       >
         {dayBookings.length === 0 ? (
           <div className="rounded-2xl border border-dashed border-slate-300 px-4 py-8 text-center text-sm text-slate-400">
@@ -98,7 +98,7 @@ export default function BookingModule() {
               return (
                 <div key={b.id} className="flex flex-wrap items-center gap-3 rounded-xl border border-odoo-200 bg-odoo-50/60 px-4 py-2.5">
                   <span className="font-mono text-sm font-bold text-odoo-800">
-                    {s.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} – {e.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
+                    {fmtTime(s)} – {fmtTime(e)}
                   </span>
                   <span className="text-sm font-semibold text-slate-800">{b.purpose}</span>
                   <span className="text-xs text-slate-500">by {b.bookedBy}</span>
@@ -121,7 +121,7 @@ export default function BookingModule() {
             return (
               <tr key={b.id}>
                 <td className="px-4 py-3 font-semibold text-slate-900">{a?.name ?? "—"}</td>
-                <td className="px-4 py-3 text-xs">{fmtDateTime(b.start)} → {new Date(b.end).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}</td>
+                <td className="px-4 py-3 text-xs">{fmtDateTime(b.start)} → {fmtTime(b.end)}</td>
                 <td className="px-4 py-3">{b.purpose}</td>
                 <td className="px-4 py-3">{b.bookedBy}</td>
                 <td className="px-4 py-3"><Badge tone={STATUS_TONE[live]}>{live}</Badge></td>

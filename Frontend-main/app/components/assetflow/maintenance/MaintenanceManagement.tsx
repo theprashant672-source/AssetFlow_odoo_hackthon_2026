@@ -1,12 +1,24 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import SectionPanel from "../cards/SectionPanel";
+import { apiUrl } from "@/app/lib/assetflowApi";
+import { exportMaintenanceReportPdf, exportMaintenanceTicketPdf } from "@/app/lib/assetflowPdf";
+
+type TriageSuggestion = {
+  priority: "Low" | "Medium" | "High" | "Critical";
+  category: string;
+  confidence: number;
+  reasons: string[];
+};
 
 export default function MaintenanceManagement() {
   const [requests, setRequests] = useState<any[]>([]);
   const [assets, setAssets] = useState<any[]>([]);
   const [isCreating, setIsCreating] = useState(false);
+  const [suggestion, setSuggestion] = useState<TriageSuggestion | null>(null);
+  const [suggesting, setSuggesting] = useState(false);
+  const triageTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
 
   const [formData, setFormData] = useState({
     assetId: "",
@@ -33,6 +45,30 @@ export default function MaintenanceManagement() {
     fetchData();
   }, []);
 
+  const handleDescriptionChange = (value: string) => {
+    setFormData((prev) => ({ ...prev, issueDescription: value }));
+    if (triageTimer.current) clearTimeout(triageTimer.current);
+    if (value.trim().length < 10) {
+      setSuggestion(null);
+      return;
+    }
+    triageTimer.current = setTimeout(async () => {
+      setSuggesting(true);
+      try {
+        const res = await fetch(apiUrl("/api/ai/triage"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ description: value }),
+        });
+        if (res.ok) setSuggestion(await res.json());
+      } catch (e) {
+        console.error(e);
+      } finally {
+        setSuggesting(false);
+      }
+    }, 500);
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
@@ -50,6 +86,7 @@ export default function MaintenanceManagement() {
       if (res.ok) {
         setIsCreating(false);
         setFormData({ assetId: "", requestedBy: "", issueDescription: "", priority: "Medium" });
+        setSuggestion(null);
         fetchData();
       }
     } catch (e) {
@@ -80,9 +117,18 @@ export default function MaintenanceManagement() {
           <p className="mt-2 text-slate-600">Track asset issues, schedule repairs, and resolve incidents.</p>
         </div>
         {!isCreating && (
-          <button onClick={() => setIsCreating(true)} className="rounded-xl bg-[#5b3df5] px-4 py-2 font-semibold text-white shadow-sm hover:bg-[#4b30d6] transition-colors">
-            + Raise Request
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <button
+              onClick={() => requests.length > 0 && exportMaintenanceReportPdf(requests)}
+              disabled={requests.length === 0}
+              className="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors disabled:opacity-50"
+            >
+              📄 Export PDF
+            </button>
+            <button onClick={() => setIsCreating(true)} className="rounded-xl bg-[#5b3df5] px-4 py-2 font-semibold text-white shadow-sm hover:bg-[#4b30d6] transition-colors">
+              + Raise Request
+            </button>
+          </div>
         )}
       </div>
 
@@ -112,11 +158,39 @@ export default function MaintenanceManagement() {
             </div>
             <div className="md:col-span-2">
               <label className="block text-sm font-semibold text-slate-700 mb-2">Issue Description</label>
-              <textarea required placeholder="Describe the problem in detail..." value={formData.issueDescription} onChange={e => setFormData({...formData, issueDescription: e.target.value})} className="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:border-[#5b3df5] focus:ring-1 focus:ring-[#5b3df5]" rows={3} />
+              <textarea required placeholder="Describe the problem in detail..." value={formData.issueDescription} onChange={e => handleDescriptionChange(e.target.value)} className="w-full p-2.5 border border-slate-300 rounded-lg outline-none focus:border-[#5b3df5] focus:ring-1 focus:ring-[#5b3df5]" rows={3} />
+              {suggesting && (
+                <div className="mt-2 text-xs font-semibold text-slate-400 animate-pulse">✨ AI analyzing issue...</div>
+              )}
+              {suggestion && !suggesting && (
+                <div className="mt-3 rounded-xl border border-[#5b3df5]/20 bg-[#5b3df5]/5 p-3">
+                  <div className="flex flex-wrap items-center gap-2 text-sm">
+                    <span className="font-bold text-[#5b3df5]">✨ AI suggests:</span>
+                    <span className={`rounded-full px-2.5 py-0.5 text-xs font-bold ${
+                      suggestion.priority === "Critical" ? "bg-rose-100 text-rose-800" :
+                      suggestion.priority === "High" ? "bg-orange-100 text-orange-800" :
+                      suggestion.priority === "Medium" ? "bg-amber-100 text-amber-800" :
+                      "bg-slate-100 text-slate-700"
+                    }`}>{suggestion.priority} priority</span>
+                    <span className="rounded-full bg-slate-100 px-2.5 py-0.5 text-xs font-bold text-slate-700">{suggestion.category}</span>
+                    <span className="text-xs font-medium text-slate-500">{Math.round(suggestion.confidence * 100)}% confidence</span>
+                    {formData.priority !== suggestion.priority && (
+                      <button
+                        type="button"
+                        onClick={() => setFormData((prev) => ({ ...prev, priority: suggestion.priority }))}
+                        className="ml-auto rounded-lg bg-[#5b3df5] px-3 py-1 text-xs font-bold text-white hover:bg-[#4b30d6] transition-colors"
+                      >
+                        Apply
+                      </button>
+                    )}
+                  </div>
+                  <div className="mt-1.5 text-xs text-slate-500">{suggestion.reasons.join(" · ")}</div>
+                </div>
+              )}
             </div>
           </div>
           <div className="flex gap-3 justify-end mt-8 border-t border-slate-100 pt-6">
-            <button type="button" onClick={() => setIsCreating(false)} className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">Cancel</button>
+            <button type="button" onClick={() => { setIsCreating(false); setSuggestion(null); }} className="px-5 py-2.5 text-sm font-semibold text-slate-600 hover:text-slate-900 transition-colors">Cancel</button>
             <button type="submit" className="rounded-xl bg-[#5b3df5] px-6 py-2.5 text-sm font-semibold text-white hover:bg-[#4b30d6] transition-colors">Submit Request</button>
           </div>
         </form>
@@ -166,11 +240,16 @@ export default function MaintenanceManagement() {
                     </span>
                   </td>
                   <td className="p-4 text-right">
-                    {req.status === "Pending" || req.status === "In Progress" ? (
-                      <button onClick={() => handleResolve(req.id)} className="text-emerald-600 hover:underline font-medium">Resolve</button>
-                    ) : (
-                      <span className="text-slate-400">Done</span>
-                    )}
+                    <div className="flex justify-end gap-3">
+                      <button onClick={() => exportMaintenanceTicketPdf(req)} className="text-slate-600 hover:text-[#5b3df5] font-medium" title="Download ticket PDF">
+                        PDF
+                      </button>
+                      {req.status === "Pending" || req.status === "In Progress" ? (
+                        <button onClick={() => handleResolve(req.id)} className="text-emerald-600 hover:underline font-medium">Resolve</button>
+                      ) : (
+                        <span className="text-slate-400">Done</span>
+                      )}
+                    </div>
                   </td>
                 </tr>
               ))}

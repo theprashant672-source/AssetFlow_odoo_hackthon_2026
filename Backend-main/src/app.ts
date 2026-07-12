@@ -28,6 +28,7 @@ import bookingsRouter from "./routes/bookings";
 import maintenanceRouter from "./routes/maintenance";
 import auditRouter from "./routes/audit";
 import reportsRouter from "./routes/reports";
+import aiRouter from "./routes/ai";
 
 const app = express();
 
@@ -105,6 +106,7 @@ app.use("/api/bookings", bookingsRouter);
 app.use("/api/maintenance", maintenanceRouter);
 app.use("/api/audit", auditRouter);
 app.use("/api/reports", reportsRouter);
+app.use("/api/ai", aiRouter);
 
 app.use((req, res) => {
   res.status(404).json({

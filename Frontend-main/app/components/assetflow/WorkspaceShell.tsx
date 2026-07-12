@@ -4,6 +4,8 @@ import { useEffect, useState } from "react";
 import { usePathname, useRouter } from "next/navigation";
 import Sidebar from "./sidebar/Sidebar";
 import Navbar from "./navbar/Navbar";
+import RealtimeToaster from "./shared/RealtimeToaster";
+import { useRealtime } from "@/hooks/use-realtime";
 import type { AssetFlowRole } from "@/app/lib/assetflow-roles";
 
 export default function WorkspaceShell({
@@ -17,6 +19,7 @@ export default function WorkspaceShell({
   const router = useRouter();
   const [sidebarOpen, setSidebarOpen] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">("light");
+  const { toasts, dismiss, unseenCount, clearUnseen } = useRealtime();
 
   useEffect(() => {
     const sync = () => setSidebarOpen(window.innerWidth >= 1024);
@@ -49,10 +52,16 @@ export default function WorkspaceShell({
           onLogout={handleLogout}
           onThemeToggle={toggleTheme}
           theme={theme}
+          unseenCount={unseenCount}
+          onBellClick={() => {
+            clearUnseen();
+            router.push(`/${role}/notifications`);
+          }}
         />
         <main className="flex-1 px-3 pb-8 pt-2.5 sm:px-4 lg:px-6">
           <div className="mx-auto flex w-full max-w-[1320px] flex-col gap-4">{children}</div>
         </main>
+        <RealtimeToaster toasts={toasts} onDismiss={dismiss} />
       </div>
     </div>
   );

@@ -41,7 +41,7 @@ export default function Sidebar({
         }`}
       >
         <div className="flex items-center justify-between gap-2 px-3 py-3">
-          <AssetFlowLogo size={38} />
+          <AssetFlowLogo size={38} variant="dark" />
         </div>
 
         <div className="mx-1.5 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2.5">
@@ -53,7 +53,7 @@ export default function Sidebar({
           <div className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.28em] text-white/40">
             Navigation
           </div>
-          <nav className="grid gap-1.5">
+          <nav className="grid gap-2">
             {navItems.map((item) => {
               const href = sectionHref(role, item.slug);
               const active = pathname === href;
@@ -63,13 +63,19 @@ export default function Sidebar({
                   key={item.slug}
                   href={href}
                   onClick={onClose}
-                  className={`group flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition ${
+                  className={`group flex items-center gap-2.5 rounded-xl border px-3 py-2.5 text-xs font-semibold transition ${
                     active
-                      ? "bg-[#9A528D] text-white shadow-[0_12px_26px_rgba(154,82,141,0.35)]"
-                      : "text-white/65 hover:bg-white/[0.09] hover:text-white"
+                      ? "border-[#b878ab]/60 bg-[#9A528D] text-white shadow-[0_12px_26px_rgba(154,82,141,0.35)]"
+                      : "border-white/10 bg-white/[0.05] text-white/70 hover:border-[#9A528D]/50 hover:bg-white/[0.1] hover:text-white"
                     }`}
                 >
-                  <Icon size={16} />
+                  <span
+                    className={`flex h-7 w-7 items-center justify-center rounded-lg transition ${
+                      active ? "bg-white/20 text-white" : "bg-white/[0.07] text-white/70 group-hover:text-white"
+                    }`}
+                  >
+                    <Icon size={15} />
+                  </span>
                   <span className="flex-1">{item.label}</span>
                   {active && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
                 </Link>

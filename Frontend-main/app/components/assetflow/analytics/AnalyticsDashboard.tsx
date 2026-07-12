@@ -1,158 +1,296 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import SectionPanel from "../cards/SectionPanel";
-import { IconChartBar, IconCoins, IconUsers, IconTag } from "../../icons/Icons";
+import { useEffect, useState } from "react";
+import {
+  ResponsiveContainer,
+  BarChart,
+  Bar,
+  LineChart,
+  Line,
+  XAxis,
+  YAxis,
+  CartesianGrid,
+  Tooltip,
+  Legend,
+  Cell,
+  LabelList,
+} from "recharts";
+import { apiUrl } from "@/app/lib/assetflowApi";
+import { getDB } from "@/app/lib/store";
+import AiInsightsPanel from "./AiInsightsPanel";
 
-export default function AnalyticsDashboard() {
-  const [data, setData] = useState<any>(null);
-  const [loading, setLoading] = useState(true);
+// Chart chrome + validated categorical palette (see dataviz reference palette).
+const INK_MUTED = "#898781";
+const GRID = "#e1e0d9";
+const BASELINE = "#c3c2b7";
+const SERIES_1 = "#2a78d6"; // blue
+const SERIES_2 = "#1baf7a"; // aqua
 
-  useEffect(() => {
-    fetch("http://localhost:5000/api/reports/summary")
-      .then(res => res.json())
-      .then(json => {
-        setData(json);
-        setLoading(false);
-      })
-      .catch(err => {
-        console.error(err);
-        setLoading(false);
-      });
-  }, []);
+// Asset lifecycle states use reserved status colors, identity carried by axis labels.
+const STATUS_COLORS: Record<string, string> = {
+  Available: "#0ca30c",
+  Allocated: "#2a78d6",
+  Maintenance: "#fab219",
+  Retired: "#898781",
+};
 
-  if (loading || !data) {
-    return (
-      <div className="p-8 flex items-center justify-center min-h-[400px]">
-        <div className="text-slate-500 font-medium animate-pulse">Computing executive analytics...</div>
-      </div>
-    );
-  }
+type Analytics = {
+  kpis: {
+    totalAssets: number;
+    portfolioValue: number;
+    utilizationRate: number;
+    openMaintenance: number;
+    avgResolutionDays: number;
+    activeBookings: number;
+  };
+  statusDistribution: Array<{ name: string; value: number }>;
+  categoryDistribution: Array<{ name: string; value: number }>;
+  maintenanceTrend: Array<{ month: string; requests: number; estimatedCost: number }>;
+  bookingTrend: Array<{ month: string; bookings: number }>;
+  resolutionByPriority: Array<{ priority: string; avgDays: number; resolved: number }>;
+};
 
-  const { metrics } = data;
-  
-  const avgAssetValue = 1200; // Mock $1,200 per asset
-  const totalValue = metrics.totalAssets * avgAssetValue;
-  const maintenanceCost = metrics.maintenanceAssets * 350; // Mock $350 repair avg
-  const utilizationRate = metrics.totalAssets > 0 
-    ? Math.round((metrics.allocatedAssets / metrics.totalAssets) * 100) 
-    : 0;
+const tooltipStyle = {
+  borderRadius: 12,
+  border: "1px solid #e2e8f0",
+  boxShadow: "0 8px 24px rgba(15,23,42,0.08)",
+  fontSize: 12,
+  fontWeight: 600,
+};
 
+const axisTick = { fill: INK_MUTED, fontSize: 12 };
+
+function ChartPanel({ title, subtitle, children }: { title: string; subtitle: string; children: React.ReactNode }) {
   return (
-    <div className="p-8 max-w-7xl mx-auto">
-      <div className="mb-8 flex justify-between items-end">
-        <div>
-          <h1 className="text-3xl font-bold tracking-tight text-slate-900">Executive Analytics</h1>
-          <p className="mt-2 text-slate-600">Financial insights, depreciation trends, and ROI analysis.</p>
-        </div>
-        <div className="flex gap-2">
-          <select className="bg-white border border-slate-200 rounded-xl px-4 py-2 text-sm font-semibold text-slate-700 outline-none">
-            <option>Last 30 Days</option>
-            <option>Q3 2026</option>
-            <option>YTD 2026</option>
-          </select>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-        <div className="bg-gradient-to-br from-slate-900 to-slate-800 rounded-2xl p-6 text-white shadow-lg">
-          <div className="flex items-center gap-3 text-slate-300 font-medium text-sm mb-4">
-            <IconCoins size={18} />
-            Total Asset Portfolio Value
-          </div>
-          <div className="text-4xl font-black tracking-tight">${totalValue.toLocaleString()}</div>
-          <div className="mt-4 text-xs font-semibold text-emerald-400 bg-emerald-400/10 inline-block px-2 py-1 rounded-full">
-            ↑ 12% vs last quarter
-          </div>
-        </div>
-        
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center gap-3 text-slate-500 font-medium text-sm mb-4">
-            <IconChartBar size={18} />
-            Global Utilization Rate
-          </div>
-          <div className="text-4xl font-black tracking-tight text-slate-900">{utilizationRate}%</div>
-          <div className="mt-4 w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-            <div className="bg-[#5b3df5] h-full rounded-full" style={{ width: `${utilizationRate}%` }}></div>
-          </div>
-        </div>
-
-        <div className="bg-white border border-slate-200 rounded-2xl p-6 shadow-sm">
-          <div className="flex items-center gap-3 text-slate-500 font-medium text-sm mb-4">
-            <IconWrenchPlaceholder />
-            Est. Maintenance Costs
-          </div>
-          <div className="text-4xl font-black tracking-tight text-rose-600">${maintenanceCost.toLocaleString()}</div>
-          <div className="mt-4 text-xs font-semibold text-slate-500">
-            Based on {metrics.maintenanceAssets} assets currently in repair.
-          </div>
-        </div>
-      </div>
-
-      <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-        <SectionPanel title="Depreciation Forecast" subtitle="Projected value loss over next 12 months">
-          <div className="p-8 flex flex-col items-center justify-center min-h-[250px] bg-slate-50 rounded-xl border border-dashed border-slate-200">
-            <IconChartBar size={48} className="text-slate-300 mb-4" />
-            <p className="text-sm font-medium text-slate-500 text-center max-w-sm">
-              Connect to your ERP or Accounting software to unlock real-time MACRS depreciation schedules.
-            </p>
-            <button className="mt-4 px-4 py-2 text-sm font-bold text-[#5b3df5] bg-[#5b3df5]/10 rounded-full hover:bg-[#5b3df5]/20 transition-colors">
-              Integrate Accounting Software
-            </button>
-          </div>
-        </SectionPanel>
-
-        <SectionPanel title="Cost Center Allocation" subtitle="Where is your capital deployed?">
-           <div className="p-6">
-              <div className="space-y-6">
-                <div>
-                  <div className="flex justify-between text-sm font-semibold mb-2">
-                    <span className="text-slate-700">Engineering & Product</span>
-                    <span className="text-slate-900">45%</span>
-                  </div>
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div className="bg-blue-500 h-full rounded-full" style={{ width: '45%' }}></div>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between text-sm font-semibold mb-2">
-                    <span className="text-slate-700">Sales & Marketing</span>
-                    <span className="text-slate-900">30%</span>
-                  </div>
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div className="bg-emerald-500 h-full rounded-full" style={{ width: '30%' }}></div>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between text-sm font-semibold mb-2">
-                    <span className="text-slate-700">Operations & HR</span>
-                    <span className="text-slate-900">15%</span>
-                  </div>
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div className="bg-amber-500 h-full rounded-full" style={{ width: '15%' }}></div>
-                  </div>
-                </div>
-                <div>
-                  <div className="flex justify-between text-sm font-semibold mb-2">
-                    <span className="text-slate-700">Unallocated / Float</span>
-                    <span className="text-slate-900">10%</span>
-                  </div>
-                  <div className="w-full bg-slate-100 h-2 rounded-full overflow-hidden">
-                    <div className="bg-slate-300 h-full rounded-full" style={{ width: '10%' }}></div>
-                  </div>
-                </div>
-              </div>
-           </div>
-        </SectionPanel>
-      </div>
+    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+      <h3 className="text-base font-bold text-slate-900">{title}</h3>
+      <p className="mt-1 text-sm text-slate-500">{subtitle}</p>
+      <div className="mt-4 h-64">{children}</div>
     </div>
   );
 }
 
-function IconWrenchPlaceholder() {
+function KpiTile({ label, value, hint, accent }: { label: string; value: string; hint?: string; accent?: boolean }) {
   return (
-    <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
-      <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"></path>
-    </svg>
+    <div className={`rounded-2xl border p-5 shadow-sm ${accent ? "border-transparent bg-gradient-to-br from-slate-900 to-slate-800 text-white" : "border-slate-200 bg-white"}`}>
+      <div className={`text-xs font-semibold uppercase tracking-wide ${accent ? "text-slate-400" : "text-slate-500"}`}>{label}</div>
+      <div className={`mt-2 text-3xl font-black tracking-tight ${accent ? "text-white" : "text-slate-900"}`}>{value}</div>
+      {hint && <div className={`mt-1 text-xs font-medium ${accent ? "text-slate-400" : "text-slate-500"}`}>{hint}</div>}
+    </div>
+  );
+}
+
+const REPAIR_COST_BY_PRIORITY: Record<string, number> = { High: 350, Medium: 200, Low: 90 };
+
+// Fallback when the API is unreachable: compute the same analytics shape
+// from the in-browser demo store so the page always renders.
+function buildLocalAnalytics(): Analytics {
+  const db = getDB();
+  const now = new Date();
+  const months = Array.from({ length: 6 }, (_, i) => {
+    const d = new Date(now.getFullYear(), now.getMonth() - (5 - i), 1);
+    return {
+      key: `${d.getFullYear()}-${d.getMonth()}`,
+      label: d.toLocaleString("en", { month: "short" }) + " " + String(d.getFullYear()).slice(2),
+    };
+  });
+  const monthKey = (iso: string) => {
+    const d = new Date(iso);
+    return `${d.getFullYear()}-${d.getMonth()}`;
+  };
+
+  const statusCounts: Record<string, number> = {};
+  const categoryCounts: Record<string, number> = {};
+  let portfolioValue = 0;
+  for (const a of db.assets) {
+    statusCounts[a.status] = (statusCounts[a.status] || 0) + 1;
+    const cat = db.categories.find((c) => c.id === a.categoryId)?.name ?? "Uncategorized";
+    categoryCounts[cat] = (categoryCounts[cat] || 0) + 1;
+    portfolioValue += a.acquisitionCost || 0;
+  }
+
+  let resolvedCount = 0;
+  let resolutionDaysTotal = 0;
+  const resByPriority: Record<string, { total: number; count: number }> = {};
+  for (const m of db.maintenance) {
+    if (m.status === "Resolved" && m.resolvedAt) {
+      const days = (new Date(m.resolvedAt).getTime() - new Date(m.raisedAt).getTime()) / 86_400_000;
+      if (Number.isFinite(days) && days >= 0) {
+        resolvedCount += 1;
+        resolutionDaysTotal += days;
+        const slot = resByPriority[m.priority] ?? { total: 0, count: 0 };
+        slot.total += days;
+        slot.count += 1;
+        resByPriority[m.priority] = slot;
+      }
+    }
+  }
+
+  const allocated = statusCounts["Allocated"] || 0;
+  const total = db.assets.length;
+
+  return {
+    kpis: {
+      totalAssets: total,
+      portfolioValue,
+      utilizationRate: total > 0 ? Math.round((allocated / total) * 100) : 0,
+      openMaintenance: db.maintenance.filter((m) => m.status !== "Resolved" && m.status !== "Rejected").length,
+      avgResolutionDays: resolvedCount > 0 ? Number((resolutionDaysTotal / resolvedCount).toFixed(1)) : 0,
+      activeBookings: db.bookings.filter((b) => b.status === "Upcoming" || b.status === "Ongoing").length,
+    },
+    statusDistribution: Object.entries(statusCounts).map(([name, value]) => ({ name, value })),
+    categoryDistribution: Object.entries(categoryCounts)
+      .map(([name, value]) => ({ name, value }))
+      .sort((a, b) => b.value - a.value)
+      .slice(0, 8),
+    maintenanceTrend: months.map((m) => {
+      const inMonth = db.maintenance.filter((x) => monthKey(x.raisedAt) === m.key);
+      return {
+        month: m.label,
+        requests: inMonth.length,
+        estimatedCost: inMonth.reduce((sum, x) => sum + (REPAIR_COST_BY_PRIORITY[x.priority] ?? 200), 0),
+      };
+    }),
+    bookingTrend: months.map((m) => ({
+      month: m.label,
+      bookings: db.bookings.filter((b) => monthKey(b.start) === m.key).length,
+    })),
+    resolutionByPriority: ["High", "Medium", "Low"].map((priority) => {
+      const slot = resByPriority[priority];
+      return {
+        priority,
+        avgDays: slot && slot.count > 0 ? Number((slot.total / slot.count).toFixed(1)) : 0,
+        resolved: slot?.count ?? 0,
+      };
+    }),
+  };
+}
+
+function isValidAnalytics(value: unknown): value is Analytics {
+  const v = value as Analytics | null;
+  return Boolean(v && v.kpis && Array.isArray(v.maintenanceTrend) && Array.isArray(v.bookingTrend) && Array.isArray(v.statusDistribution));
+}
+
+export default function AnalyticsDashboard() {
+  const [data, setData] = useState<Analytics | null>(null);
+
+  useEffect(() => {
+    fetch(apiUrl("/api/reports/analytics"))
+      .then(async (res) => {
+        if (!res.ok) throw new Error("analytics unavailable");
+        const json = await res.json();
+        if (!isValidAnalytics(json)) throw new Error("unexpected analytics payload");
+        setData(json);
+      })
+      .catch(() => setData(buildLocalAnalytics()));
+  }, []);
+
+  if (!data) {
+    return (
+      <div className="flex min-h-[400px] items-center justify-center p-8">
+        <div className="text-sm font-medium text-slate-500 animate-pulse">Computing analytics...</div>
+      </div>
+    );
+  }
+
+  const { kpis } = data;
+  const activityTrend = data.maintenanceTrend.map((m, i) => ({
+    month: m.month,
+    maintenance: m.requests,
+    bookings: data.bookingTrend[i]?.bookings ?? 0,
+  }));
+
+  return (
+    <div className="mx-auto grid max-w-7xl gap-6 p-8">
+      <div>
+        <h1 className="text-3xl font-bold tracking-tight text-slate-900">Executive Analytics</h1>
+        <p className="mt-2 text-slate-600">Live utilization, maintenance cost trends and AI-driven fleet health.</p>
+      </div>
+
+      <div className="grid grid-cols-2 gap-4 lg:grid-cols-5">
+        <KpiTile accent label="Portfolio Value" value={`$${kpis.portfolioValue.toLocaleString()}`} hint={`${kpis.totalAssets} assets tracked`} />
+        <KpiTile label="Utilization" value={`${kpis.utilizationRate}%`} hint="Assets currently allocated" />
+        <KpiTile label="Open Maintenance" value={String(kpis.openMaintenance)} hint="Pending or in progress" />
+        <KpiTile label="Avg Resolution" value={`${kpis.avgResolutionDays}d`} hint="Across resolved requests" />
+        <KpiTile label="Active Bookings" value={String(kpis.activeBookings)} hint="Live reservations" />
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <ChartPanel title="Assets by status" subtitle="Current lifecycle state of every asset">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data.statusDistribution} layout="vertical" margin={{ left: 8, right: 32 }}>
+              <CartesianGrid stroke={GRID} horizontal={false} />
+              <XAxis type="number" tick={axisTick} axisLine={{ stroke: BASELINE }} tickLine={false} allowDecimals={false} />
+              <YAxis type="category" dataKey="name" tick={axisTick} axisLine={{ stroke: BASELINE }} tickLine={false} width={92} />
+              <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(15,23,42,0.04)" }} />
+              <Bar dataKey="value" name="Assets" barSize={18} radius={[0, 4, 4, 0]}>
+                {data.statusDistribution.map((entry) => (
+                  <Cell key={entry.name} fill={STATUS_COLORS[entry.name] ?? SERIES_1} />
+                ))}
+                <LabelList dataKey="value" position="right" style={{ fill: "#52514e", fontSize: 12, fontWeight: 700 }} />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartPanel>
+
+        <ChartPanel title="Assets by category" subtitle="Where the fleet is concentrated">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data.categoryDistribution} layout="vertical" margin={{ left: 8, right: 32 }}>
+              <CartesianGrid stroke={GRID} horizontal={false} />
+              <XAxis type="number" tick={axisTick} axisLine={{ stroke: BASELINE }} tickLine={false} allowDecimals={false} />
+              <YAxis type="category" dataKey="name" tick={axisTick} axisLine={{ stroke: BASELINE }} tickLine={false} width={110} />
+              <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(15,23,42,0.04)" }} />
+              <Bar dataKey="value" name="Assets" fill={SERIES_1} barSize={18} radius={[0, 4, 4, 0]}>
+                <LabelList dataKey="value" position="right" style={{ fill: "#52514e", fontSize: 12, fontWeight: 700 }} />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartPanel>
+
+        <ChartPanel title="Activity trend" subtitle="Maintenance requests vs bookings, last 6 months">
+          <ResponsiveContainer width="100%" height="100%">
+            <LineChart data={activityTrend} margin={{ left: -16, right: 16, top: 8 }}>
+              <CartesianGrid stroke={GRID} vertical={false} />
+              <XAxis dataKey="month" tick={axisTick} axisLine={{ stroke: BASELINE }} tickLine={false} />
+              <YAxis tick={axisTick} axisLine={false} tickLine={false} allowDecimals={false} />
+              <Tooltip contentStyle={tooltipStyle} />
+              <Legend wrapperStyle={{ fontSize: 12, fontWeight: 600 }} />
+              <Line type="monotone" dataKey="maintenance" name="Maintenance" stroke={SERIES_1} strokeWidth={2} dot={{ r: 4, fill: SERIES_1, strokeWidth: 0 }} activeDot={{ r: 6 }} />
+              <Line type="monotone" dataKey="bookings" name="Bookings" stroke={SERIES_2} strokeWidth={2} dot={{ r: 4, fill: SERIES_2, strokeWidth: 0 }} activeDot={{ r: 6 }} />
+            </LineChart>
+          </ResponsiveContainer>
+        </ChartPanel>
+
+        <ChartPanel title="Estimated repair spend" subtitle="Priority-weighted maintenance cost per month">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data.maintenanceTrend} margin={{ left: -8, right: 16, top: 8 }}>
+              <CartesianGrid stroke={GRID} vertical={false} />
+              <XAxis dataKey="month" tick={axisTick} axisLine={{ stroke: BASELINE }} tickLine={false} />
+              <YAxis tick={axisTick} axisLine={false} tickLine={false} tickFormatter={(v: number) => `$${v}`} />
+              <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(15,23,42,0.04)" }} formatter={(value) => [`$${Number(value).toLocaleString()}`, "Est. cost"]} />
+              <Bar dataKey="estimatedCost" name="Est. cost" fill={SERIES_1} barSize={22} radius={[4, 4, 0, 0]} />
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartPanel>
+      </div>
+
+      <div className="grid grid-cols-1 gap-6 lg:grid-cols-2">
+        <ChartPanel title="Resolution time by priority" subtitle="Average days to resolve maintenance requests">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data.resolutionByPriority} layout="vertical" margin={{ left: 8, right: 40 }}>
+              <CartesianGrid stroke={GRID} horizontal={false} />
+              <XAxis type="number" tick={axisTick} axisLine={{ stroke: BASELINE }} tickLine={false} />
+              <YAxis type="category" dataKey="priority" tick={axisTick} axisLine={{ stroke: BASELINE }} tickLine={false} width={70} />
+              <Tooltip contentStyle={tooltipStyle} cursor={{ fill: "rgba(15,23,42,0.04)" }} formatter={(value, _name, item) => [`${value} days (${(item?.payload as { resolved?: number } | undefined)?.resolved ?? 0} resolved)`, "Avg resolution"]} />
+              <Bar dataKey="avgDays" name="Avg days" fill={SERIES_1} barSize={18} radius={[0, 4, 4, 0]}>
+                <LabelList dataKey="avgDays" position="right" formatter={(v) => (Number(v) > 0 ? `${v}d` : "")} style={{ fill: "#52514e", fontSize: 12, fontWeight: 700 }} />
+              </Bar>
+            </BarChart>
+          </ResponsiveContainer>
+        </ChartPanel>
+
+        <AiInsightsPanel />
+      </div>
+    </div>
   );
 }

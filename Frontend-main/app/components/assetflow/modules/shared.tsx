@@ -148,12 +148,43 @@ export function Alert({ kind, children }: { kind: "error" | "success" | "info"; 
   return <div className={`rounded-2xl border px-4 py-3 text-sm ${styles[kind]}`}>{children}</div>;
 }
 
+// Manual date formatting — locale-based formatters render differently on the
+// server vs the browser and cause React hydration mismatches.
+const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+
+function pad2(n: number) {
+  return String(n).padStart(2, "0");
+}
+
 export function fmtDate(iso?: string) {
   if (!iso) return "—";
-  return new Date(iso).toLocaleDateString([], { day: "2-digit", month: "short", year: "numeric" });
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  return `${pad2(d.getDate())} ${MONTHS[d.getMonth()]} ${d.getFullYear()}`;
 }
 
 export function fmtDateTime(iso?: string) {
   if (!iso) return "—";
-  return new Date(iso).toLocaleString([], { day: "2-digit", month: "short", hour: "2-digit", minute: "2-digit" });
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  return `${pad2(d.getDate())} ${MONTHS[d.getMonth()]}, ${fmtTime(iso)}`;
+}
+
+export function fmtTime(iso?: string | Date) {
+  if (!iso) return "—";
+  const d = iso instanceof Date ? iso : new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  const hours24 = d.getHours();
+  const hours12 = hours24 % 12 === 0 ? 12 : hours24 % 12;
+  const ampm = hours24 < 12 ? "AM" : "PM";
+  return `${pad2(hours12)}:${pad2(d.getMinutes())} ${ampm}`;
+}
+
+const MONTHS_LONG = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+export function fmtDateLong(iso?: string) {
+  if (!iso) return "—";
+  const d = new Date(iso);
+  if (Number.isNaN(d.getTime())) return "—";
+  return `${pad2(d.getDate())} ${MONTHS_LONG[d.getMonth()]}`;
 }

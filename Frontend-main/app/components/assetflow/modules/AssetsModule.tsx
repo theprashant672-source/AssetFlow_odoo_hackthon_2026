@@ -1,10 +1,13 @@
 "use client";
 
 import { useMemo, useState } from "react";
+import Link from "next/link";
 import {
   registerAsset, allocateAsset, updateAssetStatus, assetHolderLabel, currentUserEmail, findEmployee,
   type Asset, type AssetStatus,
 } from "@/app/lib/store";
+import AssetQrModal from "../assets/AssetQrModal";
+import { exportAssetReportPdf, exportQrLabelsPdf } from "@/app/lib/assetflowPdf";
 import { useDB, Panel, Button, Field, inputCls, Table, EmptyRow, StatusBadge, Badge, fmtDate, fmtDateTime } from "./shared";
 
 const ALL_STATUSES: AssetStatus[] = [
@@ -21,6 +24,19 @@ export default function AssetsModule({ canRegister = true, scope = "all" }: {
   const [catFilter, setCatFilter] = useState("");
   const [selected, setSelected] = useState<Asset | null>(null);
   const [showForm, setShowForm] = useState(false);
+  const [qrAsset, setQrAsset] = useState<Asset | null>(null);
+  const [exportingLabels, setExportingLabels] = useState(false);
+
+  const toPdfRow = (a: Asset) => ({
+    id: a.id,
+    tag: a.tag,
+    name: a.name,
+    categoryName: db.categories.find((c) => c.id === a.categoryId)?.name ?? "—",
+    departmentName: assetHolderLabel(db, a),
+    location: a.location,
+    status: a.status,
+    condition: a.condition,
+  });
 
   const assets = useMemo(() => {
     let list = db.assets;
@@ -48,7 +64,7 @@ export default function AssetsModule({ canRegister = true, scope = "all" }: {
           <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-odoo-600">Asset register</div>
           <p className="mt-1 text-sm leading-6 text-slate-600">Track equipment, ownership, location, and lifecycle status from one place.</p>
         </div>
-        <div className="flex items-center gap-2.5">
+        <div className="flex flex-wrap items-center gap-2.5">
           <Metric label="Available" value={availableCount} tone="text-emerald-700" />
           <Metric label="Allocated" value={allocatedCount} tone="text-odoo-700" />
           {(canRegister || scope === "mine") && (
@@ -56,6 +72,48 @@ export default function AssetsModule({ canRegister = true, scope = "all" }: {
           )}
         </div>
       </section>
+
+      <div className="flex flex-wrap items-center gap-2">
+        <Link
+          href="/scan"
+          className="inline-flex items-center gap-2 rounded-xl border border-slate-200 bg-white px-3.5 py-2 text-sm font-bold text-slate-700 transition hover:border-odoo-300 hover:text-odoo-700"
+        >
+          📷 Scan QR
+        </Link>
+        <Button
+          tone="ghost"
+          disabled={assets.length === 0 || exportingLabels}
+          onClick={async () => {
+            if (assets.length === 0 || exportingLabels) return;
+            setExportingLabels(true);
+            try {
+              await exportQrLabelsPdf(assets.map(toPdfRow), window.location.origin);
+            } finally {
+              setExportingLabels(false);
+            }
+          }}
+        >
+          🏷️ {exportingLabels ? "Preparing…" : "QR Labels PDF"}
+        </Button>
+        <Button
+          tone="ghost"
+          disabled={assets.length === 0}
+          onClick={() => exportAssetReportPdf(assets.map(toPdfRow))}
+        >
+          📄 Export PDF
+        </Button>
+        <span className="text-xs font-medium text-slate-400">
+          Print labels, stick them on assets — scan with any phone to open details.
+        </span>
+      </div>
+
+      {qrAsset && (
+        <AssetQrModal
+          asset={{ id: qrAsset.id, tag: qrAsset.tag, name: qrAsset.name, location: qrAsset.location }}
+          onClose={() => setQrAsset(null)}
+        />
+      )}
+
       {showForm && (canRegister || scope === "mine") && <RegisterForm scope={scope} onDone={() => setShowForm(false)} />}
 
       <Panel
@@ -95,9 +153,12 @@ export default function AssetsModule({ canRegister = true, scope = "all" }: {
                 <td className="px-4 py-3">{assetHolderLabel(db, a)}</td>
                 <td className="px-4 py-3"><StatusBadge status={a.status} /></td>
                 <td className="px-4 py-3">
-                  <Button tone="ghost" onClick={() => setSelected(selected?.id === a.id ? null : a)}>
-                    {selected?.id === a.id ? "Close" : "Open"}
-                  </Button>
+                  <div className="flex items-center gap-2">
+                    <Button tone="ghost" onClick={() => setQrAsset(a)}>QR</Button>
+                    <Button tone="ghost" onClick={() => setSelected(selected?.id === a.id ? null : a)}>
+                      {selected?.id === a.id ? "Close" : "Open"}
+                    </Button>
+                  </div>
                 </td>
               </tr>
             );

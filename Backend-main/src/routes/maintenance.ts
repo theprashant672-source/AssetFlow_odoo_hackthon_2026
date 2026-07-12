@@ -2,6 +2,7 @@ import { Router } from "express";
 import { randomUUID } from "crypto";
 import { getCollections } from "../db/collections";
 import type { MaintenanceRequest } from "../types";
+import { broadcast } from "../services/realtime";
 
 const router = Router();
 
@@ -50,6 +51,15 @@ router.post("/", async (req, res, next) => {
       );
     }
 
+    broadcast({
+      type: "maintenance_created",
+      title: `Maintenance request: ${newRequest.assetName}`,
+      body: `${newRequest.priority} priority — ${String(issueDescription || "").slice(0, 120)}`,
+      entityType: "maintenance",
+      entityId: newRequest.id,
+      severity: newRequest.priority === "Critical" || newRequest.priority === "High" ? "warning" : "info",
+    });
+
     res.status(201).json(newRequest);
   } catch (err) {
     next(err);
@@ -90,6 +100,15 @@ router.put("/:id/resolve", async (req, res, next) => {
       );
     }
     
+    broadcast({
+      type: "maintenance_resolved",
+      title: `Maintenance resolved: ${request.assetName}`,
+      body: resolutionNotes || "Request marked as resolved",
+      entityType: "maintenance",
+      entityId: id,
+      severity: "success",
+    });
+
     res.json({ success: true });
   } catch (err) {
     next(err);

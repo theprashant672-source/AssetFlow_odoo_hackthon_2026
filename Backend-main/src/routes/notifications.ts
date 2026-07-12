@@ -5,8 +5,16 @@ import { authenticate } from "../middleware/auth";
 import { roleMatchSet } from "../rbac";
 import type { JwtPayload, Notification } from "../types";
 import { fail, ok } from "../utils/http";
+import { addSseClient } from "../services/realtime";
 
 const router: Router = express.Router();
+
+// Server-Sent Events stream for live notifications. EventSource cannot send
+// Authorization headers, so this endpoint is open; events carry no sensitive data.
+router.get("/stream", (req: Request, res: Response) => {
+  req.socket.setTimeout(0);
+  addSseClient(res);
+});
 
 function parseBool(v: unknown): boolean {
   if (typeof v !== "string") return false;

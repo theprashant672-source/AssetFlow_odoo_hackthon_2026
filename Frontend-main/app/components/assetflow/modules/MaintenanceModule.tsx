@@ -1,8 +1,22 @@
 "use client";
 
-import { useState } from "react";
+import { useRef, useState } from "react";
 import { raiseMaintenance, advanceMaintenance, currentUserEmail, type MaintenanceRequest } from "@/app/lib/store";
+import { apiUrl } from "@/app/lib/assetflowApi";
+import { exportMaintenanceReportPdf } from "@/app/lib/assetflowPdf";
 import { useDB, Panel, Button, Field, inputCls, Table, EmptyRow, Badge, Alert } from "./shared";
+
+type TriageSuggestion = {
+  priority: "Low" | "Medium" | "High" | "Critical";
+  category: string;
+  confidence: number;
+  reasons: string[];
+};
+
+// Store priorities cap at High — fold the AI's Critical into High.
+function toStorePriority(p: TriageSuggestion["priority"]): MaintenanceRequest["priority"] {
+  return (p === "Critical" ? "High" : p) as MaintenanceRequest["priority"];
+}
 
 const STATUS_TONE: Record<string, string> = {
   Pending: "amber",
@@ -22,6 +36,30 @@ export default function MaintenanceModule({ canApprove = true }: { canApprove?: 
   const [issue, setIssue] = useState("");
   const [priority, setPriority] = useState<MaintenanceRequest["priority"]>("Medium");
   const [msg, setMsg] = useState<{ kind: "error" | "success"; text: string } | null>(null);
+  const [suggestion, setSuggestion] = useState<TriageSuggestion | null>(null);
+  const triageTimer = useRef<ReturnType<typeof setTimeout> | null>(null);
+
+  const handleIssueChange = (value: string) => {
+    setIssue(value);
+    if (triageTimer.current) clearTimeout(triageTimer.current);
+    if (value.trim().length < 10) {
+      setSuggestion(null);
+      return;
+    }
+    triageTimer.current = setTimeout(async () => {
+      try {
+        const res = await fetch(apiUrl("/api/ai/triage"), {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ description: value }),
+        });
+        if (res.ok) setSuggestion(await res.json());
+      } catch {
+        // Backend offline — AI assist silently unavailable.
+        setSuggestion(null);
+      }
+    }, 500);
+  };
 
   const technicians = db.employees.filter((e) => e.role === "Asset Manager" || e.email.includes("itservice"));
 
@@ -30,7 +68,7 @@ export default function MaintenanceModule({ canApprove = true }: { canApprove?: 
     if (!assetId) { setMsg({ kind: "error", text: "Select the asset that needs repair." }); return; }
     if (!issue.trim()) { setMsg({ kind: "error", text: "Describe the issue." }); return; }
     raiseMaintenance(assetId, issue.trim(), priority, me);
-    setIssue(""); setAssetId("");
+    setIssue(""); setAssetId(""); setSuggestion(null);
     setMsg({ kind: "success", text: "Request raised — waiting for Asset Manager approval before work starts." });
   };
 
@@ -50,7 +88,7 @@ export default function MaintenanceModule({ canApprove = true }: { canApprove?: 
             </select>
           </Field>
           <Field label="Issue">
-            <input className={inputCls} value={issue} onChange={(e) => setIssue(e.target.value)} placeholder="Describe the problem…" />
+            <input className={inputCls} value={issue} onChange={(e) => handleIssueChange(e.target.value)} placeholder="Describe the problem…" />
           </Field>
           <Field label="Priority">
             <select className={inputCls} value={priority} onChange={(e) => setPriority(e.target.value as MaintenanceRequest["priority"])}>
@@ -58,6 +96,28 @@ export default function MaintenanceModule({ canApprove = true }: { canApprove?: 
             </select>
           </Field>
         </div>
+        {suggestion && (
+          <div className="mt-3 rounded-xl border border-odoo-200 bg-odoo-50/60 p-3">
+            <div className="flex flex-wrap items-center gap-2 text-sm">
+              <span className="font-bold text-odoo-700">✨ AI suggests:</span>
+              <Badge tone={suggestion.priority === "Critical" || suggestion.priority === "High" ? "red" : suggestion.priority === "Medium" ? "amber" : "slate"}>
+                {suggestion.priority} priority
+              </Badge>
+              <Badge tone="purple">{suggestion.category}</Badge>
+              <span className="text-xs font-medium text-slate-500">{Math.round(suggestion.confidence * 100)}% confidence</span>
+              {toStorePriority(suggestion.priority) !== priority && (
+                <button
+                  type="button"
+                  onClick={() => setPriority(toStorePriority(suggestion.priority))}
+                  className="ml-auto rounded-lg bg-[#9A528D] px-3 py-1 text-xs font-bold text-white transition hover:brightness-110"
+                >
+                  Apply
+                </button>
+              )}
+            </div>
+            <div className="mt-1.5 text-xs text-slate-500">{suggestion.reasons.join(" · ")}</div>
+          </div>
+        )}
         <div className="mt-4"><Button onClick={submit}>Raise request</Button></div>
         {msg && <div className="mt-3"><Alert kind={msg.kind}>{msg.text}</Alert></div>}
       </Panel>
@@ -65,6 +125,30 @@ export default function MaintenanceModule({ canApprove = true }: { canApprove?: 
       <Panel
         title="Maintenance workflow"
         subtitle="Pending → Approved / Rejected → Technician Assigned → In Progress → Resolved."
+        actions={
+          <Button
+            tone="ghost"
+            disabled={db.maintenance.length === 0}
+            onClick={() =>
+              exportMaintenanceReportPdf(
+                db.maintenance.map((m) => {
+                  const a = db.assets.find((x) => x.id === m.assetId);
+                  return {
+                    id: m.id,
+                    assetName: a ? `${a.name} (${a.tag})` : "—",
+                    requestedBy: m.raisedBy,
+                    issueDescription: m.issue,
+                    priority: m.priority,
+                    status: m.status,
+                    createdAt: m.raisedAt,
+                  };
+                })
+              )
+            }
+          >
+            📄 Export PDF
+          </Button>
+        }
       >
         <div className="mb-4 flex flex-wrap gap-1.5">
           {FLOW.map((s, i) => (

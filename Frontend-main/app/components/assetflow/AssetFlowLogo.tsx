@@ -1,9 +1,14 @@
+import Link from "next/link";
+
 type AssetFlowLogoProps = {
   size?: number;
   compact?: boolean;
+  variant?: "light" | "dark";
+  href?: string;
 };
 
 const ODOO_PURPLE = "#9A528D";
+const ODOO_PURPLE_LIGHT = "#d9a7cf";
 
 function OdooWordmark({ className }: { className?: string }) {
   return (
@@ -23,9 +28,10 @@ function OdooWordmark({ className }: { className?: string }) {
   );
 }
 
-export default function AssetFlowLogo({ size = 44, compact = false }: AssetFlowLogoProps) {
+export default function AssetFlowLogo({ size = 44, compact = false, variant = "light", href = "/" }: AssetFlowLogoProps) {
+  const onDark = variant === "dark";
   return (
-    <div className="flex items-center gap-3">
+    <Link href={href} aria-label="AssetFlow home" className="flex items-center gap-3 transition hover:opacity-85">
       <div
         className="flex items-center justify-center rounded-[1.1rem] shadow-[0_18px_40px_rgba(154,82,141,0.35)]"
         style={{ width: size, height: size, backgroundColor: ODOO_PURPLE }}
@@ -36,12 +42,14 @@ export default function AssetFlowLogo({ size = 44, compact = false }: AssetFlowL
       {!compact && (
         <div className="leading-tight">
           <div className="text-base font-black tracking-tight">
-            <span style={{ color: ODOO_PURPLE }}>odoo</span>{" "}
-            <span className="text-slate-900">Assetflow</span>
+            <span style={{ color: onDark ? ODOO_PURPLE_LIGHT : ODOO_PURPLE }}>odoo</span>{" "}
+            <span className={onDark ? "text-white" : "text-slate-900"}>Assetflow</span>
           </div>
-          <div className="text-[11px] font-medium uppercase tracking-[0.28em] text-slate-500">Enterprise Assets</div>
+          <div className={`text-[11px] font-medium uppercase tracking-[0.28em] ${onDark ? "text-white/50" : "text-slate-500"}`}>
+            Enterprise Assets
+          </div>
         </div>
       )}
-    </div>
+    </Link>
   );
 }

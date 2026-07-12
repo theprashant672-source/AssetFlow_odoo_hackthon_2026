@@ -1,13 +1,18 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import Link from "next/link";
 import SectionPanel from "../cards/SectionPanel";
+import AssetQrModal from "./AssetQrModal";
+import { exportAssetReportPdf, exportQrLabelsPdf } from "@/app/lib/assetflowPdf";
 
 export default function AssetManagement() {
   const [assets, setAssets] = useState<any[]>([]);
   const [isCreating, setIsCreating] = useState(false);
   const [categories, setCategories] = useState<any[]>([]);
   const [departments, setDepartments] = useState<any[]>([]);
+  const [qrAsset, setQrAsset] = useState<any | null>(null);
+  const [exportingLabels, setExportingLabels] = useState(false);
 
   const [formData, setFormData] = useState({
     tag: "",
@@ -74,11 +79,40 @@ export default function AssetManagement() {
           <p className="mt-2 text-slate-600">Register and manage company assets.</p>
         </div>
         {!isCreating && (
-          <button onClick={() => setIsCreating(true)} className="rounded-xl bg-[#5b3df5] px-4 py-2 font-semibold text-white shadow-sm hover:bg-[#4b30d6] transition-colors">
-            + Register Asset
-          </button>
+          <div className="flex flex-wrap items-center gap-2">
+            <Link href="/scan" className="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors">
+              📷 Scan QR
+            </Link>
+            <button
+              onClick={async () => {
+                if (assets.length === 0 || exportingLabels) return;
+                setExportingLabels(true);
+                try {
+                  await exportQrLabelsPdf(assets, window.location.origin);
+                } finally {
+                  setExportingLabels(false);
+                }
+              }}
+              disabled={assets.length === 0 || exportingLabels}
+              className="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors disabled:opacity-50"
+            >
+              {exportingLabels ? "Preparing..." : "🏷️ QR Labels PDF"}
+            </button>
+            <button
+              onClick={() => assets.length > 0 && exportAssetReportPdf(assets)}
+              disabled={assets.length === 0}
+              className="rounded-xl border border-slate-300 bg-white px-4 py-2 font-semibold text-slate-700 shadow-sm hover:bg-slate-50 transition-colors disabled:opacity-50"
+            >
+              📄 Export PDF
+            </button>
+            <button onClick={() => setIsCreating(true)} className="rounded-xl bg-[#5b3df5] px-4 py-2 font-semibold text-white shadow-sm hover:bg-[#4b30d6] transition-colors">
+              + Register Asset
+            </button>
+          </div>
         )}
       </div>
+
+      {qrAsset && <AssetQrModal asset={qrAsset} onClose={() => setQrAsset(null)} />}
 
       {isCreating && (
         <form onSubmit={handleSubmit} className="mb-6 bg-white p-6 rounded-2xl border border-slate-200 shadow-sm">
@@ -166,7 +200,12 @@ export default function AssetManagement() {
                     </span>
                   </td>
                   <td className="p-4 text-right">
-                    <button className="text-[#5b3df5] hover:underline font-medium">Manage</button>
+                    <div className="flex justify-end gap-3">
+                      <button onClick={() => setQrAsset(asset)} className="text-slate-600 hover:text-[#5b3df5] font-medium" title="Show QR code">
+                        QR
+                      </button>
+                      <button className="text-[#5b3df5] hover:underline font-medium">Manage</button>
+                    </div>
                   </td>
                 </tr>
               ))}

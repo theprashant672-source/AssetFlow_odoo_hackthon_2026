@@ -13,7 +13,7 @@ export default function TextField({
       <span className="text-sm font-semibold text-slate-700">{label}</span>
       <input
         {...props}
-        className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-[#5b3df5] focus:ring-4 focus:ring-[#5b3df5]/10"
+        className="rounded-2xl border border-slate-200 bg-white px-4 py-3 text-sm text-slate-700 shadow-sm outline-none transition placeholder:text-slate-400 focus:border-[#9A528D] focus:ring-4 focus:ring-[#9A528D]/10"
       />
       {error && <span className="text-xs font-medium text-[#ef4444]">{error}</span>}
     </label>

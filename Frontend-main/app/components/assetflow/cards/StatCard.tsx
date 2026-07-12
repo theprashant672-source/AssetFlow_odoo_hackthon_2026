@@ -13,7 +13,7 @@ export default function StatCard({
 }) {
   const toneClass =
     tone === "violet"
-      ? "from-[#5b3df5] to-[#7c6af7]"
+      ? "from-[#9A528D] to-[#b878ab]"
       : tone === "sky"
         ? "from-sky-500 to-cyan-500"
         : tone === "emerald"

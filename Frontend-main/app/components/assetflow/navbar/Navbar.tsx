@@ -23,7 +23,7 @@ export default function Navbar({
         <button
           type="button"
           onClick={onMenuClick}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-[#5b3df5]/30 hover:text-[#5b3df5] lg:hidden"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-[#9A528D]/30 hover:text-[#9A528D] lg:hidden"
           aria-label="Toggle sidebar"
         >
           <IconMenu size={18} />
@@ -45,7 +45,7 @@ export default function Navbar({
         <button
           type="button"
           onClick={onThemeToggle}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-[#5b3df5]/30 hover:text-[#5b3df5]"
+          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-[#9A528D]/30 hover:text-[#9A528D]"
           aria-label="Toggle theme"
         >
           {theme === "light" ? <IconMoon size={18} /> : <IconSun size={18} />}
@@ -53,7 +53,7 @@ export default function Navbar({
 
         <button
           type="button"
-          className="relative inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-[#5b3df5]/30 hover:text-[#5b3df5]"
+          className="relative inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-[#9A528D]/30 hover:text-[#9A528D]"
           aria-label="Notifications"
         >
           <IconBell size={18} />
@@ -63,9 +63,9 @@ export default function Navbar({
         <button
           type="button"
           onClick={onLogout}
-          className="hidden items-center gap-3 rounded-[1.2rem] border border-slate-200 bg-white px-3 py-2.5 text-left shadow-sm transition hover:border-[#5b3df5]/30 hover:shadow-md lg:flex"
+          className="hidden items-center gap-3 rounded-[1.2rem] border border-slate-200 bg-white px-3 py-2.5 text-left shadow-sm transition hover:border-[#9A528D]/30 hover:shadow-md lg:flex"
         >
-          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#5b3df5,#7c6af7)] text-white">
+          <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#9A528D,#b878ab)] text-white">
             <IconUser size={18} />
           </div>
           <div>

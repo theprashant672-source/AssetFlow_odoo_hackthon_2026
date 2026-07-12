@@ -18,7 +18,7 @@ export default function DepartmentChart({
             <div className="mt-3 h-3 overflow-hidden rounded-full bg-slate-100">
               <div
                 className="h-full rounded-full"
-                style={{ width: `${width}%`, background: `linear-gradient(90deg, ${item.color}, rgba(91,61,245,0.28))` }}
+                style={{ width: `${width}%`, background: `linear-gradient(90deg, ${item.color}, rgba(154,82,141,0.28))` }}
               />
             </div>
           </div>

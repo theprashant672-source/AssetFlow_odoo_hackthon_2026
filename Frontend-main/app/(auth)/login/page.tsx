@@ -219,21 +219,21 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#f6f7fb] text-slate-900">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(91,61,245,0.16),_transparent_32%),radial-gradient(circle_at_85%_15%,_rgba(14,165,233,0.12),_transparent_28%),radial-gradient(circle_at_70%_85%,_rgba(22,163,74,0.08),_transparent_24%),linear-gradient(180deg,_#f8fafc_0%,_#eef2ff_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(154,82,141,0.16),_transparent_32%),radial-gradient(circle_at_85%_15%,_rgba(14,165,233,0.12),_transparent_28%),radial-gradient(circle_at_70%_85%,_rgba(22,163,74,0.08),_transparent_24%),linear-gradient(180deg,_#f8fafc_0%,_#f6ecf4_100%)]" />
       <div className="mx-auto grid min-h-screen w-full max-w-7xl gap-6 px-4 py-5 sm:px-6 lg:grid-cols-[1fr_0.92fr] lg:px-8 lg:py-6">
         <section className="relative overflow-hidden rounded-[2.4rem] border border-white/70 bg-white/70 p-6 shadow-[0_30px_90px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-8 lg:p-10">
-          <div className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-[#5b3df5]/10 blur-3xl" />
+          <div className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-[#9A528D]/10 blur-3xl" />
           <div className="absolute bottom-4 right-6 h-52 w-52 rounded-full bg-[#16a34a]/10 blur-3xl" />
 
           <div className="relative z-10 flex items-center justify-between gap-4">
             <AssetFlowLogo />
-            <Link href="/signup" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm transition hover:border-[#5b3df5]/30 hover:text-[#5b3df5]">
+            <Link href="/signup" className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-4 py-2 text-sm font-semibold text-slate-600 shadow-sm transition hover:border-[#9A528D]/30 hover:text-[#9A528D]">
               Company setup
             </Link>
           </div>
 
           <div className="relative z-10 mt-12 max-w-2xl">
-            <div className="inline-flex items-center gap-2 rounded-full border border-[#5b3df5]/15 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-[#5b3df5] shadow-sm">
+            <div className="inline-flex items-center gap-2 rounded-full border border-[#9A528D]/15 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-[#9A528D] shadow-sm">
               <IconSparkles size={14} />
               ODDO access control
             </div>
@@ -268,7 +268,7 @@ export default function LoginPage() {
                   <div className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">Demo accounts</div>
                   <div className="mt-1 text-sm text-slate-600">Click any card to autofill the email.</div>
                 </div>
-                <span className="rounded-full bg-[#eef2ff] px-3 py-1 text-xs font-semibold text-[#5b3df5]">Demo only</span>
+                <span className="rounded-full bg-[#f6ecf4] px-3 py-1 text-xs font-semibold text-[#9A528D]">Demo only</span>
               </div>
               <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {DEMO_ACCOUNTS.map((account) => (
@@ -282,7 +282,7 @@ export default function LoginPage() {
                       setStatusMessage("");
                     }}
                     className={`rounded-[1rem] border p-3 text-left transition hover:-translate-y-0.5 hover:shadow-md ${
-                      demoHint?.email === account.email ? "border-[#5b3df5]/30 bg-[#5b3df5]/6" : "border-slate-200 bg-white"
+                      demoHint?.email === account.email ? "border-[#9A528D]/30 bg-[#9A528D]/6" : "border-slate-200 bg-white"
                     }`}
                   >
                     <div className="flex items-center justify-between gap-2">
@@ -301,7 +301,7 @@ export default function LoginPage() {
         </section>
 
         <section className="relative flex items-center justify-center overflow-hidden rounded-[2.4rem] border border-[#101b3d]/15 bg-[#0d1328] px-4 py-6 text-white shadow-[0_30px_100px_rgba(15,23,42,0.36)] sm:px-6 lg:px-8">
-          <div className="absolute -left-8 top-8 h-40 w-40 rounded-full bg-[#5b3df5]/30 blur-3xl" />
+          <div className="absolute -left-8 top-8 h-40 w-40 rounded-full bg-[#9A528D]/30 blur-3xl" />
           <div className="absolute bottom-0 right-0 h-56 w-56 rounded-full bg-[#14b8a6]/15 blur-3xl" />
           <div className="relative w-full max-w-md rounded-[2rem] border border-white/10 bg-white/6 p-5 shadow-[0_30px_100px_rgba(15,23,42,0.5)] backdrop-blur-xl sm:p-7">
             <div className="flex items-start justify-between gap-4">
@@ -427,7 +427,7 @@ export default function LoginPage() {
               <button
                 type="submit"
                 disabled={isSubmitting}
-                className="rounded-2xl bg-[#5b3df5] px-4 py-3.5 text-sm font-bold text-white shadow-[0_18px_36px_rgba(91,61,245,0.28)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded-2xl bg-[#9A528D] px-4 py-3.5 text-sm font-bold text-white shadow-[0_18px_36px_rgba(154,82,141,0.28)] transition hover:brightness-110 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {isSubmitting ? "Signing in..." : "Login to Dashboard"}
               </button>

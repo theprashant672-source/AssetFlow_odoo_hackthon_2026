@@ -16,7 +16,7 @@ export default function ModulePage({
         <div className="max-w-3xl">
           <Link
             href={backHref}
-            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-[#5b3df5]/30 hover:text-[#5b3df5]"
+            className="inline-flex items-center gap-2 rounded-full border border-slate-200 bg-white px-3 py-1.5 text-xs font-semibold text-slate-600 transition hover:border-[#9A528D]/30 hover:text-[#9A528D]"
           >
             <IconArrowLeft size={14} />
             Back to dashboard
@@ -24,7 +24,7 @@ export default function ModulePage({
           <h1 className="mt-5 text-3xl font-black tracking-tight text-slate-900">{title}</h1>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">{subtitle}</p>
         </div>
-        <button className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#5b3df5] px-4 py-3 text-sm font-bold text-white shadow-[0_18px_30px_rgba(91,61,245,0.26)] transition hover:brightness-110">
+        <button className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#9A528D] px-4 py-3 text-sm font-bold text-white shadow-[0_18px_30px_rgba(154,82,141,0.26)] transition hover:brightness-110">
           <IconPlus size={16} />
           Create entry
         </button>

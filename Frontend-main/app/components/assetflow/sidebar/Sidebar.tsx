@@ -47,7 +47,7 @@ export default function Sidebar({
                   onClick={onClose}
                   className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition ${
                     active
-                      ? "bg-[#5b3df5] text-white shadow-[0_14px_30px_rgba(91,61,245,0.25)]"
+                      ? "bg-[#9A528D] text-white shadow-[0_14px_30px_rgba(154,82,141,0.25)]"
                       : "text-slate-600 hover:bg-white hover:text-slate-900 hover:shadow-sm"
                   }`}
                 >
@@ -61,7 +61,7 @@ export default function Sidebar({
         </div>
 
         <div className="border-t border-slate-200 p-4">
-          <div className="rounded-[1.5rem] bg-[linear-gradient(135deg,rgba(91,61,245,0.12),rgba(255,255,255,0.9))] p-4">
+          <div className="rounded-[1.5rem] bg-[linear-gradient(135deg,rgba(154,82,141,0.12),rgba(255,255,255,0.9))] p-4">
             <div className="text-xs font-semibold uppercase tracking-[0.26em] text-slate-500">Next milestone</div>
             <p className="mt-2 text-sm leading-6 text-slate-600">
               {ROLE_HOME[role]} is your default landing page after login.

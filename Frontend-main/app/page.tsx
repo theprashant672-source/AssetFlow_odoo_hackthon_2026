@@ -16,13 +16,13 @@ export default function HomePage() {
         <div className="mx-auto flex w-full max-w-7xl items-center justify-between px-4 py-4 sm:px-6 lg:px-8">
           <AssetFlowLogo />
           <nav className="hidden items-center gap-8 text-sm font-semibold text-slate-600 md:flex">
-            <a href="#platform" className="transition hover:text-[#5b3df5]">Platform</a>
-            <a href="#roles" className="transition hover:text-[#5b3df5]">Roles</a>
-            <a href="#security" className="transition hover:text-[#5b3df5]">Security</a>
-            <a href="#contact" className="transition hover:text-[#5b3df5]">Contact</a>
+            <a href="#platform" className="transition hover:text-[#9A528D]">Platform</a>
+            <a href="#roles" className="transition hover:text-[#9A528D]">Roles</a>
+            <a href="#security" className="transition hover:text-[#9A528D]">Security</a>
+            <a href="#contact" className="transition hover:text-[#9A528D]">Contact</a>
           </nav>
           <div className="flex items-center gap-3">
-            <Link href="/login" className="inline-flex rounded-full bg-[#5b3df5] px-4 py-2 text-sm font-bold text-white shadow-[0_14px_28px_rgba(91,61,245,0.22)] transition hover:brightness-110">
+            <Link href="/login" className="inline-flex rounded-full bg-[#9A528D] px-4 py-2 text-sm font-bold text-white shadow-[0_14px_28px_rgba(154,82,141,0.22)] transition hover:brightness-110">
               Login
             </Link>
           </div>
@@ -30,10 +30,10 @@ export default function HomePage() {
       </header>
 
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(91,61,245,0.18),_transparent_32%),radial-gradient(circle_at_85%_20%,_rgba(14,165,233,0.14),_transparent_30%),linear-gradient(180deg,_#eef2ff_0%,_#f8fafc_55%,_#f8fafc_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(154,82,141,0.18),_transparent_32%),radial-gradient(circle_at_85%_20%,_rgba(14,165,233,0.14),_transparent_30%),linear-gradient(180deg,_#f6ecf4_0%,_#f8fafc_55%,_#f8fafc_100%)]" />
         <div className="mx-auto grid min-h-[calc(100vh-82px)] w-full max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-16">
           <div className="relative z-10 flex flex-col justify-center">
-            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#5b3df5]/15 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-[#5b3df5] shadow-sm backdrop-blur">
+            <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#9A528D]/15 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-[#9A528D] shadow-sm backdrop-blur">
               Enterprise asset intelligence
             </div>
             <h1 className="mt-6 max-w-4xl text-5xl font-black tracking-tight text-slate-950 sm:text-6xl">
@@ -46,7 +46,7 @@ export default function HomePage() {
             </p>
 
             <div className="mt-8 flex flex-wrap gap-3">
-              <Link href="/login" className="inline-flex items-center gap-2 rounded-2xl bg-[#5b3df5] px-5 py-3.5 text-sm font-bold text-white shadow-[0_18px_36px_rgba(91,61,245,0.25)] transition hover:brightness-110">
+              <Link href="/login" className="inline-flex items-center gap-2 rounded-2xl bg-[#9A528D] px-5 py-3.5 text-sm font-bold text-white shadow-[0_18px_36px_rgba(154,82,141,0.25)] transition hover:brightness-110">
                 Enter workspace
                 <IconArrowUpRight size={16} />
               </Link>
@@ -59,7 +59,7 @@ export default function HomePage() {
                   <div key={item.label} className="glass-panel soft-shadow rounded-[1.5rem] p-5">
                     <div className="flex items-center justify-between">
                       <div className="text-sm font-medium text-slate-500">{item.label}</div>
-                      <div className="rounded-xl bg-[#eef2ff] p-2 text-[#5b3df5]">
+                      <div className="rounded-xl bg-[#f6ecf4] p-2 text-[#9A528D]">
                         <Icon size={16} />
                       </div>
                     </div>

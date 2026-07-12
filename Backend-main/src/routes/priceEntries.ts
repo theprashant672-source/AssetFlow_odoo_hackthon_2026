@@ -22,7 +22,6 @@ function parsePricePoint(value: unknown): PriceStatePoint {
   };
 }
 
-/** Only includes states actually present in `value`, so a partial update doesn't zero out the rest and a create doesn't need to know every state up front. */
 function parsePrices(value: unknown): Partial<Record<PriceStateName, PriceStatePoint>> {
   const v = (value ?? {}) as Record<string, unknown>;
   const result: Partial<Record<PriceStateName, PriceStatePoint>> = {};
@@ -34,7 +33,6 @@ function parsePrices(value: unknown): Partial<Record<PriceStateName, PriceStateP
   return result;
 }
 
-/** GET /api/price-entries — readable by anyone who manages pricing or generates PIs */
 router.get(
   "/",
   authenticate,
@@ -46,7 +44,6 @@ router.get(
   }
 );
 
-/** POST /api/price-entries — Admin only */
 router.post("/", authenticate, requireAnyPermission("pricing:manage"), async (req: Request, res: Response) => {
   const { description, modelNo, modelKey, srNo, prices } = req.body;
   if (!description || !modelNo || !modelKey) {
@@ -73,7 +70,6 @@ router.post("/", authenticate, requireAnyPermission("pricing:manage"), async (re
   return ok(res, entry, 201);
 });
 
-/** PUT /api/price-entries/:id — Admin only */
 router.put("/:id", authenticate, requireAnyPermission("pricing:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const id = req.params.id;
@@ -93,7 +89,6 @@ router.put("/:id", authenticate, requireAnyPermission("pricing:manage"), async (
   return ok(res, updated);
 });
 
-/** DELETE /api/price-entries/:id — Admin only */
 router.delete("/:id", authenticate, requireAnyPermission("pricing:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const result = await c.priceEntries.deleteOne({ id: req.params.id });

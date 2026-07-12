@@ -58,9 +58,6 @@ async function enrichAssignments(rows: Awaited<ReturnType<typeof listEngineerAss
   }));
 }
 
-/** GET /api/engineer-assignments/am-i-l1-backup — lets any logged-in engineer check
- * (for themselves only) whether they're configured as the L1 backup engineer for any
- * state/district, so the frontend can show a persistent "L1 Backup" queue tab. */
 router.get("/am-i-l1-backup", authenticate, async (req: Request, res: Response) => {
   const user = (req as any).user as { name?: string };
   if (!user?.name) return ok(res, { isL1Backup: false });
@@ -191,7 +188,6 @@ router.post(
       try {
         fs.unlinkSync(tempPath);
       } catch {
-        // ignore
       }
     }
   }
@@ -202,8 +198,6 @@ router.post("/rebuild-loads", authenticate, requireAnyPermission("roles:manage",
   return ok(res, data);
 });
 
-/** POST /api/engineer-assignments/cleanup-stale — deletes mappings whose L1/L2 engineer account
- * no longer exists/is inactive, and clears backup references that have gone stale. Admin only. */
 router.post("/cleanup-stale", authenticate, requireAnyPermission("roles:manage", "users:manage"), async (req: Request, res: Response) => {
   const data = await cleanupStaleEngineerAssignments((req as any).user);
   return ok(res, data);

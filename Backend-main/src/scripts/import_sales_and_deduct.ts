@@ -99,12 +99,6 @@ function inferBatteryModelFromSerial(serialNumber: string) {
   return "";
 }
 
-// 51.2V batteries share one description in the sheets but are actually 4 distinct BOM
-// variants, distinguishable only by serial number suffix/prefix:
-//   - contains "/0.5-"  -> "i" variant
-//   - ends with "-10"   -> "10" variant
-//   - ends with "-5"    -> "5" variant
-//   - otherwise         -> "L" variant (plain serials, 16-Dec-2025..20-Mar-2026 batch)
 function classify512Variant(serialNumber: string) {
   const s = (serialNumber || "").trim().toUpperCase();
   if (s.includes("/0.5")) return "i";

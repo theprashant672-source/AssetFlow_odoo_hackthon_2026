@@ -64,7 +64,6 @@ export default function NotificationsBell() {
       const count = await getUnreadNotificationCount();
       setUnread(count);
     } catch {
-      // ignore (avoid noisy header UI)
     }
   }
 
@@ -91,7 +90,6 @@ export default function NotificationsBell() {
     if (!open) return;
     loadNotifications();
     refreshUnread();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open, expanded]);
 
   useEffect(() => {
@@ -131,7 +129,6 @@ export default function NotificationsBell() {
         setItems((prev) => prev.map((x) => (x.id === n.id ? { ...x, isRead: true } : x)));
         setUnread((c) => Math.max(0, c - 1));
       } catch {
-        // ignore
       }
     }
   }

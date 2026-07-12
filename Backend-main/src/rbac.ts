@@ -96,7 +96,6 @@ export function normalizeRole(input: unknown): RoleName {
   if (key === "service accounts") return "Accounts Team";
   if (key === "dealer") return "Dealer";
 
-  // Custom role name: normalize spacing + title-case for consistency.
   const cleaned = raw.replace(/[^\w\s-]/g, "");
   return titleCaseWords(cleaned) || "Distributor";
 }

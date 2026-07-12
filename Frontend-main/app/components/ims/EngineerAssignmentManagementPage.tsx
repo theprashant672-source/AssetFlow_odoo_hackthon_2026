@@ -829,7 +829,6 @@ function useAsyncData<T>(loader: () => Promise<T>, deps: ReadonlyArray<unknown>)
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...deps, nonce]);
 
   return {

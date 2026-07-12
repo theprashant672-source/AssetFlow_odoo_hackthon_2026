@@ -21,11 +21,9 @@ function apiBaseUrl(): string {
   const raw = process.env.NEXT_PUBLIC_API_BASE_URL;
   const base = normalizeApiBaseUrl(raw ?? "");
 
-  // Use explicit env config when provided.
   if (base) return base;
 
   if (typeof window !== "undefined") {
-    // Use the current frontend origin and let Next.js proxy /api requests to the backend.
     return window.location.origin;
   }
 
@@ -40,8 +38,6 @@ function joinUrl(base: string, pathname: string): string {
 export function getAuthToken(): string | null {
   if (typeof window === "undefined") return null;
 
-  // sessionStorage is scoped to this tab only: it is never adopted by other
-  // tabs, so logging in on one tab can't silently log in a different tab.
   return window.sessionStorage.getItem(TOKEN_KEY);
 }
 
@@ -79,7 +75,6 @@ export async function apiRequest<T>(
   try {
     json = (await res.json()) as ApiOk<T> | ApiFail;
   } catch {
-    // ignore
   }
 
   if (!res.ok) {

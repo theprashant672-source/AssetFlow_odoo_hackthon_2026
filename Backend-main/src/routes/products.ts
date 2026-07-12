@@ -8,7 +8,6 @@ import { generateId } from "../utils/id";
 
 const router: Router = express.Router();
 
-/** GET /api/products */
 router.get("/", authenticate, requireAnyPermission("inventory:products", "sales:entry", "complaints:consumer", "dispatch:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const { q = "", series } = req.query as Record<string, string>;
@@ -21,14 +20,12 @@ router.get("/", authenticate, requireAnyPermission("inventory:products", "sales:
   return ok(res, results);
 });
 
-/** GET /api/products/series — unique series list */
 router.get("/series", authenticate, requireAnyPermission("inventory:products"), async (_req: Request, res: Response) => {
   const c = await getCollections();
   const series = await c.products.distinct("series");
   return ok(res, series);
 });
 
-/** POST /api/products */
 router.post("/", authenticate, requireAnyPermission("inventory:products"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const { series, model, description, productDescription, modelDescription, hsnSac, gstRate, dealerPrice, distributorPrice } = req.body;
@@ -54,7 +51,6 @@ router.post("/", authenticate, requireAnyPermission("inventory:products"), async
   return ok(res, product, 201);
 });
 
-/** PUT /api/products/:id */
 router.put("/:id", authenticate, requireAnyPermission("inventory:products"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const id = req.params.id;
@@ -75,7 +71,6 @@ router.put("/:id", authenticate, requireAnyPermission("inventory:products"), asy
   return ok(res, updated);
 });
 
-/** DELETE /api/products/:id */
 router.delete("/:id", authenticate, requireAnyPermission("inventory:products"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const result = await c.products.deleteOne({ id: req.params.id });

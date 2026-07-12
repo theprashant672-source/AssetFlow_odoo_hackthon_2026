@@ -154,10 +154,6 @@ function toSafeAuthPayload(user: User, role: RoleName, permissions: Permission[]
   };
 }
 
-/**
- * POST /api/auth/login
- * Body: { email | identifier, password }
- */
 router.post("/login", async (req: Request, res: Response) => {
   const { email, identifier, password } = req.body as LoginRequest;
   const loginIdentifier = (identifier ?? email ?? "").trim();
@@ -181,17 +177,11 @@ router.post("/login", async (req: Request, res: Response) => {
   return ok(res, toSafeAuthPayload(user, role, permissions));
 });
 
-// Helpful guard for accidental GET hits.
 router.all("/login", (req: Request, res: Response) => {
   res.setHeader("Allow", "POST, OPTIONS");
   return fail(res, `Method ${req.method} not allowed. Use POST /api/auth/login.`, 405);
 });
 
-/**
- * POST /api/auth/otp/send
- * Body: { identifier, role? }
- * Returns the OTP in the response for temporary setup/demo use.
- */
 router.post("/otp/send", async (req: Request, res: Response) => {
   const { identifier, role } = req.body as OtpLoginSendRequest;
 
@@ -212,10 +202,6 @@ router.post("/otp/send", async (req: Request, res: Response) => {
   return ok(res, payload);
 });
 
-/**
- * POST /api/auth/otp/verify
- * Body: { identifier, role?, challengeId, otp }
- */
 router.post("/otp/verify", async (req: Request, res: Response) => {
   const { identifier, role, challengeId, otp } = req.body as OtpLoginVerifyRequest;
 
@@ -268,10 +254,6 @@ router.post("/otp/verify", async (req: Request, res: Response) => {
   return ok(res, toSafeAuthPayload(user, canonicalRole, permissions));
 });
 
-/**
- * POST /api/auth/register
- * Body: { name, email, mobile, role, password }
- */
 router.post("/register", async (req: Request, res: Response) => {
   const { name, email, mobile, role, password } = req.body as RegisterRequest;
 
@@ -322,9 +304,6 @@ router.post("/register", async (req: Request, res: Response) => {
   return ok(res, { message: "Registration request submitted. Awaiting admin approval." }, 201);
 });
 
-/**
- * GET /api/auth/me
- */
 router.get("/me", authenticate, async (req: Request, res: Response) => {
   const { userId } = (req as any).user as JwtPayload;
   const c = await tryGetCollections();

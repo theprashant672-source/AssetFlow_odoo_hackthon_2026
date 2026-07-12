@@ -1,8 +1,5 @@
 "use client";
 
-// Client-side data store for the AssetFlow demo. Persists to localStorage so
-// every workflow (allocation conflicts, booking overlaps, maintenance
-// approvals, audit cycles) works end-to-end without a backend.
 
 export type AssetStatus =
   | "Available"
@@ -348,7 +345,6 @@ function load(): DB {
       }
     }
   } catch {
-    // fall through to seed
   }
   db = seed();
   persist();
@@ -360,7 +356,6 @@ function persist() {
   try {
     window.localStorage.setItem(KEY, JSON.stringify(db));
   } catch {
-    // storage full/unavailable — demo continues in memory
   }
 }
 
@@ -418,7 +413,6 @@ export function assetHolderLabel(d: DB, a: Asset): string {
   return "—";
 }
 
-// ---------- Organization setup ----------
 
 export function saveDepartment(input: Partial<Department> & { name: string }, actor: string) {
   mutate((d) => {
@@ -467,7 +461,6 @@ export function saveEmployee(input: Partial<Employee> & { name: string; email: s
   });
 }
 
-// ---------- Assets ----------
 
 export function nextAssetTag(d: DB): string {
   const max = d.assets.reduce((m, a) => {
@@ -480,13 +473,16 @@ export function nextAssetTag(d: DB): string {
 export function registerAsset(
   input: Omit<Asset, "id" | "tag" | "status">,
   actor: string
-) {
+): string {
+  let newId = "";
   mutate((d) => {
     const tag = nextAssetTag(d);
-    d.assets.push({ ...input, id: uid(), tag, status: "Available" });
+    newId = uid();
+    d.assets.push({ ...input, id: newId, tag, status: "Available" });
     logActivity(d, actor, `Registered asset ${tag} (${input.name})`);
     pushNotification(d, "Asset Registered", `${input.name} entered the registry as ${tag}.`);
   });
+  return newId;
 }
 
 export function updateAssetStatus(assetId: string, status: AssetStatus, actor: string) {
@@ -503,7 +499,6 @@ export function updateAssetStatus(assetId: string, status: AssetStatus, actor: s
   });
 }
 
-// ---------- Allocation / transfer / return ----------
 
 export type AllocationResult = { ok: true } | { ok: false; reason: string; holder?: string };
 
@@ -561,7 +556,6 @@ export function decideTransfer(transferId: string, approve: boolean, actor: stri
     t.decidedAt = nowIso();
     const a = d.assets.find((x) => x.id === t.assetId);
     if (approve && a) {
-      // close old allocation, open new one
       const open = d.allocations.find((al) => al.assetId === a.id && !al.returnedAt);
       if (open) {
         open.returnedAt = nowIso();
@@ -605,7 +599,6 @@ export function isOverdue(a: Asset): boolean {
   return a.status === "Allocated" && !!a.expectedReturn && new Date(a.expectedReturn) < new Date();
 }
 
-// ---------- Bookings ----------
 
 export type BookingResult = { ok: true } | { ok: false; reason: string };
 
@@ -657,7 +650,6 @@ export function bookingLiveStatus(b: Booking): Booking["status"] {
   return "Upcoming";
 }
 
-// ---------- Maintenance ----------
 
 export function raiseMaintenance(
   assetId: string, issue: string, priority: MaintenanceRequest["priority"], actor: string
@@ -706,7 +698,6 @@ export function advanceMaintenance(
   });
 }
 
-// ---------- Audits ----------
 
 export function createAuditCycle(
   input: { name: string; scope: string; startDate: string; endDate: string; auditors: string[]; assetIds: string[] },
@@ -762,7 +753,6 @@ export function closeAuditCycle(auditId: string, actor: string) {
   });
 }
 
-// ---------- Notifications ----------
 
 export function markAllNotificationsRead() {
   mutate((d) => {
@@ -770,7 +760,6 @@ export function markAllNotificationsRead() {
   });
 }
 
-// ---------- KPIs ----------
 
 export function computeKpis(d: DB) {
   const overdue = d.assets.filter(isOverdue);

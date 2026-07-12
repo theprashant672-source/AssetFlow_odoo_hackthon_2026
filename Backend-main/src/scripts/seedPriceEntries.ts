@@ -30,13 +30,6 @@ function prices(
   };
 }
 
-/**
- * The 51.2V LFP variants and the IP66 SP variants share description text with a sibling product
- * (different warranty/IP rating, same "51.2V/100AH" or "8/10/12KW" text), so the frontend's fuzzy
- * PI-pricing matcher (inferNovaAssetsPriceModelKey in novaassetsPricing.ts) needs a distinct, explicit
- * key for each one — these overrides must match the keys returned there exactly, or PI auto-fill
- * will silently pull the wrong sibling's price (or none at all).
- */
 const MODEL_KEY_OVERRIDES: Record<string, string> = {
   "AW-LFP-51.2 - 10": "AW-LFP-51.2-10",
   "AW-LFP-51.2 - 5": "AW-LFP-51.2-5",
@@ -47,18 +40,11 @@ const MODEL_KEY_OVERRIDES: Record<string, string> = {
   "AW-SP-12000 (IP 66)": "AW-SP-12000-IP66",
 };
 
-/** matches deriveModelKey() in app/components/ims/pages.tsx (plus MODEL_KEY_OVERRIDES above) — keep in sync so an entry created here lines up with one the "Add Entry" UI would generate for the same product. */
 function deriveModelKey(modelNo: string): string {
   const trimmed = modelNo.trim();
   return MODEL_KEY_OVERRIDES[trimmed] ?? trimmed.replace(/\s+/g, "-");
 }
 
-/**
- * Keyed by the product's exact `model` field (as it appears in Manage Products), per the
- * client-provided "corresponding series.xlsx" mapping between the price list and the ERP catalog.
- * Only 18 of the 26 catalog products have a known price as of this seed; the rest are left
- * unpriced (empty `prices`) until the client supplies them.
- */
 const KNOWN: Record<string, KnownPriceSeed> = {
   "AW-SP-3600": {
     srNo: 1,
@@ -163,8 +149,6 @@ async function main() {
   let updated = 0;
   let unpriced = 0;
 
-  // Drives off the live Manage Products catalog, so every product gets exactly one price
-  // entry — known prices from KNOWN, everything else left blank for the client to fill in later.
   const products = await c.products.find({}).sort({ series: 1, model: 1 }).toArray();
   let nextSrNo = Object.keys(KNOWN).length + 1;
 

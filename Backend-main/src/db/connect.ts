@@ -44,12 +44,6 @@ async function tcpPing(host: string, port: number, timeoutMs: number): Promise<v
   });
 }
 
-/**
- * Best-effort database connectivity check.
- *
- * For Mongo URLs it performs a real `ping` using the MongoDB driver.
- * For other DB URLs it only verifies host:port reachability (TCP).
- */
 export async function connectDatabase(): Promise<DbConnectResult> {
   const raw = CONFIG.DATABASE_URL;
   if (!raw) {
@@ -63,7 +57,6 @@ export async function connectDatabase(): Promise<DbConnectResult> {
     return { connected: false, message: "Invalid DATABASE_URL (must be a valid URL)" };
   }
 
-  // Prefer a real driver ping when using Mongo URLs.
   if (url.protocol === "mongodb:" || url.protocol === "mongodb+srv:") {
     try {
       const db = await getMongoDb();

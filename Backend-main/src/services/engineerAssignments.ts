@@ -284,7 +284,6 @@ export async function parseEngineerAssignmentWorkbook(filePath: string): Promise
     try {
       fs.unlinkSync(tempPath);
     } catch {
-      // ignore
     }
   }
 }
@@ -413,11 +412,6 @@ export async function findEngineerMasterForUser(user: { email?: string; name?: s
   return null;
 }
 
-/**
- * An L2 engineer's "team" is derived from the State/District Engineer Assignment
- * mapping: every L1 (primary or backup) whose district lists this L2 as the
- * district's L2 contact. There is no separate manager/reportsTo field in the app.
- */
 export async function listL1TeamForL2(user: { email?: string; name?: string }): Promise<EngineerMasterRecord[]> {
   const c = await getCollections();
   const l2Master = await findEngineerMasterForUser(user, "L2");
@@ -480,14 +474,11 @@ export async function listEngineerAssignments(params: { q?: string; state?: stri
   return { data, total, page, limit };
 }
 
-/** Maps a live user account's role (from Manage User Profiles) to the engineer role used by the assignment module. */
 const USER_ROLE_TO_ENGINEER_ROLE: Record<string, EngineerRole> = {
   "L1 Engineer": "L1",
   "L2 Technical Team": "L2",
 };
 
-/** Live, active L1/L2 user accounts (not the freeform engineerMasters registry), keyed the same
- * way assignment rows reference engineers so staleness can be checked by id. */
 async function listActiveEngineers() {
   const c = await getCollections();
   const activeUsers = await c.users
@@ -531,11 +522,6 @@ export async function listEngineerAssignmentOptions() {
   };
 }
 
-/**
- * Deletes assignment rows whose L1 or L2 engineer no longer maps to an active account (routing
- * would be broken for that district anyway), and clears just the backup field when only the
- * backup engineer has gone stale (L1/L2 still work, so the row is kept).
- */
 export async function cleanupStaleEngineerAssignments(actor?: AuthUser) {
   const c = await getCollections();
   const [assignments, activeEngineers] = await Promise.all([
@@ -589,9 +575,6 @@ export async function cleanupStaleEngineerAssignments(actor?: AuthUser) {
     }
   }
 
-  // Permanently delete engineerMasters rows that no remaining assignment references and that
-  // don't correspond to a currently active account — these are the ghost names (like old,
-  // deleted engineers) that used to silently come back on every server restart.
   const remainingAssignments = await c.engineerAssignments.find({}).toArray();
   const referencedIds = new Set<string>();
   for (const assignment of remainingAssignments) {

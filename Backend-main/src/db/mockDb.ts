@@ -14,7 +14,6 @@ import type {
   UserRole,
 } from "../types";
 
-// NOTE: In production, replace these arrays with actual DB calls (Prisma/Postgres/etc).
 export const db = {
   users: [
     {

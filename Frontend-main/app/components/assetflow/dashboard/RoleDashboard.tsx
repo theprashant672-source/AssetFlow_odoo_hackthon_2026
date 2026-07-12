@@ -33,45 +33,20 @@ const sharedAssets = [
   },
 ];
 
-const founderMetrics = [
-  { label: "Total Departments", value: "18", delta: "+2 this month", tone: "violet" as const },
-  { label: "Total Employees", value: "3,214", delta: "+84 this month", tone: "sky" as const },
-  { label: "Total Assets", value: "12,480", delta: "+8.4% growth", tone: "emerald" as const },
-  { label: "Revenue Saved", value: "₹18.4L", delta: "+12% efficiency", tone: "amber" as const },
-];
-
-const adminMetrics = [
-  { label: "Departments", value: "18", delta: "+2 live", tone: "violet" as const },
-  { label: "Employees", value: "3,214", delta: "+84 onboarded", tone: "sky" as const },
-  { label: "Assets", value: "12,480", delta: "+8.4% tracked", tone: "emerald" as const },
-  { label: "Maintenance", value: "17", delta: "Pending review", tone: "amber" as const },
-];
-
-const headMetrics = [
-  { label: "Department Assets", value: "1,248", delta: "+32 added", tone: "violet" as const },
-  { label: "Department Employees", value: "164", delta: "+8 active", tone: "sky" as const },
-  { label: "Pending Requests", value: "21", delta: "Needs approval", tone: "amber" as const },
-  { label: "Upcoming Bookings", value: "9", delta: "This week", tone: "emerald" as const },
-];
-
-const managerMetrics = [
-  { label: "Managed Assets", value: "842", delta: "+18 transfers", tone: "violet" as const },
-  { label: "Transfers", value: "24", delta: "In transit", tone: "sky" as const },
-  { label: "Maintenance", value: "11", delta: "Assigned", tone: "amber" as const },
-  { label: "Pending Returns", value: "14", delta: "Due today", tone: "emerald" as const },
-];
-
-const employeeMetrics = [
-  { label: "Assigned Assets", value: "6", delta: "3 due soon", tone: "violet" as const },
-  { label: "Upcoming Bookings", value: "2", delta: "This week", tone: "sky" as const },
-  { label: "Maintenance Requests", value: "1", delta: "Awaiting", tone: "amber" as const },
-  { label: "Notifications", value: "8", delta: "Unread", tone: "emerald" as const },
+const operationalMetrics = [
+  { label: "Assets Available", value: "6,420", delta: "+120 ready", tone: "emerald" as const },
+  { label: "Assets Allocated", value: "4,210", delta: "+45 assigned", tone: "violet" as const },
+  { label: "Active Bookings", value: "34", delta: "12 ongoing", tone: "sky" as const },
+  { label: "Pending Transfers", value: "18", delta: "In transit", tone: "violet" as const },
+  { label: "Maintenance Today", value: "12", delta: "4 urgent", tone: "amber" as const },
+  { label: "Upcoming Returns", value: "24", delta: "Due this week", tone: "sky" as const },
+  { label: "Overdue Returns", value: "7", delta: "Requires action", tone: "rose" as const },
 ];
 
 const roleContent: Record<AssetFlowRole, {
   title: string;
   subtitle: string;
-  metrics: typeof founderMetrics;
+  metrics: typeof operationalMetrics;
   activities: Array<{ title: string; description: string; time: string; tone: string }>;
   statusSeries: Array<{ label: string; value: number; color: string }>;
   departmentSeries: Array<{ label: string; value: number; color: string }>;
@@ -79,7 +54,7 @@ const roleContent: Record<AssetFlowRole, {
   founder: {
     title: "Organization Overview",
     subtitle: "Command view for company-wide governance, assets, and operational health.",
-    metrics: founderMetrics,
+    metrics: operationalMetrics,
     activities: [
       { title: "New department created", description: "Product Growth was added under the corporate hierarchy.", time: "4m ago", tone: "bg-[#9A528D]" },
       { title: "Policy update approved", description: "Access rules were updated for asset custody and audit cycles.", time: "26m ago", tone: "bg-odoo-500" },
@@ -102,7 +77,7 @@ const roleContent: Record<AssetFlowRole, {
   admin: {
     title: "Admin Control Center",
     subtitle: "Monitor departments, employees, assets, and operational alerts in one workspace.",
-    metrics: adminMetrics,
+    metrics: operationalMetrics,
     activities: [
       { title: "Department approval pending", description: "Finance and Procurement are waiting for admin sign-off.", time: "8m ago", tone: "bg-[#9A528D]" },
       { title: "Asset registration completed", description: "12 new devices were added to the company inventory.", time: "31m ago", tone: "bg-odoo-500" },
@@ -125,7 +100,7 @@ const roleContent: Record<AssetFlowRole, {
   head: {
     title: "Department Command View",
     subtitle: "Keep track of your department's assets, people, requests, and bookings.",
-    metrics: headMetrics,
+    metrics: operationalMetrics,
     activities: [
       { title: "Approval waiting on head", description: "A laptop allocation request needs your review.", time: "6m ago", tone: "bg-[#9A528D]" },
       { title: "Upcoming booking", description: "Conference Room B is reserved tomorrow at 11:00 AM.", time: "18m ago", tone: "bg-odoo-500" },
@@ -146,7 +121,7 @@ const roleContent: Record<AssetFlowRole, {
   manager: {
     title: "Asset Operations Board",
     subtitle: "Handle transfers, maintenance, and asset allocation with clear operational focus.",
-    metrics: managerMetrics,
+    metrics: operationalMetrics,
     activities: [
       { title: "Transfer request raised", description: "Three laptops are moving from HQ to field sales.", time: "11m ago", tone: "bg-[#9A528D]" },
       { title: "Maintenance assigned", description: "IT support has accepted two repair tickets.", time: "25m ago", tone: "bg-odoo-500" },
@@ -167,7 +142,7 @@ const roleContent: Record<AssetFlowRole, {
   employee: {
     title: "My Workspace",
     subtitle: "See assigned assets, bookings, notifications, and maintenance requests.",
-    metrics: employeeMetrics,
+    metrics: operationalMetrics,
     activities: [
       { title: "Laptop assigned", description: "Your primary work laptop is now active in inventory.", time: "15m ago", tone: "bg-[#9A528D]" },
       { title: "Meeting room booked", description: "Conference Room C is reserved for your team sync.", time: "2h ago", tone: "bg-odoo-500" },
@@ -192,6 +167,28 @@ export default function RoleDashboard({ role }: { role: AssetFlowRole }) {
 
   return (
     <div className="grid gap-6">
+      <div className="grid gap-4 md:grid-cols-3 mb-6">
+        <button className="flex items-center justify-center gap-2 rounded-xl bg-[#5b3df5] px-4 py-3 font-semibold text-white shadow-sm hover:bg-[#4b30d6] transition-colors">
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+          </svg>
+          Register Asset
+        </button>
+        <button className="flex items-center justify-center gap-2 rounded-xl bg-sky-500 px-4 py-3 font-semibold text-white shadow-sm hover:bg-sky-600 transition-colors">
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
+          </svg>
+          Book Resource
+        </button>
+        <button className="flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-3 font-semibold text-white shadow-sm hover:bg-amber-600 transition-colors">
+          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
+            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+          Raise Maintenance Request
+        </button>
+      </div>
+
       <SectionPanel title={config.title} subtitle={config.subtitle}>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {config.metrics.map((metric) => (

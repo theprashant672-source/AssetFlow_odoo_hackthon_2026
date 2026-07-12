@@ -178,9 +178,6 @@ export async function initDatabase() {
   await ensureIndex(c.inwardMaster, { batch: 1 });
   await ensureIndex(c.inwardItemDetails, { inwardId: 1 });
 
-  // Remove any pre-existing complaint serial index before we normalize old rows.
-  // Otherwise the cleanup writes can trip the unique constraint before we get a
-  // chance to repair the collection.
   await dropIndexIfExists(c.complaints, { productSerialNoKey: 1 });
 
   const complaintsWithSerial = await c.complaints
@@ -222,7 +219,6 @@ export async function initDatabase() {
     }
   }
 
-  // Seed system roles (insert-only; never overwrite admin customizations).
   const now = new Date();
   for (const name of Object.keys(DEFAULT_ROLE_PERMISSIONS) as SystemRoleName[]) {
     const permissions = DEFAULT_ROLE_PERMISSIONS[name];

@@ -35,7 +35,6 @@ function loadEnvFileIfPresent(filePath: string, options: { override?: boolean } 
       if (options.override || process.env[k] === undefined) process.env[k] = v;
     }
   } catch {
-    // Best-effort: if env can't be loaded, fall back to process.env defaults.
   }
 }
 
@@ -86,8 +85,6 @@ function bool(name: string, fallback: boolean): boolean {
 function corsOriginsFromEnv(raw: string | undefined): string | string[] | boolean {
   const normalize = (origin: string) => origin.trim().replace(/\/+$/, "");
   const value = (raw ?? "").trim();
-  // If not configured, be permissive on Vercel to avoid "Failed to fetch" due to CORS.
-  // For local dev, keep localhost-only by default.
   if (!value) return process.env.VERCEL ? true : "http://localhost:3000";
   if (value === "*") return true;
   if (value.includes(",")) return value.split(",").map(normalize).filter(Boolean);
@@ -96,8 +93,6 @@ function corsOriginsFromEnv(raw: string | undefined): string | string[] | boolea
 
 const isServerless = Boolean(process.env.VERCEL);
 
-// Vercel (and most serverless platforms) has a read-only filesystem, except `/tmp`.
-// Any disk uploads must go to `/tmp` or an external object store.
 const uploadDirRaw = process.env.UPLOAD_DIR?.trim() || (isServerless ? "/tmp/uploads" : "uploads");
 const uploadDirAbs = path.isAbsolute(uploadDirRaw)
   ? uploadDirRaw
@@ -107,20 +102,15 @@ const uploadDirAbs = path.isAbsolute(uploadDirRaw)
 try {
   fs.mkdirSync(uploadDirAbs, { recursive: true });
 } catch {
-  // ignore
 }
 
 export const CONFIG = {
   PORT: num("PORT", 5000),
-  // Use either DATABASE_URL (generic) or MONGODB_URI (common name for Mongo).
   DATABASE_URL: (process.env.DATABASE_URL?.trim() || process.env.MONGODB_URI?.trim() || ""),
   MONGODB_URI: process.env.MONGODB_URI?.trim() || "",
   MONGODB_DB_NAME: process.env.MONGODB_DB_NAME?.trim() || "",
   DB_CONNECT_TIMEOUT_MS: num("DB_CONNECT_TIMEOUT_MS", 5000),
   SEED_DB: bool("SEED_DB", false),
-  // Optional Mongo TLS knobs (useful for finicky managed DBs / proxies).
-  // `secureProtocol` is supported by the MongoDB Node driver (unlike min/max TLS version).
-  // Example: TLSv1_2_method
   MONGODB_TLS_SECURE_PROTOCOL: process.env.MONGODB_TLS_SECURE_PROTOCOL?.trim() || "",
   MONGODB_TLS_INSECURE: bool("MONGODB_TLS_INSECURE", false),
   MONGODB_TLS_ALLOW_INVALID_CERTS: bool("MONGODB_TLS_ALLOW_INVALID_CERTS", false),

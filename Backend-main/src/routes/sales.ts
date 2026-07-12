@@ -219,7 +219,6 @@ function runPiUpload(req: Request, res: Response, next: NextFunction) {
   });
 }
 
-/** GET /api/sales */
 router.get("/", authenticate, requireAnyPermission("sales:entry", "dispatch:manage", "accounts:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const user = (req as any).user as AuthUser;
@@ -241,10 +240,6 @@ router.get("/", authenticate, requireAnyPermission("sales:entry", "dispatch:mana
   return ok(res, { data, total, page: p, limit: l });
 });
 
-/** PUT /api/sales/:id — edit a sale's full record: customer (including that customer's own
- * master-data fields), document type, reference no, sale date, and the sold serial/product.
- * Changing the serial reconciles inventory: the old serial is released back to stock and the
- * new one is marked Sold, mirroring what happens at sale creation. */
 router.put("/:id", authenticate, requireAnyPermission("sales:entry", "dispatch:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const { id } = req.params;
@@ -560,7 +555,6 @@ router.post("/:id/approve-force-pi", authenticate, authorize("Admin"), async (re
   return ok(res, approved);
 });
 
-/** POST /api/sales/upload-docket â€” upload courier docket file to Cloudinary */
 router.post(
   "/upload-docket",
   authenticate,
@@ -593,7 +587,6 @@ router.post(
   }
 );
 
-/** POST /api/sales/upload-pi â€” upload PI file to Cloudinary */
 router.post(
   "/upload-pi",
   authenticate,
@@ -845,7 +838,6 @@ router.put("/:id/dispatch-team", authenticate, requireAnyPermission("dispatch:ma
   }
   let allSerials: string[] = [];
   if (piItems && Array.isArray(piItems)) {
-    // Validate each item
     for (const item of piItems) {
       if (item.serialNumbers && Array.isArray(item.serialNumbers)) {
         const serials = item.serialNumbers.map((s: any) => normalizeSerialNumber(s)).filter(Boolean);
@@ -857,7 +849,6 @@ router.put("/:id/dispatch-team", authenticate, requireAnyPermission("dispatch:ma
       }
     }
     
-    // Check for duplicates
     const uniqueSerials = new Set(allSerials);
     if (uniqueSerials.size !== allSerials.length) {
       return fail(res, "Duplicate serial numbers selected");
@@ -999,11 +990,6 @@ router.put("/:id/dispatch-team", authenticate, requireAnyPermission("dispatch:ma
   return ok(res, updated);
 });
 
-/**
- * POST /api/sales
- * Records a sales workflow entry. If serialNumber is supplied, also marks
- * the manufactured product as Sold for backward-compatible serial sales.
- */
 router.post("/", authenticate, requireAnyPermission("sales:entry", "dispatch:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const {
@@ -1207,7 +1193,6 @@ router.post("/", authenticate, requireAnyPermission("sales:entry", "dispatch:man
   if (paymentStatus && !isWorkflowEntry) sale.paymentStatus = paymentStatus;
   await c.sales.insertOne(sale);
 
-  // Best-effort notification (never fail the main operation).
   const notificationTitle = sale.forcePiApprovalStatus === "Pending"
     ? inventoryStatus === "Insufficient"
       ? "Stock Approval Request"

@@ -2,7 +2,7 @@
 
 import { useMemo, useState } from "react";
 import {
-  registerAsset, updateAssetStatus, assetHolderLabel, currentUserEmail, findEmployee,
+  registerAsset, allocateAsset, updateAssetStatus, assetHolderLabel, currentUserEmail, findEmployee,
   type Asset, type AssetStatus,
 } from "@/app/lib/store";
 import { useDB, Panel, Button, Field, inputCls, Table, EmptyRow, StatusBadge, Badge, fmtDate, fmtDateTime } from "./shared";
@@ -51,12 +51,12 @@ export default function AssetsModule({ canRegister = true, scope = "all" }: {
         <div className="flex items-center gap-2.5">
           <Metric label="Available" value={availableCount} tone="text-emerald-700" />
           <Metric label="Allocated" value={allocatedCount} tone="text-odoo-700" />
-          {canRegister && scope === "all" && (
+          {(canRegister || scope === "mine") && (
             <Button onClick={() => setShowForm((s) => !s)}>{showForm ? "Close" : "Register asset"}</Button>
           )}
         </div>
       </section>
-      {showForm && canRegister && <RegisterForm onDone={() => setShowForm(false)} />}
+      {showForm && (canRegister || scope === "mine") && <RegisterForm scope={scope} onDone={() => setShowForm(false)} />}
 
       <Panel
         title={scope === "mine" ? "My assets" : "Asset directory"}
@@ -119,8 +119,9 @@ function Metric({ label, value, tone }: { label: string; value: number; tone: st
   );
 }
 
-function RegisterForm({ onDone }: { onDone: () => void }) {
+function RegisterForm({ onDone, scope }: { onDone: () => void; scope?: "all" | "mine" }) {
   const db = useDB();
+  const me = currentUserEmail();
   const [form, setForm] = useState({
     name: "", categoryId: db.categories[0]?.id ?? "", serialNumber: "",
     acquisitionDate: new Date().toISOString().slice(0, 10),
@@ -134,7 +135,7 @@ function RegisterForm({ onDone }: { onDone: () => void }) {
       setErr("Name, serial number and location are required.");
       return;
     }
-    registerAsset(
+    const assetId = registerAsset(
       {
         name: form.name.trim(),
         categoryId: form.categoryId,
@@ -145,8 +146,13 @@ function RegisterForm({ onDone }: { onDone: () => void }) {
         location: form.location.trim(),
         bookable: form.bookable,
       },
-      currentUserEmail()
+      me
     );
+    
+    if (scope === "mine") {
+      allocateAsset(assetId, { holderEmail: me }, undefined, me);
+    }
+    
     onDone();
   };
 

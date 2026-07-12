@@ -8,10 +8,6 @@ import { db as mockDb } from "../db/mockDb";
 import type { AuthUser, JwtPayload, Permission, RoleName } from "../types";
 import { fail } from "../utils/http";
 
-/**
- * Attach decoded JWT to `req.user`.
- * Protected routes call this before their handler.
- */
 const rolePermCache = new Map<string, { perms: Permission[]; expiresAt: number }>();
 async function tryGetCollections(): Promise<Collections | null> {
   try {
@@ -62,10 +58,6 @@ export async function authenticate(req: Request, res: Response, next: NextFuncti
   }
 }
 
-/**
- * Allow only the specified roles to proceed (canonical role names).
- * Prefer `requireAnyPermission` for feature-level RBAC.
- */
 export function authorize(...roles: RoleName[]) {
   return (req: Request, res: Response, next: NextFunction) => {
     const user = (req as any).user as AuthUser | JwtPayload;
@@ -76,9 +68,6 @@ export function authorize(...roles: RoleName[]) {
   };
 }
 
-/**
- * Allow if user has at least one of the specified permissions.
- */
 export function requireAnyPermission(...permissions: Permission[]) {
   return (req: Request, res: Response, next: NextFunction) => {
     const user = (req as any).user as AuthUser | undefined;

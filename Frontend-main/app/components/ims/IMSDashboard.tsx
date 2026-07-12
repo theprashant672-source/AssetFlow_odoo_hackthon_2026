@@ -52,7 +52,6 @@ const PAGE_PERMISSIONS: Record<string, string | string[] | undefined> = {
   "sales-distributor": "sales:entry",
   "sales-pi": "sales:entry",
   "sales-dispatch": "sales:entry",
-  // "sales-tax": "sales:entry",
   "dispatch-team": "dispatch:manage",
   "accounts-team": "accounts:manage",
   "complaints-consumer": "complaints:consumer",
@@ -120,7 +119,6 @@ export default function IMSDashboard({ user, onLogout }: { user: User; onLogout:
       const first = visibleNav.find((i) => i.id)?.id ?? "dashboard";
       setPage(first);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [page, user?.role, (user?.permissions ?? []).join("|")]);
 
   useEffect(() => {
@@ -170,7 +168,6 @@ export default function IMSDashboard({ user, onLogout }: { user: User; onLogout:
       case "sales-distributor": return <SalesPage initialTab="distributor" currentUser={user} />;
       case "sales-pi": return <SalesPage initialTab="pi" currentUser={user} />;
       case "sales-dispatch": return <SalesPage initialTab="dispatch" currentUser={user} />;
-      // case "sales-tax": return <SalesPage initialTab="tax" currentUser={user} />;
       case "dispatch-team": return <DispatchTeamPage />;
       case "accounts-team": return <AccountsTeamPage />;
       case "complaints-consumer": return <ComplaintsConsumerPage currentUser={user} />;
@@ -190,7 +187,7 @@ export default function IMSDashboard({ user, onLogout }: { user: User; onLogout:
         />
       )}
 
-      {/* Mobile overlay */}
+      
       {!isDesktop && sidebarOpen && (
         <button
           type="button"
@@ -200,7 +197,7 @@ export default function IMSDashboard({ user, onLogout }: { user: User; onLogout:
         />
       )}
 
-      {/* Sidebar */}
+      
       <aside
         className={
           isDesktop
@@ -251,7 +248,7 @@ export default function IMSDashboard({ user, onLogout }: { user: User; onLogout:
           })}
         </nav>
         <div className="border-t border-gray-100 px-4 py-3">
-          {/* User info in sidebar */}
+          
           <div className="flex items-center gap-2.5 px-3 py-2 mb-1 rounded-lg bg-gray-50 border border-gray-100">
             <div className="w-7 h-7 rounded-full bg-gradient-to-br from-amber-400 to-orange-500 flex items-center justify-center text-white font-black text-xs">
               {displayNameForUser(user)?.[0]}
@@ -270,7 +267,7 @@ export default function IMSDashboard({ user, onLogout }: { user: User; onLogout:
         </div>
       </aside>
 
-      {/* Main */}
+      
       <div className="flex-1 flex flex-col min-w-0">
         <header className="h-14 flex items-center px-3 sm:px-5 border-b border-gray-200 bg-white flex-shrink-0 gap-2 sm:gap-4 shadow-sm">
           <button

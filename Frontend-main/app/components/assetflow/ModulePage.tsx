@@ -5,10 +5,12 @@ export default function ModulePage({
   title,
   subtitle,
   backHref = "/dashboard",
+  actionLabel,
 }: {
   title: string;
   subtitle: string;
   backHref?: string;
+  actionLabel?: string;
 }) {
   return (
     <section className="glass-panel soft-shadow rounded-[2rem] p-6 sm:p-8">
@@ -24,10 +26,18 @@ export default function ModulePage({
           <h1 className="mt-5 text-3xl font-black tracking-tight text-slate-900">{title}</h1>
           <p className="mt-3 max-w-2xl text-sm leading-7 text-slate-600">{subtitle}</p>
         </div>
-        <button className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#9A528D] px-4 py-3 text-sm font-bold text-white shadow-[0_18px_30px_rgba(154,82,141,0.26)] transition hover:brightness-110">
-          <IconPlus size={16} />
-          Create entry
-        </button>
+        <div className="flex items-center gap-3">
+          <button className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#9A528D] px-4 py-3 text-sm font-bold text-white shadow-[0_18px_30px_rgba(154,82,141,0.26)] transition hover:brightness-110">
+            <IconPlus size={16} />
+            Create entry
+          </button>
+          {actionLabel && (
+            <button className="inline-flex items-center justify-center gap-2 rounded-2xl bg-[#5b3df5] px-4 py-3 text-sm font-bold text-white shadow-[0_18px_30px_rgba(91,61,245,0.26)] transition hover:brightness-110">
+              <IconPlus size={16} />
+              {actionLabel}
+            </button>
+          )}
+        </div>
       </div>
 
       <div className="mt-8 grid gap-4 lg:grid-cols-3">

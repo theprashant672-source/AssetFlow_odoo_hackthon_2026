@@ -9,7 +9,7 @@ export default function StatCard({
   label: string;
   value: string;
   delta: string;
-  tone: "violet" | "sky" | "emerald" | "amber";
+  tone: "violet" | "sky" | "emerald" | "amber" | "rose";
 }) {
   const toneClass =
     tone === "violet"
@@ -18,14 +18,18 @@ export default function StatCard({
         ? "from-odoo-500 to-odoo-500"
         : tone === "emerald"
           ? "from-emerald-500 to-lime-500"
-          : "from-amber-500 to-orange-500";
+          : tone === "rose"
+            ? "from-rose-500 to-red-500"
+            : "from-amber-500 to-orange-500";
 
   return (
     <div className="rounded-[1.5rem] border border-slate-200 bg-white/90 p-4 shadow-sm">
       <div className={`mb-4 h-2 w-16 rounded-full bg-gradient-to-r ${toneClass}`} />
       <div className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">{label}</div>
       <div className="mt-2 text-2xl font-black tracking-tight text-slate-900">{value}</div>
-      <div className="mt-3 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2.5 py-1 text-xs font-semibold text-emerald-700">
+      <div className={`mt-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
+        tone === "rose" ? "bg-rose-50 text-rose-700" : "bg-emerald-50 text-emerald-700"
+      }`}>
         <IconArrowUpRight size={13} />
         {delta}
       </div>

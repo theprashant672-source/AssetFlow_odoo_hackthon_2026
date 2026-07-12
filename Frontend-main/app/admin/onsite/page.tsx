@@ -22,7 +22,6 @@ function makeEmptyForm(): OnsiteFormData {
 }
 
 export default function OnsitePage() {
-  /* ── Auth ── */
   const [user, setUser] = useState<AuthUser | null>(null);
   const [booting, setBooting] = useState(true);
 
@@ -34,7 +33,6 @@ export default function OnsitePage() {
       .finally(() => setBooting(false));
   }, []);
 
-  /* ── Tickets ── */
   const [tickets, setTickets] = useState<Complaint[]>([]);
   const [loadingTickets, setLoadingTickets] = useState(false);
 
@@ -42,11 +40,9 @@ export default function OnsitePage() {
     setLoadingTickets(true);
     try {
       const res = await listComplaints({ type: "Consumer" });
-      // Show only onsite tickets (siteVisitRequired === true)
       const onsite = res.data.filter((c) => c.siteVisitRequired === true);
       setTickets(onsite);
     } catch {
-      // ignore
     } finally {
       setLoadingTickets(false);
     }
@@ -56,7 +52,6 @@ export default function OnsitePage() {
     if (user) fetchTickets();
   }, [user, fetchTickets]);
 
-  /* ── Selected ticket ── */
   const [selected, setSelected] = useState<Complaint | null>(null);
   const [form, setForm] = useState<OnsiteFormData>(makeEmptyForm);
   const [escalationReason, setEscalationReason] = useState("");
@@ -74,7 +69,6 @@ export default function OnsitePage() {
     setFormError("");
   };
 
-  /* ── Image Upload ── */
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState("");
 
@@ -110,7 +104,6 @@ export default function OnsitePage() {
     }));
   };
 
-  /* ── Save ── */
   const [saving, setSaving] = useState(false);
   const [formOk, setFormOk] = useState("");
   const [formError, setFormError] = useState("");
@@ -171,7 +164,6 @@ export default function OnsitePage() {
     }
   };
 
-  /* ── Loading / Auth guard ── */
   if (booting) {
     return (
       <div style={styles.center}>
@@ -192,10 +184,9 @@ export default function OnsitePage() {
     );
   }
 
-  /* ── Render ── */
   return (
     <div style={styles.page}>
-      {/* Header */}
+      
       <header style={styles.header}>
         <div style={styles.headerInner}>
           <div style={{ display: "flex", alignItems: "center", gap: 12 }}>
@@ -214,7 +205,7 @@ export default function OnsitePage() {
       </header>
 
       <main style={styles.main}>
-        {/* ── Left: Ticket List ── */}
+        
         <section style={styles.sidebar}>
           <div style={styles.sidebarHeader}>
             <h2 style={styles.sidebarTitle}>Onsite Tickets</h2>
@@ -255,7 +246,7 @@ export default function OnsitePage() {
           </div>
         </section>
 
-        {/* ── Right: Onsite Form ── */}
+        
         <section style={styles.formArea}>
           {!selected ? (
             <div style={styles.placeholder}>
@@ -265,7 +256,7 @@ export default function OnsitePage() {
             </div>
           ) : (
             <div style={styles.formCard}>
-              {/* Ticket Info Bar */}
+              
               <div style={styles.ticketInfoBar}>
                 <div>
                   <div style={styles.infoLabel}>Serial</div>
@@ -285,7 +276,7 @@ export default function OnsitePage() {
                 </div>
               </div>
 
-              {/* ── Inverter Pictures ── */}
+              
               <div style={styles.section}>
                 <div style={styles.sectionHeader}>
                   <div>
@@ -337,7 +328,7 @@ export default function OnsitePage() {
                 )}
               </div>
 
-              {/* ── Observation Notes ── */}
+              
               <div style={styles.section}>
                 <h3 style={styles.sectionTitle}>📝 Engineer Observation Notes</h3>
                 <p style={styles.sectionSub}>Record your onsite visit observations here.</p>
@@ -350,7 +341,7 @@ export default function OnsitePage() {
                 />
               </div>
 
-              {/* ── Save ── */}
+              
               {formOk && <div style={styles.successMsg}>{formOk}</div>}
               {formError && <div style={styles.errorMsg}>{formError}</div>}
 
@@ -408,7 +399,6 @@ export default function OnsitePage() {
   );
 }
 
-/* ── Styles ── */
 const styles: Record<string, React.CSSProperties> = {
   center: {
     minHeight: "100vh",
@@ -438,14 +428,12 @@ const styles: Record<string, React.CSSProperties> = {
   cardSub: { color: "rgba(255,255,255,0.6)", fontSize: 14 },
   link: { color: "#f59e0b", textDecoration: "underline" },
 
-  /* Page */
   page: {
     minHeight: "100vh",
     background: "#f1f5f9",
     fontFamily: "'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif",
   },
 
-  /* Header */
   header: {
     background: "linear-gradient(135deg, #1e293b 0%, #0f172a 100%)",
     borderBottom: "1px solid rgba(255,255,255,0.08)",
@@ -508,7 +496,6 @@ const styles: Record<string, React.CSSProperties> = {
     fontWeight: 600,
   },
 
-  /* Main */
   main: {
     maxWidth: 1400,
     margin: "0 auto",
@@ -518,7 +505,6 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "flex-start",
   },
 
-  /* Sidebar */
   sidebar: {
     width: 360,
     flexShrink: 0,
@@ -620,7 +606,6 @@ const styles: Record<string, React.CSSProperties> = {
     fontSize: 14,
   },
 
-  /* Form Area */
   formArea: {
     flex: 1,
     minWidth: 0,
@@ -643,7 +628,6 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#94a3b8",
   },
 
-  /* Form Card */
   formCard: {
     background: "#fff",
     borderRadius: 16,
@@ -651,7 +635,6 @@ const styles: Record<string, React.CSSProperties> = {
     padding: 24,
   },
 
-  /* Ticket Info Bar */
   ticketInfoBar: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fit, minmax(140px, 1fr))",
@@ -676,7 +659,6 @@ const styles: Record<string, React.CSSProperties> = {
     color: "#1e293b",
   },
 
-  /* Sections */
   section: {
     marginBottom: 24,
   },
@@ -700,7 +682,6 @@ const styles: Record<string, React.CSSProperties> = {
     margin: 0,
   },
 
-  /* Upload */
   uploadBtn: {
     display: "inline-flex",
     alignItems: "center",
@@ -721,7 +702,6 @@ const styles: Record<string, React.CSSProperties> = {
     cursor: "wait",
   },
 
-  /* Pictures */
   pictureGrid: {
     display: "grid",
     gridTemplateColumns: "repeat(auto-fill, minmax(180px, 1fr))",
@@ -784,7 +764,6 @@ const styles: Record<string, React.CSSProperties> = {
     gap: 8,
   },
 
-  /* Textarea */
   textarea: {
     width: "100%",
     padding: "12px 16px",
@@ -850,7 +829,6 @@ const styles: Record<string, React.CSSProperties> = {
     letterSpacing: "0.02em",
   },
 
-  /* Messages */
   successMsg: {
     background: "#f0fdf4",
     border: "1px solid #bbf7d0",
@@ -872,7 +850,6 @@ const styles: Record<string, React.CSSProperties> = {
     marginBottom: 16,
   },
 
-  /* Save Button */
   saveBtn: {
     width: "100%",
     padding: "14px 24px",

@@ -227,10 +227,6 @@ async function resolveInvoiceServiceDetails(serialNumber: string, manufactured: 
   };
 }
 
-/**
- * POST /api/customer-portal/login
- * Lightweight customer verification for QR/link support flow.
- */
 router.post("/login", async (req: Request, res: Response) => {
   const c = await getCollections();
   const serialNumber = normalizeSerial(req.body.serialNumber);
@@ -299,10 +295,6 @@ router.post("/login", async (req: Request, res: Response) => {
   });
 });
 
-/**
- * POST /api/customer-portal/complaints
- * Public customer complaint intake from mobile web / QR link.
- */
 router.post("/complaints", runCustomerPortalPictureUpload, async (req: Request, res: Response) => {
   const c = await getCollections();
   const serialNumber = normalizeSerial(req.body.serialNumber);

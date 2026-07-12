@@ -33,7 +33,6 @@ function runSerialCsvUpload(req: Request, res: Response, next: NextFunction) {
   });
 }
 
-/** GET /api/serials — filter by series, status */
 router.get("/", authenticate, requireAnyPermission("inventory:serials"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const { q = "", series, status, page = "1", limit = "20" } = req.query as Record<string, string>;
@@ -49,11 +48,6 @@ router.get("/", authenticate, requireAnyPermission("inventory:serials"), async (
   return ok(res, { data, total, page: p, limit: l });
 });
 
-/**
- * POST /api/serials/import
- * Multipart form: field "serials" = CSV file, field "productSeriesId" = series id
- * CSV format: one serial per line (first column used)
- */
 router.post(
   "/import",
   authenticate,

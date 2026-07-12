@@ -320,8 +320,6 @@ function engineerIdentityFilter(engineerId: string, engineerName?: string) {
 
 async function engineerTicketCounts(engineerId: string, engineerName?: string, excludeComplaintId?: string) {
   const c = await getCollections();
-  // Backup-overflow tickets live in the engineer's dedicated "L1 Backup" queue and must not
-  // eat into their own primary Active Work / Waiting Lobby capacity.
   const activeFilter: Record<string, unknown> = {
     ...engineerIdentityFilter(engineerId, engineerName),
     status: { $in: [...ACTIVE_TICKET_STATUSES] },
@@ -344,9 +342,6 @@ async function engineerTicketCounts(engineerId: string, engineerName?: string, e
   return { activeCount, waitingCount };
 }
 
-/** Count of tickets currently sitting in this engineer's dedicated backup queue
- * (assignmentType "Backup L1"). Uncapped — used only for the activeTicketCountAtAssignment
- * metadata, independent of the engineer's own primary Active Work / Waiting Lobby load. */
 async function backupTicketCount(engineerId: string, engineerName?: string, excludeComplaintId?: string) {
   const c = await getCollections();
   const filter: Record<string, unknown> = {
@@ -514,10 +509,6 @@ async function buildServiceAssignment(input: {
     if (!backupEngineer) {
       return { blockedMessage: ENGINEER_CAPACITY_MESSAGE };
     }
-    // Backup tickets don't split into active/waiting like primary work does, and have no
-    // capacity cap — they all land in the backup engineer's dedicated "L1 Backup" queue
-    // (solved from there only, paginated), independent of that engineer's own primary
-    // Active Work / Waiting Lobby load.
     const backupCount = await backupTicketCount(backupEngineer.id, backupEngineer.name, input.excludeComplaintId);
     return {
       region: regionConfig.name,
@@ -642,11 +633,6 @@ async function releaseNextWaitingTicket(identities: EngineerIdentity[] = [], lev
   );
 }
 
-/**
- * Like releaseNextWaitingTicket but excludes `excludeId` from the active count
- * so that exactly one slot appears free for the promotion check. Used after
- * manually starting SLA on a ticket so the active lobby auto-tops up to 5.
- */
 async function releaseNextWaitingTicketExcluding(identities: EngineerIdentity[] = [], level?: ServiceLevel, excludeId?: string) {
   const c = await getCollections();
   const filter: Record<string, unknown> = { assignmentStatus: "Waiting", status: "Waiting Lobby" };
@@ -656,7 +642,6 @@ async function releaseNextWaitingTicketExcluding(identities: EngineerIdentity[] 
     filter.$or = identityFilter;
   }
 
-  // Promote at most one ticket (the SLA-start freed one slot).
   const waiting = sortWaitingLobbyTickets(await c.complaints.find(filter).toArray());
   if (!waiting.length) return;
   const next = waiting[0];
@@ -687,7 +672,6 @@ async function releaseNextWaitingTicketExcluding(identities: EngineerIdentity[] 
     );
   }
 
-  // Renumber remaining waiting tickets.
   const remaining = sortWaitingLobbyTickets(await c.complaints.find(filter).toArray());
   await Promise.all(
     remaining.map((complaint, index) => c.complaints.updateOne(
@@ -742,8 +726,6 @@ async function rebalanceL1Queue() {
       type: "Consumer",
       status: { $in: ACTIVE_ENGINEER_STATUSES },
       $or: [{ escalationLevel: "L1" }, { escalationLevel: { $exists: false } }],
-      // Backup-overflow tickets live in their own uncapped dedicated queue — don't let
-      // this primary-capacity sweep demote them.
       assignmentType: { $ne: "Backup L1" },
     })
     .toArray();
@@ -795,13 +777,6 @@ async function rebalanceL1Queue() {
 
 let queueRebalanceInFlight: Promise<void> | null = null;
 
-/**
- * rebalanceL1Queue/rebalanceWaitingLobby each do a full, sequential sweep of the
- * collection. GET /api/complaints runs this on every call, so closing several
- * tickets in quick succession (each triggering its own reload) used to fire that
- * many overlapping full sweeps concurrently, slowing/timing out the backend.
- * Collapse concurrent callers onto a single in-flight sweep instead.
- */
 async function runQueueRebalance(): Promise<void> {
   if (!queueRebalanceInFlight) {
     queueRebalanceInFlight = (async () => {
@@ -826,10 +801,6 @@ function requireComplaintTypeAccess(user: AuthUser, type: string): boolean {
 
 async function complaintRoleScope(user: AuthUser): Promise<Record<string, unknown> | null> {
   if (user.role === "L1 Engineer") {
-    // Assignment/reassignment always writes assignedEngineerId from the engineerMasters
-    // directory (see buildServiceAssignment), never the real auth user id, and
-    // assignedEngineerName is only reliable if it matches user.name byte-for-byte. Resolve
-    // this engineer's own directory record so directory-id matching also works.
     const ownMaster = await findEngineerMasterForUser(user, "L1");
     return {
       $or: [
@@ -938,7 +909,6 @@ async function canAccessComplaint(user: AuthUser, complaint: Complaint): Promise
   return true;
 }
 
-/** GET /api/complaints — filter by type, status */
 router.get("/", authenticate, requireAnyPermission("complaints:consumer", "complaints:supplier", "dispatch:manage"), async (req: Request, res: Response) => {
   try {
     const c = await getCollections();
@@ -975,7 +945,6 @@ router.get("/", authenticate, requireAnyPermission("complaints:consumer", "compl
   }
 });
 
-/** GET /api/complaints/stats — for donut chart */
 router.get("/stats", authenticate, requireAnyPermission("complaints:consumer", "complaints:supplier"), async (_req: Request, res: Response) => {
   const c = await getCollections();
   const statuses: Complaint["status"][] = [
@@ -1001,13 +970,11 @@ router.get("/stats", authenticate, requireAnyPermission("complaints:consumer", "
   return ok(res, stats);
 });
 
-/** GET /api/complaints/service-engineers — active L1/L2/L3 engineer accounts */
 router.get("/service-engineers", authenticate, requireAnyPermission("complaints:consumer", "complaints:supplier"), async (_req: Request, res: Response) => {
   const engineers = await serviceEngineers();
   return ok(res, engineers);
 });
 
-/** GET /api/complaints/my-l1-team — L1 engineers reporting to the current L2 engineer (via district mapping) */
 router.get("/my-l1-team", authenticate, requireAnyPermission("complaints:consumer", "complaints:supplier"), async (req: Request, res: Response) => {
   const user = (req as any).user as AuthUser;
   if (user.role !== "L2 Technical Team") return ok(res, []);
@@ -1015,7 +982,6 @@ router.get("/my-l1-team", authenticate, requireAnyPermission("complaints:consume
   return ok(res, team.map((engineer) => ({ id: engineer.id, name: engineer.name, role: engineer.role })));
 });
 
-/** POST /api/complaints/upload-inverter-picture — upload onsite inverter picture to Cloudinary */
 router.post(
   "/upload-inverter-picture",
   authenticate,
@@ -1048,7 +1014,6 @@ router.post(
   }
 );
 
-/** POST /api/complaints — raise a consumer or supplier complaint */
 router.post("/", authenticate, requireAnyPermission("complaints:consumer", "complaints:supplier"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const {
@@ -1347,7 +1312,6 @@ router.post("/", authenticate, requireAnyPermission("complaints:consumer", "comp
   return ok(res, complaint, 201);
 });
 
-/** POST /api/complaints/:id/start-sla — manually start SLA timer */
 router.post(
   "/:id/start-sla",
   authenticate,
@@ -1358,13 +1322,11 @@ router.post(
     const complaint = await c.complaints.findOne({ id });
     if (!complaint) return fail(res, "Complaint not found", 404);
     if (complaint.slaStartedAt) return fail(res, "SLA timer has already started for this complaint.", 400);
-    // Only active-lobby tickets (assignmentStatus === "Assigned") can have SLA started.
     if (complaint.assignmentStatus === "Waiting" || complaint.status === "Waiting Lobby") {
       return fail(res, "SLA cannot be started for a Waiting Lobby ticket. It must first be promoted to Active.", 400);
     }
 
     const now = new Date();
-    // Default to L1 (4 hours) if no escalation level is found.
     const level = (complaint.escalationLevel || "L1") as "L1" | "L2" | "L3";
     const slaHours = slaHoursForLevel(level);
 
@@ -1380,10 +1342,6 @@ router.post(
       }
     );
 
-    // Auto-refill the active lobby: after SLA is started on this ticket,
-    // promote the next waiting-lobby ticket so the active queue stays at 5.
-    // We exclude this complaint from the active count so releaseNextWaitingTicket
-    // sees one free slot and promotes exactly one waiting ticket.
     await releaseNextWaitingTicketExcluding(
       [{ engineerId: complaint.assignedEngineerId, engineerName: complaint.assignedEngineerName }],
       normalizeServiceLevel(complaint.escalationLevel),
@@ -1395,7 +1353,6 @@ router.post(
   }
 );
 
-/** PUT /api/complaints/:id/status — update complaint status */
 router.put(
   "/:id/status",
   authenticate,
@@ -1454,7 +1411,6 @@ router.put(
   }
 );
 
-/** PUT /api/complaints/:id/service — update service workflow fields */
 router.put(
   "/:id/service",
   authenticate,
@@ -1652,8 +1608,6 @@ router.put(
       if (user.role === "L2 Technical Team" && level !== "L1") {
         return fail(res, "L2 engineers can only reassign tickets to L1 engineers.", 403);
       }
-      // L2 can reassign to any L1 engineer, not just the ones mapped to their own
-      // district team — the team mapping only scopes which tickets an L2 sees.
       const candidates = await serviceEngineers(level);
       const target = candidates.find((candidate) => candidate.id === requestedAssignToId);
       if (!target) return fail(res, "Selected engineer not found", 404);
@@ -1670,9 +1624,6 @@ router.put(
         district: req.body.district ?? existing.district,
         priority: req.body.priority ?? existing.priority,
         l1Sla: existing.l1Sla,
-        // Manually picking a specific engineer is an explicit override; without
-        // forceAssign, buildServiceAssignment ignores preferredEngineer* whenever a
-        // district mapping exists and silently reassigns back to the mapped engineer.
         forceAssign: true,
         preferredEngineerId: target.id,
         preferredEngineerName: target.name,
@@ -1931,9 +1882,6 @@ router.put(
     }
 
     const setDoc: Record<string, unknown> = stripUndefinedFields({ ...update });
-    // Fields explicitly set to `undefined` above (e.g. slaDueAt/slaStartedAt on a fresh
-    // reassignment) are meant to be cleared, not left untouched — $set silently ignores
-    // undefined values, so those clears must go through $unset instead.
     const unsetDoc: Record<string, ""> = {};
     for (const [key, value] of Object.entries(update)) {
       if (value === undefined) unsetDoc[key] = "";

@@ -16,10 +16,6 @@ function normalizeAssignedStates(value: unknown) {
   return Array.from(new Set(value.map((item) => String(item).trim()).filter(Boolean)));
 }
 
-/**
- * POST /api/users
- * Admin only. Create a new user account.
- */
 router.post("/", authenticate, requireAnyPermission("users:manage"), async (req: Request, res: Response) => {
   const { name, email, mobile, role, password, isActive = true, assignedStates = [] } = req.body;
   if (!name || !email || !mobile || !role || !password) {
@@ -49,10 +45,6 @@ router.post("/", authenticate, requireAnyPermission("users:manage"), async (req:
   return ok(res, safeUser, 201);
 });
 
-/**
- * GET /api/users
- * Admin only. Returns all users.
- */
 router.get("/", authenticate, requireAnyPermission("users:manage"), async (_req: Request, res: Response) => {
   const c = await getCollections();
   const users = await c.users.find({}).toArray();
@@ -60,20 +52,12 @@ router.get("/", authenticate, requireAnyPermission("users:manage"), async (_req:
   return ok(res, safe);
 });
 
-/**
- * GET /api/users/pending-registrations
- * Admin only. Returns pending registration requests.
- */
 router.get("/pending-registrations", authenticate, requireAnyPermission("users:manage"), async (_req: Request, res: Response) => {
   const c = await getCollections();
   const pending = await c.pendingRegistrations.find({}, { projection: { password: 0 } }).toArray();
   return ok(res, pending);
 });
 
-/**
- * POST /api/users/approve/:id
- * Admin only. Approves a pending registration by id.
- */
 router.post("/approve/:id", authenticate, requireAnyPermission("users:manage"), async (req: Request, res: Response) => {
   const { id } = req.params;
   const c = await getCollections();
@@ -100,10 +84,6 @@ router.post("/approve/:id", authenticate, requireAnyPermission("users:manage"), 
   return ok(res, { message: "User approved successfully", user: safeUser }, 201);
 });
 
-/**
- * PUT /api/users/:id
- * Admin only. Update user details.
- */
 router.put("/:id", authenticate, requireAnyPermission("users:manage"), async (req: Request, res: Response) => {
   const { id } = req.params;
   const { name, mobile, role, isActive, password, assignedStates } = req.body;
@@ -125,10 +105,6 @@ router.put("/:id", authenticate, requireAnyPermission("users:manage"), async (re
   return ok(res, safeUser);
 });
 
-/**
- * DELETE /api/users/:id
- * Admin only.
- */
 router.delete("/:id", authenticate, requireAnyPermission("users:manage"), async (req: Request, res: Response) => {
   const { id } = req.params;
   const c = await getCollections();

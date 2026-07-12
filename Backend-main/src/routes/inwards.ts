@@ -24,7 +24,6 @@ function normalizeInwardMode(value: unknown): InwardMode {
   return "International";
 }
 
-/** POST /api/inwards */
 router.post("/", authenticate, requireAnyPermission("inventory:raw-materials"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const { inwardMode, vendorName, dateReceived, billType, referenceNo, notes, items } = req.body;
@@ -35,7 +34,6 @@ router.post("/", authenticate, requireAnyPermission("inventory:raw-materials"), 
 
   const mode = normalizeInwardMode(inwardMode);
   
-  // Generate Counters
   const prefix = mode === "Local" ? "LOC" : "INT";
   const inwardSeq = await getNextSequenceValue(`inward_${mode.toLowerCase()}`);
   const batchSeq = await getNextSequenceValue(`batch_${mode.toLowerCase()}`);
@@ -78,7 +76,6 @@ router.post("/", authenticate, requireAnyPermission("inventory:raw-materials"), 
     };
     itemDetails.push(itemDetail);
 
-    // Repurpose raw_materials as inventory ledger
     const rawMaterial: RawMaterial = {
       id: generateId(),
       productSeriesId: item.productSeriesId,
@@ -103,7 +100,6 @@ router.post("/", authenticate, requireAnyPermission("inventory:raw-materials"), 
   await c.inwardItemDetails.insertMany(itemDetails);
   await c.rawMaterials.insertMany(rawMaterials);
 
-  // Add Notification
   try {
     const notification: Notification = {
       id: generateId(),
@@ -126,7 +122,6 @@ router.post("/", authenticate, requireAnyPermission("inventory:raw-materials"), 
   return ok(res, { ...inwardMaster, items: itemDetails }, 201);
 });
 
-/** GET /api/inwards */
 router.get("/", authenticate, requireAnyPermission("inventory:raw-materials", "complaints:supplier"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const { q = "", inwardMode, page = "1", limit = "20" } = req.query as Record<string, string>;
@@ -146,7 +141,6 @@ router.get("/", authenticate, requireAnyPermission("inventory:raw-materials", "c
   const total = await c.inwardMaster.countDocuments(filter);
   const data = await c.inwardMaster.find(filter).sort({ createdAt: -1 }).skip((p - 1) * l).limit(l).toArray();
   
-  // Aggregate items
   const dataWithItems = await Promise.all(data.map(async (inward) => {
     const items = await c.inwardItemDetails.find({ inwardId: inward.id }).toArray();
     return { ...inward, items };

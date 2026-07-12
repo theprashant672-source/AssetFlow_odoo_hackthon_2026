@@ -66,7 +66,6 @@ export async function seedDatabaseIfEmpty() {
   const usersToInsert = mockDb.users.filter((u) => !existingEmails.has(u.email.toLowerCase()));
   if (usersToInsert.length) await c.users.insertMany(usersToInsert);
 
-  // Seed minimal baseline for first-time DB only (keep non-user collections stable).
   if (initialUsersCount === 0) {
     if (mockDb.customers.length) await c.customers.insertMany(mockDb.customers);
     if (mockDb.products.length) await c.products.insertMany(mockDb.products);

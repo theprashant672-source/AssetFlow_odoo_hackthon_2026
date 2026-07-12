@@ -99,7 +99,6 @@ function buildYearlyBuckets(now = new Date()) {
   return buckets;
 }
 
-/** GET /api/dashboard/stats */
 router.get("/stats", authenticate, requireAnyPermission("dashboard:view"), async (_req: Request, res: Response) => {
   const c = await getCollections();
 
@@ -127,7 +126,6 @@ router.get("/stats", authenticate, requireAnyPermission("dashboard:view"), async
   });
 });
 
-/** GET /api/dashboard/engineer */
 router.get("/engineer", authenticate, requireAnyPermission("dashboard:view", "complaints:consumer"), async (req: Request, res: Response) => {
   const user = (req as any).user as AuthUser;
   if (!ENGINEER_ROLES.has(user.role)) {
@@ -175,7 +173,6 @@ router.get("/engineer", authenticate, requireAnyPermission("dashboard:view", "co
   });
 });
 
-/** GET /api/dashboard/timeline?months=6 */
 router.get("/timeline", authenticate, requireAnyPermission("dashboard:view"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const monthsParam = (req.query.months as string | undefined) ?? "6";

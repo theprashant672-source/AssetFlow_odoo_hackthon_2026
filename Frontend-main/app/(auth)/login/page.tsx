@@ -74,8 +74,6 @@ function setCookie(name: string, value: string) {
   document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=86400; samesite=lax`;
 }
 
-// The demo backend does not ship auth routes; fall back to local demo auth
-// when the API is missing or unreachable so the frontend stays fully usable.
 function isBackendUnavailable(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error ?? "");
   return /route not found|request failed \((404|5\d\d)\)|failed to fetch|network|unexpected response/i.test(message);
@@ -83,8 +81,6 @@ function isBackendUnavailable(error: unknown): boolean {
 
 const LOCAL_OTP_CHALLENGE = "local-demo";
 
-// The existing API demo seed uses the historic `oddo.com` domain. Keep the
-// login screen forgiving for users entering the product name as `odoo.com`.
 function apiIdentifier(identifier: string) {
   return identifier.trim().replace(/@odoo\.com$/i, "@oddo.com");
 }

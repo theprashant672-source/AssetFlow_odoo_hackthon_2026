@@ -903,7 +903,6 @@ export async function deleteProduct(id: string) {
   return apiDelete<{ message: string }>(`/api/products/${id}`);
 }
 
-/** Any Indian state/UT name — the Price Input Module can add new ones beyond the original six. */
 export type PriceStateName = string;
 
 export type PriceStatePoint = {

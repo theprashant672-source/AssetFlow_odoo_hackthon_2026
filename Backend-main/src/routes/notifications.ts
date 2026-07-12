@@ -17,17 +17,13 @@ function parseBool(v: unknown): boolean {
 function visibleToUserFilter(user: JwtPayload): Record<string, unknown> {
   return {
     $or: [
-      // Targeted notifications.
       { audienceUserIds: user.userId },
-      // Role-targeted notifications.
       { audienceRoles: { $in: roleMatchSet(user.role) } },
-      // Global notifications (no explicit audience fields).
       { $and: [{ audienceUserIds: { $exists: false } }, { audienceRoles: { $exists: false } }] },
     ],
   };
 }
 
-/** GET /api/notifications */
 router.get("/", authenticate, async (req: Request, res: Response) => {
   const c = await getCollections();
   const user = (req as any).user as JwtPayload;
@@ -56,7 +52,6 @@ router.get("/", authenticate, async (req: Request, res: Response) => {
   return ok(res, { data: view, total, page: p, limit: l });
 });
 
-/** GET /api/notifications/unread-count */
 router.get("/unread-count", authenticate, async (req: Request, res: Response) => {
   const c = await getCollections();
   const user = (req as any).user as JwtPayload;
@@ -65,7 +60,6 @@ router.get("/unread-count", authenticate, async (req: Request, res: Response) =>
   return ok(res, { count });
 });
 
-/** POST /api/notifications/:id/read */
 router.post("/:id/read", authenticate, async (req: Request, res: Response) => {
   const c = await getCollections();
   const user = (req as any).user as JwtPayload;
@@ -77,7 +71,6 @@ router.post("/:id/read", authenticate, async (req: Request, res: Response) => {
   return ok(res, { message: "marked as read" });
 });
 
-/** POST /api/notifications/read-all */
 router.post("/read-all", authenticate, async (req: Request, res: Response) => {
   const c = await getCollections();
   const user = (req as any).user as JwtPayload;

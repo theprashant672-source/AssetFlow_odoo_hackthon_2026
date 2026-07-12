@@ -19,7 +19,6 @@ function downloadCsv(filename: string, rows: (string | number)[][]) {
 export default function ReportsModule() {
   const db = useDB();
 
-  // Utilization: allocation records per asset
   const usage = db.assets
     .map((a) => ({
       asset: a,
@@ -30,7 +29,6 @@ export default function ReportsModule() {
   const mostUsed = usage.slice(0, 5);
   const idle = usage.filter((u) => u.count === 0);
 
-  // Maintenance frequency by category
   const maintByCat = db.categories.map((c) => ({
     category: c.name,
     count: db.maintenance.filter((m) => {
@@ -40,7 +38,6 @@ export default function ReportsModule() {
   }));
   const maxMaint = Math.max(1, ...maintByCat.map((m) => m.count));
 
-  // Department-wise allocation
   const deptSummary = db.departments.map((d) => {
     const viaEmployees = db.assets.filter((a) => {
       if (a.status !== "Allocated") return false;
@@ -51,7 +48,6 @@ export default function ReportsModule() {
     return { dept: d.name, count: viaEmployees.length };
   });
 
-  // Booking heatmap by hour (9–18)
   const hours = Array.from({ length: 10 }, (_, i) => 9 + i);
   const heat = hours.map((h) => ({
     hour: h,

@@ -270,7 +270,6 @@ function buildPendingCustomerFromRow(row: Record<string, string>, userId: string
   } as PendingCustomerRegistration);
 }
 
-/** GET /api/customers â€” paginated, filterable by name/type */
 router.get("/", authenticate, requireAnyPermission("customers:manage", "sales:entry", "dispatch:manage", "accounts:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const { q = "", type, page = "1", limit = "20" } = req.query as Record<string, string>;
@@ -286,7 +285,6 @@ router.get("/", authenticate, requireAnyPermission("customers:manage", "sales:en
   return ok(res, { data, total, page: p, limit: l });
 });
 
-/** GET /api/customers/pending-registrations â€” Admin queue, or Sales user's own submitted requests */
 router.get("/pending-registrations", authenticate, requireAnyPermission("customers:manage", "sales:entry"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const user = (req as any).user as AuthUser;
@@ -296,7 +294,6 @@ router.get("/pending-registrations", authenticate, requireAnyPermission("custome
   return ok(res, pending);
 });
 
-/** POST /api/customers/upload-document â€” upload distributor KYC document to Cloudinary */
 router.post(
   "/upload-document",
   authenticate,
@@ -330,7 +327,6 @@ router.post(
   }
 );
 
-/** POST /api/customers/request-registration â€” Sales submits distributor/customer for admin approval */
 router.post("/request-registration", authenticate, requireAnyPermission("sales:entry"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const user = (req as any).user as AuthUser;
@@ -444,7 +440,6 @@ router.post("/request-registration", authenticate, requireAnyPermission("sales:e
   return ok(res, { message: "Distributor registration request sent to Admin for approval.", request: pending }, 201);
 });
 
-/** PUT /api/customers/pending-registrations/:id â€” Admin edits a pending customer/distributor */
 router.put("/pending-registrations/:id", authenticate, requireAnyPermission("customers:manage", "sales:entry"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const pending = await c.pendingCustomerRegistrations.findOne({ id: req.params.id });
@@ -526,7 +521,6 @@ router.put("/pending-registrations/:id", authenticate, requireAnyPermission("cus
   return ok(res, updated);
 });
 
-/** POST /api/customers/import-distributors â€” Bulk import workbook */
 router.post(
   "/import-distributors",
   authenticate,
@@ -649,13 +643,11 @@ router.post(
       try {
         fs.unlinkSync(tempPath);
       } catch {
-        // ignore
       }
     }
   }
 );
 
-/** POST /api/customers/approve/:id â€” Admin approves pending customer/distributor */
 router.post("/approve/:id", authenticate, requireAnyPermission("customers:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const user = (req as any).user as AuthUser;
@@ -716,7 +708,6 @@ router.post("/approve/:id", authenticate, requireAnyPermission("customers:manage
   return ok(res, { message: "Distributor/customer approved successfully", customer }, 201);
 });
 
-/** GET /api/customers/:id */
 router.get("/:id", authenticate, requireAnyPermission("customers:manage", "sales:entry"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const customer = await c.customers.findOne({ id: req.params.id });
@@ -724,7 +715,6 @@ router.get("/:id", authenticate, requireAnyPermission("customers:manage", "sales
   return ok(res, customer);
 });
 
-/** POST /api/customers */
 router.post("/", authenticate, requireAnyPermission("customers:manage", "sales:entry", "dispatch:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const {
@@ -789,7 +779,6 @@ router.post("/", authenticate, requireAnyPermission("customers:manage", "sales:e
   return ok(res, newCustomer, 201);
 });
 
-/** PUT /api/customers/:id */
 router.put("/:id", authenticate, requireAnyPermission("customers:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const id = req.params.id;
@@ -825,7 +814,6 @@ router.put("/:id", authenticate, requireAnyPermission("customers:manage"), async
   return ok(res, updated);
 });
 
-/** DELETE /api/customers/:id */
 router.delete("/:id", authenticate, requireAnyPermission("customers:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const result = await c.customers.deleteOne({ id: req.params.id });

@@ -46,8 +46,6 @@ export default function RegisterScreen({ onGoLogin }: { onGoLogin: () => void })
 
     setLoading(true);
     try {
-      // Signup always creates an Employee account — roles are assigned only by
-      // the Admin from the Employee Directory (no self-elevation).
       const res = await apiRegister({
         name: form.name,
         email: form.email,
@@ -59,8 +57,6 @@ export default function RegisterScreen({ onGoLogin }: { onGoLogin: () => void })
       setSubmitted(true);
     } catch (err) {
       const message = err instanceof Error ? err.message : "Registration failed. Please try again.";
-      // Demo backend has no auth routes; treat an unreachable/missing API as a
-      // successful demo submission so the signup flow stays usable.
       if (/route not found|request failed \(404\)|failed to fetch|network|unexpected response/i.test(message)) {
         setSubmittedMessage("Demo mode: your registration request was recorded locally. An administrator will review it once the backend is connected.");
         setSubmitted(true);

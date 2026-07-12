@@ -82,7 +82,6 @@ function legacyToDistributor(distributor: Distributor): DistributorResponse {
   };
 }
 
-/** GET /api/distributors */
 router.get("/", authenticate, requireAnyPermission("distributors:manage"), async (req: Request, res: Response) => {
   const { q = "" } = req.query as Record<string, string>;
   const c = await getCollections();
@@ -135,7 +134,6 @@ router.get("/", authenticate, requireAnyPermission("distributors:manage"), async
   return ok(res, results);
 });
 
-/** GET /api/distributors/:id */
 router.get("/:id", authenticate, requireAnyPermission("distributors:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const customer = await c.customers.findOne({ id: req.params.id, type: "Distributor" });
@@ -146,7 +144,6 @@ router.get("/:id", authenticate, requireAnyPermission("distributors:manage"), as
   return ok(res, legacyToDistributor(distributor));
 });
 
-/** POST /api/distributors */
 router.post("/", authenticate, requireAnyPermission("distributors:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const { name, email, mobile, phone, address } = req.body;
@@ -193,7 +190,6 @@ router.post("/", authenticate, requireAnyPermission("distributors:manage"), asyn
   return ok(res, customerToDistributor(customer), 201);
 });
 
-/** PUT /api/distributors/:id */
 router.put("/:id", authenticate, requireAnyPermission("distributors:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const id = req.params.id;
@@ -235,7 +231,6 @@ router.put("/:id", authenticate, requireAnyPermission("distributors:manage"), as
   return ok(res, legacyToDistributor({ ...existingLegacy, ...req.body, updatedAt }));
 });
 
-/** DELETE /api/distributors/:id */
 router.delete("/:id", authenticate, requireAnyPermission("distributors:manage"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const customerResult = await c.customers.deleteOne({ id: req.params.id, type: "Distributor" });

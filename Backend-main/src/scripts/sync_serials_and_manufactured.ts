@@ -17,7 +17,6 @@ async function sync() {
     const product = await c.products.findOne({ model: sale.materialName });
     const seriesName = product?.series || "Unknown";
 
-    // 1. Ensure SerialEntry exists and is marked as "Sold"
     const serialEntry = await c.serials.findOne({ serialNumber: sale.serialNumber });
     if (!serialEntry) {
       await c.serials.insertOne({
@@ -37,7 +36,6 @@ async function sync() {
       updatedSerials++;
     }
 
-    // 2. Ensure ManufacturedProduct exists
     const mfg = await c.manufactured.findOne({ serialNumber: sale.serialNumber });
     if (!mfg) {
       await c.manufactured.insertOne({

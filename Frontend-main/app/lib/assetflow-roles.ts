@@ -68,10 +68,6 @@ export const ROLE_NAV: Record<AssetFlowRole, RoleNavItem[]> = {
   founder: [
     { label: "Dashboard", slug: "dashboard", icon: IconDashboard },
     { label: "Organization", slug: "organization", icon: IconBriefcase, group: "Core" },
-    { label: "Departments", slug: "departments", icon: IconFactory, group: "Core" },
-    { label: "Employees", slug: "employees", icon: IconUsers, group: "Core" },
-    { label: "Roles & Permissions", slug: "roles-permissions", icon: IconShield, group: "Core" },
-    { label: "Asset Categories", slug: "categories", icon: IconTag, group: "Assets" },
     { label: "Assets", slug: "assets", icon: IconPackage, group: "Assets" },
     { label: "Bookings", slug: "bookings", icon: IconClipboardList, group: "Operations" },
     { label: "Maintenance", slug: "maintenance", icon: IconWrench, group: "Operations" },
@@ -82,9 +78,7 @@ export const ROLE_NAV: Record<AssetFlowRole, RoleNavItem[]> = {
   ],
   admin: [
     { label: "Dashboard", slug: "dashboard", icon: IconDashboard },
-    { label: "Departments", slug: "departments", icon: IconFactory, group: "Organization" },
-    { label: "Employees", slug: "employees", icon: IconUsers, group: "Organization" },
-    { label: "Categories", slug: "categories", icon: IconTag, group: "Assets" },
+    { label: "Organization", slug: "organization", icon: IconBriefcase, group: "Core" },
     { label: "Assets", slug: "assets", icon: IconPackage, group: "Assets" },
     { label: "Bookings", slug: "bookings", icon: IconClipboardList, group: "Operations" },
     { label: "Maintenance", slug: "maintenance", icon: IconWrench, group: "Operations" },
@@ -143,6 +137,7 @@ export const ROLE_ALLOWED_SECTIONS: Record<AssetFlowRole, AssetFlowSection[]> = 
   ],
   admin: [
     "dashboard",
+    "organization",
     "departments",
     "employees",
     "categories",

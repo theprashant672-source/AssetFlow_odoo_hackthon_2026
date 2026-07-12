@@ -159,7 +159,6 @@ function useAsyncData<T>(loader: () => Promise<T>, deps: ReadonlyArray<unknown>)
     return () => {
       cancelled = true;
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [...deps, nonce]);
 
   return {
@@ -1551,7 +1550,6 @@ export function UsersPage({ currentUser }: { currentUser?: { id?: string } | nul
 
   useEffect(() => {
     if (authorizeOpen) pendingRes.reload();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [authorizeOpen]);
 
   const handleApprove = async (id: string) => {
@@ -2311,12 +2309,6 @@ export function RoleManagementPage() {
   );
 }
 
-/**
- * The 51.2V LFP variants and the IP66 SP variants share description text with a sibling product,
- * so the generic slug below can't tell them apart — must match MODEL_KEY_OVERRIDES in
- * backend/Backend/src/scripts/seedPriceEntries.ts and the explicit checks in
- * inferNovaAssetsPriceModelKey (novaassetsPricing.ts), or PI auto-fill can pull the wrong price.
- */
 const PRICE_MODEL_KEY_OVERRIDES: Record<string, string> = {
   "AW-LFP-51.2 - 10": "AW-LFP-51.2-10",
   "AW-LFP-51.2 - 5": "AW-LFP-51.2-5",
@@ -2373,7 +2365,6 @@ export function PriceInputModulePage() {
     return entries.filter((entry) => `${entry.description} ${entry.modelNo}`.toLowerCase().includes(query));
   }, [entries, q]);
 
-  /** States shown as tabs: the original baseline states plus any new state that has been added on at least one entry (even before real prices are filled in). */
   const activeStates = useMemo(() => {
     const present = new Set<string>(NOVAASSETS_PRICE_STATES);
     for (const entry of entries) {
@@ -2428,8 +2419,6 @@ export function PriceInputModulePage() {
     setForm((f) => {
       const parsed = parsePriceEntrySelection(selection);
       const entry = parsed?.kind === "entry" ? entries.find((e) => e.id === parsed.id) : undefined;
-      // Keep whatever state the user already has selected — with 36 states to choose from, auto-jumping
-      // to "the first unpriced one" would silently swap away from a state the user deliberately picked.
       const point = entry?.prices[f.state];
       return { ...f, selection, ...priceFieldsFor(point) };
     });
@@ -2815,7 +2804,6 @@ export function CustomersPage() {
 
   useEffect(() => {
     if (approvalOpen) pendingCustomerRes.reload();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [approvalOpen]);
 
   function openCreate() {
@@ -4340,7 +4328,6 @@ export function SeriesBOMPage() {
   const { data: boms, loading, error, reload } = useAsyncData(() => listBOMs(), []);
   const { data: products } = useAsyncData(() => listProducts(), []);
 
-  // Unique series from products
   const availableSeries = Array.from(new Set(products?.map((p) => p.series) || []));
 
   const [series, setSeries] = useState("");
@@ -4537,10 +4524,6 @@ export function SeriesBOMPage() {
   );
 }
 
-/**
- * CreatableCombobox – styled dropdown with search + free-text "add new" entry.
- * Uses a fixed-position dropdown to escape overflow:hidden/scroll parents.
- */
 function CreatableCombobox({
   value,
   onChange,
@@ -4581,14 +4564,12 @@ function CreatableCombobox({
     const spaceBelow = window.innerHeight - rect.bottom;
     const spaceAbove = rect.top;
     if (spaceAbove > spaceBelow) {
-      // Open upward
       setDropdownStyle({
         bottom: window.innerHeight - rect.top + 4,
         left: rect.left,
         width: rect.width,
       });
     } else {
-      // Open downward
       setDropdownStyle({
         top: rect.bottom + 4,
         left: rect.left,
@@ -4609,7 +4590,6 @@ function CreatableCombobox({
     setOpen(true);
   };
 
-  // Close on outside click
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       const target = e.target as Node;
@@ -4624,10 +4604,8 @@ function CreatableCombobox({
     };
     window.addEventListener("mousedown", handler);
     return () => window.removeEventListener("mousedown", handler);
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [panelId]);
 
-  // Reposition on scroll/resize
   useEffect(() => {
     if (!open) return;
     const reposition = () => calcPosition();
@@ -4637,7 +4615,6 @@ function CreatableCombobox({
       window.removeEventListener("scroll", reposition, true);
       window.removeEventListener("resize", reposition);
     };
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   const pick = (v: string) => {
@@ -4648,7 +4625,7 @@ function CreatableCombobox({
 
   return (
     <div ref={rootRef} className="relative">
-      {/* Trigger input */}
+      
       <div className="relative flex items-center">
         <input
           ref={inputRef}
@@ -4673,7 +4650,7 @@ function CreatableCombobox({
           }}
           autoComplete="off"
         />
-        {/* Chevron button */}
+        
         <button
           type="button"
           tabIndex={-1}
@@ -4690,7 +4667,7 @@ function CreatableCombobox({
         </button>
       </div>
 
-      {/* Fixed-position dropdown panel — escapes overflow:hidden parents */}
+      
       {open && typeof window !== "undefined" && (
         <div
           id={panelId}
@@ -5926,7 +5903,7 @@ export function RawMaterialsPage() {
                 </div>
               ) : null}
 
-              {/* Add New Item / Series BOM modal */}
+              
               {materialAddModalOpen && materialAddTarget && (
                 <div className="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 p-4 backdrop-blur-sm">
                   <div className="w-full max-w-md rounded-xl border-2 border-amber-300 bg-white p-5 shadow-2xl">
@@ -7505,14 +7482,7 @@ export function ManufacturedPage() {
                                 </>
                               ) : (
                                 <>
-                                  {/* <button
-                                    type="button"
-                                    onClick={() => openReturnModal(m)}
-                                    disabled={m.status === "Returned" || m.status === "Faulty" || m.status === "Repaired"}
-                                    className="rounded border border-amber-300 bg-amber-50 px-2 py-1 text-[10px] font-bold text-amber-700 hover:bg-amber-100 disabled:cursor-not-allowed disabled:opacity-50"
-                                    title="Return Tracker">
-                                    Return
-                                  </button> */}
+                                  
                                   <button
                                     type="button"
                                     onClick={() => openEdit(m)}
@@ -8342,7 +8312,6 @@ const SALES_TABS = [
   { id: "pi", label: "PI", helper: "Proforma Invoice, payment verification and inventory check" },
   { id: "dispatch", label: "Dispatch Request", helper: "PI attachment, dispatch-team handoff and vehicle-sharing flow" },
 ] as const;
-// { id: "tax", label: "Accounts Docs", helper: "Tax Invoice and E-Way Bill return after vehicle number sharing" },
 type SalesTabId = (typeof SALES_TABS)[number]["id"] | "tax";
 type PiLineItem = {
   materialName: string;
@@ -10463,7 +10432,6 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
     }
   };
 
-  // buildGeneratedPiFile and downloadGeneratedPi are now global functions defined outside SalesPage
 
   const findSaleByReference = (value: string) => {
     const normalized = value.trim().toLowerCase();
@@ -13042,7 +13010,6 @@ export function DispatchTeamPage() {
 
   const [allocatedSerials, setAllocatedSerials] = useState<{ [key: string]: string }>({});
 
-  // Initialize allocatedSerials from selectedSale
   useEffect(() => {
     if (!selectedSale) {
       setAllocatedSerials({});
@@ -13056,14 +13023,12 @@ export function DispatchTeamPage() {
           initial[`${item.materialName}-${idx}`] = sn;
         });
       } else if (selectedSale.serialNumber) {
-        // Fallback to legacy single serial number
         initial[`${item.materialName}-0`] = selectedSale.serialNumber;
       }
     });
     setAllocatedSerials(initial);
   }, [selectedSale]);
 
-  // Collect all serials allocated in other sales
   const allocatedSerialsInOtherSales = useMemo(() => {
     const serials = new Set<string>();
     (salesRes.data?.data ?? []).forEach((saleItem) => {
@@ -13088,7 +13053,6 @@ export function DispatchTeamPage() {
     return serials;
   }, [salesRes.data, selectedSaleId]);
 
-  // Helper to fetch matching stock serials for a model
   const getSerialsForModel = (materialName: string, currentKey: string) => {
     if (!readyStockRes.data?.data) return [];
     
@@ -13118,7 +13082,6 @@ export function DispatchTeamPage() {
     });
   };
 
-  // Helper to get short model name
   const getProductModelDisplay = (materialName: string) => {
     const saleMatName = materialName.trim().toLowerCase();
     const prod = (productsRes.data ?? []).find(p => {
@@ -13128,7 +13091,6 @@ export function DispatchTeamPage() {
     return prod ? prod.model : materialName;
   };
 
-  // Auto-attach generated PI to Dispatch Request if missing
   useEffect(() => {
     if (!selectedSale || selectedSale.piAttachmentUrl || saving) return;
     const autoAttach = async () => {
@@ -14413,9 +14375,6 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
     }
 
     if (currentServiceAssignmentRole === "L3 Advanced OEM Support") {
-      // L3 is a shared team inbox, not per-engineer assignment (there's no district-style
-      // L3 mapping like L1/L2 have) — every L3 login should see the same queue, regardless
-      // of which specific L3 account tickets happen to be assigned to.
       return sortedRows.filter((complaint) => !isClosed(complaint.status));
     }
 

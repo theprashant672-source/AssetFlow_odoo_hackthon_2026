@@ -30,9 +30,6 @@ export default function LoginScreen({
     return () => mql.removeEventListener("change", sync);
   }, []);
 
-  // Only the e-mail is remembered (in localStorage) for convenience — the session token itself
-  // stays sessionStorage-only (tab-scoped) so "Remember Me" can't silently persist a login across
-  // browser restarts on a shared machine.
   useEffect(() => {
     const remembered = window.localStorage.getItem(REMEMBERED_EMAIL_KEY);
     if (remembered) {
@@ -75,7 +72,7 @@ export default function LoginScreen({
         overflow: isMobile ? "auto" : "hidden",
       }}
     >
-      {/* Left Panel */}
+      
       {!isMobile && (
       <div style={{
         flex: 1, display: "flex", flexDirection: "column", justifyContent: "flex-start", padding: "48px 64px 40px",
@@ -126,7 +123,7 @@ export default function LoginScreen({
       </div>
       )}
 
-      {/* Right Panel */}
+      
       <div style={{
         width: isMobile ? "100%" : 480,
         flex: isMobile ? undefined : 1.15,
@@ -139,7 +136,7 @@ export default function LoginScreen({
         position: "relative",
         overflow: "hidden",
       }}>
-        {/* Product photo background */}
+        
         <div style={{
           position: "absolute", inset: 0,
           backgroundImage: "url(/hero.png)",

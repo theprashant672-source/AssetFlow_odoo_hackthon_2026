@@ -35,7 +35,6 @@ export const NAV: Array<{ id: string | null; label: string; icon: ReactNode; gro
   { id: "sales-distributor", label: "Distributor Registration", icon: <IconCoins size={18} />, group: "sales" },
   { id: "sales-pi", label: "PI", icon: <IconCoins size={18} />, group: "sales" },
   { id: "sales-dispatch", label: "Dispatch Request", icon: <IconTruck size={18} />, group: "sales" },
-  // { id: "sales-tax", label: "Accounts Docs", icon: <IconClipboardList size={18} />, group: "sales" },
   { id: null, label: "DISPATCH", icon: null, group: "header" },
   { id: "inventory-sales-entry", label: "Sales Record", icon: <IconShoppingCart size={18} />, group: "dispatch" },
   { id: "dispatch-team", label: "Dispatch Team", icon: <IconTruck size={18} />, group: "dispatch" },

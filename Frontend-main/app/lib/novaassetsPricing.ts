@@ -1,4 +1,3 @@
-/** Any Indian state/UT name — the Price Input Module can add new ones beyond the original six. */
 export type NovaAssetsPriceState = string;
 
 export type NovaAssetsPriceCategory = "Distributor Price" | "Dealer Price" | "MSP" | "Manual";
@@ -25,7 +24,6 @@ type ProductLike = {
 
 export const NOVAASSETS_PRICE_STATES: NovaAssetsPriceState[] = ["UP", "Bihar", "MP", "Haryana", "Rajasthan", "Punjab"];
 
-/** Every Indian state/UT selectable from the Price Input Module's state dropdown, alphabetical by label. The original six keep their existing keys (UP, MP abbreviated) so old data stays compatible; every other state is keyed by its full name. */
 export const INDIA_STATES: { value: NovaAssetsPriceState; label: string }[] = [
   { value: "Andaman and Nicobar Islands", label: "Andaman and Nicobar Islands" },
   { value: "Andhra Pradesh", label: "Andhra Pradesh" },
@@ -251,8 +249,6 @@ function inferNovaAssetsPriceModelKey(product: ProductLike | undefined): string 
 
   if (!source) return "";
 
-  // IP66 variants of the 8/10/12KW SP series are a distinct (currently unpriced) product line from
-  // the IP21 ones below — checked first so they don't fall through to the IP21 8000/10000 keys.
   if (source.includes("IP66") || source.includes("IP 66")) {
     if (source.includes("AW-SP-12000") || source.includes("12000")) return "AW-SP-12000-IP66";
     if (source.includes("AW-SP-10000") || source.includes("10000")) return "AW-SP-10000-IP66";
@@ -276,9 +272,6 @@ function inferNovaAssetsPriceModelKey(product: ProductLike | undefined): string 
   if (source.includes("AW-TP-8000-L") || source.includes("8000-L") || source.includes("8000 L")) return "AW-TP-8000-L";
 
   if (source.includes("AW-LFP-25.6") || source.includes("25.6V/100AH") || source.includes("25.6V 100AH")) return "AW-LFP-25.6";
-  // The 51.2V LFP family has four distinct-priced variants (10yr/1c, 5yr/1c, 5yr/0.5c "i", and "L") that all
-  // share the same "51.2V/100AH" description text — the model suffix (normalized to "-10"/"-5"/"-I"/"-L") is
-  // the only thing that tells them apart, so it's checked before falling back to the generic bucket.
   if (source.includes("AW-LFP-51.2-10") || source.includes("51.2V/100AH-10")) return "AW-LFP-51.2-10";
   if (source.includes("AW-LFP-51.2-5") || source.includes("51.2V/100AH-5")) return "AW-LFP-51.2-5";
   if (source.includes("AW-LFP-51.2-I") || source.includes("51.2V/100AH-I")) return "AW-LFP-51.2-i";
@@ -330,7 +323,6 @@ type PriceEntryLike = {
   prices: Record<NovaAssetsPriceState, PricePoint>;
 };
 
-/** Converts admin-managed Price Input Module entries into the lookup shape used by the resolvers above. */
 export function buildPriceTableFromEntries(entries: PriceEntryLike[] | undefined | null): Record<string, PriceSheet> {
   const table: Record<string, PriceSheet> = {};
   for (const entry of entries ?? []) {

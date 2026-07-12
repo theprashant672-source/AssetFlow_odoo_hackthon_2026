@@ -27,6 +27,12 @@ import type {
   InwardMaster,
   InwardItemDetail,
   Counter,
+  Department,
+  AssetCategory,
+  CompanyAsset,
+  AssetBooking,
+  MaintenanceRequest,
+  AssetAudit,
 } from "../types";
 import { getMongoDb } from "./mongo";
 
@@ -57,6 +63,12 @@ export type Collections = {
   inwardMaster: Collection<InwardMaster>;
   inwardItemDetails: Collection<InwardItemDetail>;
   counters: Collection<Counter>;
+  departments: Collection<Department>;
+  assetCategories: Collection<AssetCategory>;
+  companyAssets: Collection<CompanyAsset>;
+  assetBookings: Collection<AssetBooking>;
+  maintenanceRequests: Collection<MaintenanceRequest>;
+  assetAudits: Collection<AssetAudit>;
 };
 
 export async function getCollections(): Promise<Collections> {
@@ -88,5 +100,11 @@ export async function getCollections(): Promise<Collections> {
     inwardMaster: db.collection<InwardMaster>("inward_master"),
     inwardItemDetails: db.collection<InwardItemDetail>("inward_item_details"),
     counters: db.collection<Counter>("counters"),
+    departments: db.collection<Department>("departments"),
+    assetCategories: db.collection<AssetCategory>("asset_categories"),
+    companyAssets: db.collection<CompanyAsset>("company_assets"),
+    assetBookings: db.collection<AssetBooking>("asset_bookings"),
+    maintenanceRequests: db.collection<MaintenanceRequest>("maintenance_requests"),
+    assetAudits: db.collection<AssetAudit>("asset_audits"),
   };
 }

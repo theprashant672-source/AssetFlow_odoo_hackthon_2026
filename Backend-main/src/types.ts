@@ -12,7 +12,6 @@ export type SystemRoleName =
   | "Accounts Team"
   | "Dealer";
 export type RoleName = string;
-/** Stored user role (may include legacy or custom role names). */
 export type UserRole = string;
 
 export type Permission =
@@ -36,11 +35,9 @@ export type Permission =
 export type JwtPayload = {
   userId: string;
   email: string;
-  /** Canonical role name (normalized). */
   role: RoleName;
 };
 
-/** `req.user` after authentication (JWT + resolved permissions). */
 export type AuthUser = JwtPayload & { permissions: Permission[]; name?: string };
 
 export type LoginRequest = {
@@ -270,7 +267,6 @@ export type Product = {
   createdAt: Date;
 };
 
-/** Any Indian state/UT name — no longer restricted to the original six, so admins can add new states from the Price Input Module. */
 export type PriceStateName = string;
 
 export type PriceStatePoint = {
@@ -738,9 +734,7 @@ export type Notification = {
   entityType?: string;
   entityId?: string;
   meta?: Record<string, unknown>;
-  /** If omitted, notification is visible to all authenticated users. */
   audienceRoles?: UserRole[];
-  /** If set, notification is visible to these users (in addition to roles if provided). */
   audienceUserIds?: string[];
   readBy: string[];
   createdBy: string;
@@ -800,4 +794,82 @@ export type ReplacementRequest = {
   dispatchedBy?: string;
   dispatchedAt?: Date;
   courierDetails?: string;
+};
+
+export type Department = {
+  id: string;
+  name: string;
+  headName?: string;
+  parentDepartment?: string;
+  status: "Active" | "Inactive";
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type AssetCategory = {
+  id: string;
+  name: string;
+  customFields: string; // comma separated
+  totalAssets: number;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type CompanyAsset = {
+  id: string;
+  tag: string;
+  name: string;
+  categoryId?: string;
+  categoryName: string;
+  departmentId?: string;
+  departmentName?: string;
+  location: string;
+  status: "Available" | "Allocated" | "Maintenance" | "Retired";
+  condition: "New" | "Excellent" | "Good" | "Fair" | "Poor";
+  purchaseDate?: string;
+  purchasePrice?: number;
+  assignedToId?: string;
+  assignedToName?: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+export type AssetBooking = {
+  id: string;
+  assetId: string;
+  assetName: string;
+  userName: string;
+  bookingDate: string;
+  expectedReturnDate: string;
+  status: 'Pending' | 'Active' | 'Returned' | 'Overdue' | 'Cancelled';
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type MaintenanceRequest = {
+  id: string;
+  assetId: string;
+  assetName: string;
+  requestedBy: string;
+  issueDescription: string;
+  priority: "Low" | "Medium" | "High" | "Critical";
+  status: "Pending" | "In Progress" | "Resolved" | "Cancelled";
+  resolutionNotes?: string;
+  createdAt: Date;
+  updatedAt: Date;
+};
+
+export type AssetAudit = {
+  id: string;
+  title: string;
+  auditorName: string;
+  status: "Planned" | "In Progress" | "Completed";
+  totalAssetsExpected?: number;
+  totalAssetsVerified?: number;
+  discrepanciesCount?: number;
+  startDate?: string;
+  completedDate?: string;
+  notes?: string;
+  createdAt: Date;
+  updatedAt: Date;
 };

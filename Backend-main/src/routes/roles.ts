@@ -9,14 +9,12 @@ import { generateId } from "../utils/id";
 
 const router: Router = express.Router();
 
-/** GET /api/roles — list roles and permissions (Admin only) */
 router.get("/", authenticate, authorize("Admin"), async (_req: Request, res: Response) => {
   const c = await getCollections();
   const roles = await c.roles.find({}).sort({ name: 1 }).toArray();
   return ok(res, roles);
 });
 
-/** POST /api/roles — create a custom role (Admin only) */
 router.post("/", authenticate, authorize("Admin"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const name = normalizeRole(req.body?.name);
@@ -41,7 +39,6 @@ router.post("/", authenticate, authorize("Admin"), async (req: Request, res: Res
   return ok(res, role, 201);
 });
 
-/** PUT /api/roles/:id — update role permissions (Admin only) */
 router.put("/:id", authenticate, authorize("Admin"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const id = String(req.params.id || "").trim();
@@ -60,7 +57,6 @@ router.put("/:id", authenticate, authorize("Admin"), async (req: Request, res: R
   return ok(res, updated);
 });
 
-/** DELETE /api/roles/:id — delete a custom role (Admin only) */
 router.delete("/:id", authenticate, authorize("Admin"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const id = String(req.params.id || "").trim();

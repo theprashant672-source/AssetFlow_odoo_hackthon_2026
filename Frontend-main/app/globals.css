@@ -22,7 +22,6 @@
   --font-mono: var(--font-geist);
 }
 
-/* Odoo brand purple scale — used app-wide instead of blue/sky/teal accents */
 @theme {
   --color-odoo-50: #faf3f8;
   --color-odoo-100: #f6ecf4;
@@ -65,7 +64,6 @@ body {
   overflow-x: hidden;
 }
 
-/* iOS overscroll uses the root background; keep it consistent */
 html {
   background: var(--page-edge);
 }
@@ -77,7 +75,6 @@ main {
   overflow-x: clip;
 }
 
-/* iOS Safari: prevent horizontal panning / rubber-banding exposing background */
 html,
 body {
   overscroll-behavior-x: none;

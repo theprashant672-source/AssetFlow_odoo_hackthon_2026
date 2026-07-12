@@ -37,7 +37,6 @@ async function suggestBatchForReceipt(productSeriesId: string, referenceNo: stri
   return `BATCH-${highest + 1}`;
 }
 
-/** GET /api/raw-materials/meta - vendor suggestions */
 router.get("/meta", authenticate, requireAnyPermission("inventory:raw-materials", "complaints:supplier"), async (_req: Request, res: Response) => {
   const c = await getCollections();
   const vendorNames = await c.rawMaterials.distinct("vendorName", {
@@ -47,7 +46,6 @@ router.get("/meta", authenticate, requireAnyPermission("inventory:raw-materials"
   return ok(res, { vendors });
 });
 
-/** GET /api/raw-materials - filter by series, batch, vendor, inwardMode */
 router.get("/", authenticate, requireAnyPermission("inventory:raw-materials", "complaints:supplier"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const { q = "", series, batch, vendor, inwardMode, page = "1", limit = "20" } = req.query as Record<string, string>;
@@ -67,7 +65,6 @@ router.get("/", authenticate, requireAnyPermission("inventory:raw-materials", "c
   return ok(res, { data, total, page: p, limit: l });
 });
 
-/** POST /api/raw-materials */
 router.post("/", authenticate, requireAnyPermission("inventory:raw-materials"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const { productSeriesId, materialName, dateReceived, billType, referenceNo, quantityReceived, vendorName, batch, inwardMode, notes } = req.body;
@@ -121,7 +118,6 @@ router.post("/", authenticate, requireAnyPermission("inventory:raw-materials"), 
   return ok(res, entry, 201);
 });
 
-/** PUT /api/raw-materials/:id */
 router.put("/:id", authenticate, requireAnyPermission("inventory:raw-materials"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const id = req.params.id;
@@ -135,7 +131,6 @@ router.put("/:id", authenticate, requireAnyPermission("inventory:raw-materials")
   return ok(res, { ...existing, ...update });
 });
 
-/** DELETE /api/raw-materials/:id */
 router.delete("/:id", authenticate, requireAnyPermission("inventory:raw-materials"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const result = await c.rawMaterials.deleteOne({ id: req.params.id });
@@ -143,7 +138,6 @@ router.delete("/:id", authenticate, requireAnyPermission("inventory:raw-material
   return ok(res, { message: "Raw material entry deleted" });
 });
 
-/** POST /api/raw-materials/:id/return */
 router.post("/:id/return", authenticate, requireAnyPermission("inventory:raw-materials"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const id = req.params.id;

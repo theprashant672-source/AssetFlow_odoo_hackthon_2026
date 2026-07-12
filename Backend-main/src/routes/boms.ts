@@ -8,7 +8,6 @@ import { generateId } from "../utils/id";
 
 const router: Router = express.Router();
 
-/** GET /api/boms — list all boms or filter by series */
 router.get("/", authenticate, requireAnyPermission("inventory:bom", "inventory:manufactured", "inventory:raw-materials", "dashboard:view"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const series = req.query.series as string | undefined;
@@ -17,7 +16,6 @@ router.get("/", authenticate, requireAnyPermission("inventory:bom", "inventory:m
   return ok(res, boms);
 });
 
-/** POST /api/boms — create a new BOM */
 router.post("/", authenticate, requireAnyPermission("inventory:bom", "inventory:manufactured"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const { series, items } = req.body;
@@ -38,7 +36,6 @@ router.post("/", authenticate, requireAnyPermission("inventory:bom", "inventory:
   return ok(res, bom, 201);
 });
 
-/** PUT /api/boms/:id — update a BOM */
 router.put("/:id", authenticate, requireAnyPermission("inventory:bom", "inventory:manufactured"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const id = req.params.id;
@@ -52,7 +49,6 @@ router.put("/:id", authenticate, requireAnyPermission("inventory:bom", "inventor
   return ok(res, { ...existing, items: Array.isArray(items) ? items : [], updatedAt });
 });
 
-/** DELETE /api/boms/:id — delete a BOM */
 router.delete("/:id", authenticate, requireAnyPermission("inventory:bom", "inventory:manufactured"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const id = req.params.id;

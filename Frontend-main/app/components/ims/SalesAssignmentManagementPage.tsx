@@ -34,7 +34,6 @@ function useAsyncData<T>(loader: () => Promise<T>, deps: ReadonlyArray<unknown>)
 
   useEffect(() => {
     reload();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, deps);
 
   return { data, loading, error, reload };

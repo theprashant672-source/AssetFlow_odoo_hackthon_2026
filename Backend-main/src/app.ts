@@ -22,6 +22,12 @@ import notificationsRouter from "./routes/notifications";
 import rolesRouter from "./routes/roles";
 import engineerAssignmentsRouter from "./routes/engineerAssignments";
 import geoRouter from "./routes/geo";
+import organizationRouter from "./routes/organization";
+import assetsRouter from "./routes/assets";
+import bookingsRouter from "./routes/bookings";
+import maintenanceRouter from "./routes/maintenance";
+import auditRouter from "./routes/audit";
+import reportsRouter from "./routes/reports";
 
 const app = express();
 
@@ -51,7 +57,6 @@ function createCorsOptions() {
   };
 }
 
-// Global middleware
 app.use(helmet());
 const corsOptions = createCorsOptions();
 app.use(cors(corsOptions));
@@ -60,12 +65,10 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(morgan("dev"));
 
-// Health check
 app.get("/health", (_req, res) => {
   res.json({ status: "ok", timestamp: new Date().toISOString(), service: "NovaAssets IMS API" });
 });
 
-// Root route (avoid noisy 404s when opened in a browser / pinged by platforms)
 app.get("/", (_req, res) => {
   res.json({
     service: "NovaAssets IMS API",
@@ -75,10 +78,8 @@ app.get("/", (_req, res) => {
   });
 });
 
-// Avoid favicon 404 noise for API-only service
 app.get(["/favicon.ico", "/favicon.png"], (_req, res) => res.status(204).end());
 
-// Mount routers
 app.use("/api/auth", authRouter);
 app.use("/api/users", usersRouter);
 app.use("/api/customers", customersRouter);
@@ -98,8 +99,13 @@ app.use("/api/notifications", notificationsRouter);
 app.use("/api/roles", rolesRouter);
 app.use("/api/engineer-assignments", engineerAssignmentsRouter);
 app.use("/api/geo", geoRouter);
+app.use("/api/organization", organizationRouter);
+app.use("/api/assets", assetsRouter);
+app.use("/api/bookings", bookingsRouter);
+app.use("/api/maintenance", maintenanceRouter);
+app.use("/api/audit", auditRouter);
+app.use("/api/reports", reportsRouter);
 
-// 404 fallback
 app.use((req, res) => {
   res.status(404).json({
     success: false,
@@ -109,7 +115,6 @@ app.use((req, res) => {
   });
 });
 
-// Global error handler (must be last)
 app.use(errorHandler);
 
 export default app;

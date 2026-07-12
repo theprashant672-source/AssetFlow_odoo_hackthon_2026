@@ -181,7 +181,6 @@ async function resolveManufacturingSerial(
   return { serialNumber: autoSerial };
 }
 
-/** GET /api/manufactured — filter by status, model, dateFrom, dateTo, customer */
 router.get(
   "/",
   authenticate,
@@ -206,7 +205,6 @@ router.get(
   }
 );
 
-/** POST /api/manufactured — record new production */
 router.post("/", authenticate, requireAnyPermission("inventory:manufactured"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const { productId, serialNumber, mfgDate, status, invoiceNo, paymentStatus } = req.body;
@@ -305,7 +303,6 @@ router.post("/", authenticate, requireAnyPermission("inventory:manufactured"), a
   };
   await c.manufactured.insertOne(entry);
 
-  // Log the manufactured product addition
   await c.inventoryLogs.insertOne({
     id: generateId(),
     type: "Manufacturing",
@@ -327,7 +324,6 @@ router.post("/", authenticate, requireAnyPermission("inventory:manufactured"), a
   return ok(res, entry, 201);
 });
 
-/** GET /api/manufactured/approval-requests - service spares/replacements awaiting inventory approval */
 router.get("/approval-requests", authenticate, requireAnyPermission("inventory:manufactured"), async (_req: Request, res: Response) => {
   const c = await getCollections();
   const filter = {
@@ -355,7 +351,6 @@ router.get("/approval-requests", authenticate, requireAnyPermission("inventory:m
   return ok(res, { data, total: data.length, page: 1, limit: 200 });
 });
 
-/** POST /api/manufactured/approval-requests/:id/approve - approve stock release and notify Dispatch */
 router.post("/approval-requests/:id/approve", authenticate, requireAnyPermission("inventory:manufactured"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const user = (req as any).user as AuthUser;
@@ -540,7 +535,6 @@ router.put("/mark-repaired", authenticate, requireAnyPermission("inventory:manuf
   return fail(res, "Invalid type", 400);
 });
 
-/** PUT /api/manufactured/:id/bom — modify BOM and adjust raw material stock by delta only */
 router.put("/:id/bom", authenticate, requireAnyPermission("inventory:manufactured"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const id = req.params.id;
@@ -586,7 +580,6 @@ router.put("/:id/bom", authenticate, requireAnyPermission("inventory:manufacture
   return ok(res, { ...existing, bomUsage: nextBomUsage, updatedAt });
 });
 
-/** PUT /api/manufactured/:id */
 router.put("/:id", authenticate, requireAnyPermission("inventory:manufactured", "sales:entry"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const id = req.params.id;
@@ -597,7 +590,6 @@ router.put("/:id", authenticate, requireAnyPermission("inventory:manufactured", 
   return ok(res, { ...existing, ...req.body, updatedAt });
 });
 
-/** POST /api/manufactured/:id/return — mark product as returned */
 router.post("/:id/return", authenticate, requireAnyPermission("inventory:manufactured"), async (req: Request, res: Response) => {
   const c = await getCollections();
   const id = req.params.id;

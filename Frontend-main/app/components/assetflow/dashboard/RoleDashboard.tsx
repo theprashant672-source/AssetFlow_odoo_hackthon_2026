@@ -231,10 +231,10 @@ export default function RoleDashboard({ role }: { role: AssetFlowRole }) {
       </section>
 
       <section className="grid gap-6 xl:grid-cols-[1.35fr_0.95fr]">
-        <SectionPanel title="Recent Assets" subtitle="Sample operational table">
+        <SectionPanel title="Recent Assets" subtitle="Latest asset records">
           <RecentAssetsTable rows={sharedAssets} />
         </SectionPanel>
-        <SectionPanel title="Role Notes" subtitle="What this workspace can do">
+        <SectionPanel title="Access Summary" subtitle="Responsibilities for this workspace">
           <div className="grid gap-3">
             {role === "founder" && (
               <>

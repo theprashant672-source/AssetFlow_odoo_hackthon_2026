@@ -37,28 +37,31 @@ export default function DashboardModule({ role }: { role: AssetFlowRole }) {
 
   return (
     <div className="grid gap-5">
-      <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
-        <KpiCard label="Assets Available" value={k.available} href={`${base}/assets`} />
-        <KpiCard label="Assets Allocated" value={k.allocated} href={`${base}/allocation`} />
-        <KpiCard label="Maintenance Today" value={k.maintenanceToday} href={`${base}/maintenance`} />
-        <KpiCard label="Active Bookings" value={k.activeBookings} href={`${base}/bookings`} />
-        <KpiCard label="Pending Transfers" value={k.pendingTransfers} href={`${base}/allocation`} />
-        <KpiCard label="Upcoming Returns" value={k.upcomingReturns} href={`${base}/allocation`} />
-        <KpiCard label="Overdue Returns" value={k.overdueReturns} href={`${base}/allocation`} highlight={k.overdueReturns > 0} />
-        <div className="glass-panel soft-shadow rounded-[1.4rem] p-4">
-          <div className="text-xs font-bold uppercase tracking-[0.14em] text-slate-500">Quick actions</div>
-          <div className="mt-2.5 flex flex-wrap gap-2">
-            <Link href={`${base}/assets`} className="rounded-xl bg-[#9A528D] px-3 py-1.5 text-xs font-bold text-white transition hover:brightness-110">
-              Register Asset
-            </Link>
-            <Link href={`${base}/bookings`} className="rounded-xl border border-odoo-200 bg-odoo-50 px-3 py-1.5 text-xs font-bold text-odoo-700 transition hover:bg-odoo-100">
-              Book Resource
-            </Link>
-            <Link href={`${base}/maintenance`} className="rounded-xl border border-odoo-200 bg-odoo-50 px-3 py-1.5 text-xs font-bold text-odoo-700 transition hover:bg-odoo-100">
-              Raise Maintenance
-            </Link>
+      <section className="overflow-hidden rounded-2xl bg-[#341d2d] px-5 py-6 text-white shadow-[0_18px_42px_rgba(52,29,45,0.22)] sm:px-7 sm:py-7">
+        <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
+          <div>
+            <div className="text-[11px] font-bold uppercase tracking-[0.26em] text-white/55">AssetFlow operations</div>
+            <h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">Stay ahead of the day&apos;s asset activity.</h2>
+            <p className="mt-2 max-w-2xl text-sm leading-6 text-white/65">Review availability, requests, returns, and the actions that need attention.</p>
+          </div>
+          <div className="flex flex-wrap gap-2">
+            <Link href={`${base}/assets`} className="rounded-xl border border-white/20 bg-white/10 px-3.5 py-2 text-sm font-bold text-white transition hover:bg-white/15">Register asset</Link>
+            <Link href={`${base}/allocation`} className="rounded-xl border border-white/20 bg-white/10 px-3.5 py-2 text-sm font-bold text-white transition hover:bg-white/15">Review requests</Link>
           </div>
         </div>
+      </section>
+
+      <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-4">
+        <KpiCard label="Assets available" value={k.available} href={`${base}/assets`} />
+        <KpiCard label="Assets allocated" value={k.allocated} href={`${base}/allocation`} />
+        <KpiCard label="Maintenance" value={k.maintenanceToday} href={`${base}/maintenance`} />
+        <KpiCard label="Active bookings" value={k.activeBookings} href={`${base}/bookings`} />
+      </div>
+
+      <div className="grid gap-3 md:grid-cols-3">
+        <KpiCard label="Pending transfers" value={k.pendingTransfers} href={`${base}/allocation`} />
+        <KpiCard label="Returns due" value={k.upcomingReturns} href={`${base}/allocation`} />
+        <KpiCard label="Overdue returns" value={k.overdueReturns} href={`${base}/allocation`} highlight={k.overdueReturns > 0} />
       </div>
 
       {overdueAssets.length > 0 && (

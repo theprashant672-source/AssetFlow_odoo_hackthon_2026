@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import AssetFlowLogo from "../AssetFlowLogo";
-import { ROLE_LABELS, ROLE_NAV, ROLE_HOME, sectionHref, type AssetFlowRole } from "@/app/lib/assetflow-roles";
+import { ROLE_LABELS, ROLE_NAV, sectionHref, type AssetFlowRole } from "@/app/lib/assetflow-roles";
 
 export default function Sidebar({
   role,
@@ -23,19 +23,24 @@ export default function Sidebar({
         onClick={onClose}
       />
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[300px] flex-col border-r border-slate-200/70 bg-[rgba(248,250,252,0.92)] backdrop-blur-xl transition-transform duration-300 lg:translate-x-0 ${
+        className={`fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col bg-[#271621] px-3 py-3 text-white shadow-[16px_0_45px_rgba(39,22,33,0.12)] transition-transform duration-300 lg:translate-x-0 ${
           open ? "translate-x-0" : "-translate-x-full"
         }`}
       >
-        <div className="flex items-center justify-between gap-3 border-b border-slate-200 px-6 py-5">
+        <div className="flex items-center justify-between gap-3 px-4 py-4">
           <AssetFlowLogo />
         </div>
 
-        <div className="flex-1 overflow-y-auto px-3 py-4">
-          <div className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.3em] text-slate-400">
-            {ROLE_LABELS[role]}
+        <div className="mx-2 rounded-2xl border border-white/10 bg-white/[0.06] px-3 py-3">
+          <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/45">Active workspace</div>
+          <div className="mt-1 text-sm font-bold text-white">{ROLE_LABELS[role]}</div>
+        </div>
+
+        <div className="flex-1 overflow-y-auto px-2 py-6">
+          <div className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.28em] text-white/40">
+            Navigation
           </div>
-          <nav className="grid gap-1">
+          <nav className="grid gap-1.5">
             {navItems.map((item) => {
               const href = sectionHref(role, item.slug);
               const active = pathname === href;
@@ -45,29 +50,29 @@ export default function Sidebar({
                   key={item.slug}
                   href={href}
                   onClick={onClose}
-                  className={`flex items-center gap-3 rounded-2xl px-4 py-3 text-sm font-medium transition ${
+                  className={`group flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition ${
                     active
-                      ? "bg-[#9A528D] text-white shadow-[0_14px_30px_rgba(154,82,141,0.25)]"
-                      : "text-slate-600 hover:bg-white hover:text-slate-900 hover:shadow-sm"
+                      ? "bg-[#9A528D] text-white shadow-[0_12px_26px_rgba(154,82,141,0.35)]"
+                      : "text-white/65 hover:bg-white/[0.09] hover:text-white"
                   }`}
                 >
                   <Icon size={18} />
                   <span className="flex-1">{item.label}</span>
-                  {item.group && <span className="text-[10px] font-semibold uppercase tracking-[0.24em] opacity-60">{item.group}</span>}
+                  {active && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
                 </Link>
               );
             })}
           </nav>
         </div>
 
-        <div className="border-t border-slate-200 p-4">
+        {/* <div className="border-t border-slate-200 p-4">
           <div className="rounded-[1.5rem] bg-[linear-gradient(135deg,rgba(154,82,141,0.12),rgba(255,255,255,0.9))] p-4">
             <div className="text-xs font-semibold uppercase tracking-[0.26em] text-slate-500">Next milestone</div>
             <p className="mt-2 text-sm leading-6 text-slate-600">
               {ROLE_HOME[role]} is your default landing page after login.
             </p>
           </div>
-        </div>
+        </div> */}
       </aside>
     </>
   );

@@ -45,10 +45,10 @@ export function Panel({ title, subtitle, actions, children }: {
   title: string; subtitle?: string; actions?: ReactNode; children: ReactNode;
 }) {
   return (
-    <section className="glass-panel soft-shadow rounded-[1.6rem] p-5 sm:p-6">
+    <section className="rounded-2xl border border-slate-200/80 bg-white p-5 shadow-[0_12px_30px_rgba(39,22,33,0.055)] sm:p-6">
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div>
-          <h2 className="text-lg font-black tracking-tight text-slate-900">{title}</h2>
+          <h2 className="text-base font-extrabold tracking-tight text-slate-900">{title}</h2>
           {subtitle && <p className="mt-1 text-sm text-slate-500">{subtitle}</p>}
         </div>
         {actions}
@@ -91,14 +91,14 @@ export function Field({ label, children }: { label: string; children: ReactNode 
 }
 
 export const inputCls =
-  "w-full rounded-xl border border-slate-200 bg-white px-3 py-2 text-sm text-slate-800 outline-none transition focus:border-odoo-400 focus:ring-2 focus:ring-odoo-100";
+  "w-full rounded-xl border border-slate-200 bg-white px-3 py-2.5 text-sm text-slate-800 shadow-[0_1px_2px_rgba(39,22,33,0.03)] outline-none transition placeholder:text-slate-400 focus:border-odoo-400 focus:ring-4 focus:ring-odoo-100/70";
 
 export function Table({ headers, children }: { headers: string[]; children: ReactNode }) {
   return (
-    <div className="overflow-x-auto rounded-2xl border border-slate-200">
+    <div className="overflow-x-auto rounded-xl border border-slate-200">
       <table className="w-full min-w-[640px] text-left text-sm">
         <thead>
-          <tr className="border-b border-slate-200 bg-slate-50/80 text-xs font-bold uppercase tracking-[0.12em] text-slate-500">
+          <tr className="border-b border-slate-200 bg-[#fbf8fa] text-[11px] font-bold uppercase tracking-[0.12em] text-slate-500">
             {headers.map((h) => (
               <th key={h} className="px-4 py-3">{h}</th>
             ))}

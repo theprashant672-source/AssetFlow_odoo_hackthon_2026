@@ -12,7 +12,7 @@ import NotificationsModule from "@/app/components/assetflow/modules/Notification
 import { canAccessSection, isAssetFlowRole, sectionHref, type AssetFlowRole, type AssetFlowSection } from "@/app/lib/assetflow-roles";
 
 const SECTION_TITLES: Record<AssetFlowSection, { title: string; subtitle: string }> = {
-  dashboard: { title: "Dashboard", subtitle: "Real-time operational snapshot with live KPIs." },
+  dashboard: { title: "Dashboard", subtitle: "Current operational status and key performance indicators." },
   organization: { title: "Organization Setup", subtitle: "Departments, asset categories and the employee directory." },
   departments: { title: "Departments", subtitle: "Create departments, assign heads, manage hierarchy." },
   employees: { title: "Employee Directory", subtitle: "People, roles and status — roles are assigned only here." },

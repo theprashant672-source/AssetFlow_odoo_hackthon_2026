@@ -1,6 +1,5 @@
 "use client";
 
-import AssetFlowLogo from "../AssetFlowLogo";
 import { IconBell, IconMenu, IconMoon, IconSearch, IconSun, IconUser } from "@/app/components/icons/Icons";
 import { ROLE_LABELS, type AssetFlowRole } from "@/app/lib/assetflow-roles";
 
@@ -18,8 +17,8 @@ export default function Navbar({
   theme: "light" | "dark";
 }) {
   return (
-    <header className="sticky top-0 z-30 border-b border-slate-200/70 bg-[rgba(248,250,252,0.86)] backdrop-blur-xl">
-      <div className="mx-auto flex w-full max-w-[1600px] items-center gap-4 px-4 py-4 sm:px-6 lg:px-8">
+    <header className="sticky top-0 z-30 px-4 pt-3 sm:px-6 lg:px-10">
+      <div className="mx-auto flex w-full max-w-[1480px] items-center gap-3 rounded-2xl border border-white/70 bg-white/80 px-3 py-2.5 shadow-[0_12px_34px_rgba(39,22,33,0.08)] backdrop-blur-xl sm:px-4">
         <button
           type="button"
           onClick={onMenuClick}
@@ -29,11 +28,12 @@ export default function Navbar({
           <IconMenu size={18} />
         </button>
 
-        <div className="hidden lg:block">
-          <AssetFlowLogo compact />
+        <div className="hidden min-w-[150px] lg:block">
+          <div className="text-[10px] font-bold uppercase tracking-[0.22em] text-slate-400">Asset management</div>
+          <div className="mt-0.5 text-sm font-bold text-slate-900">Operations workspace</div>
         </div>
 
-        <div className="flex min-w-0 flex-1 items-center gap-3 rounded-[1.2rem] border border-slate-200 bg-white px-4 py-3 shadow-sm">
+        <div className="flex min-w-0 flex-1 items-center gap-3 rounded-xl bg-slate-100/80 px-3.5 py-2.5">
           <IconSearch size={18} className="text-slate-400" />
           <input
             type="search"
@@ -45,7 +45,7 @@ export default function Navbar({
         <button
           type="button"
           onClick={onThemeToggle}
-          className="inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-[#9A528D]/30 hover:text-[#9A528D]"
+          className="inline-flex h-10 w-10 items-center justify-center rounded-xl text-slate-600 transition hover:bg-odoo-50 hover:text-[#9A528D]"
           aria-label="Toggle theme"
         >
           {theme === "light" ? <IconMoon size={18} /> : <IconSun size={18} />}
@@ -53,7 +53,7 @@ export default function Navbar({
 
         <button
           type="button"
-          className="relative inline-flex h-11 w-11 items-center justify-center rounded-2xl border border-slate-200 bg-white text-slate-700 shadow-sm transition hover:border-[#9A528D]/30 hover:text-[#9A528D]"
+          className="relative inline-flex h-10 w-10 items-center justify-center rounded-xl text-slate-600 transition hover:bg-odoo-50 hover:text-[#9A528D]"
           aria-label="Notifications"
         >
           <IconBell size={18} />
@@ -63,14 +63,14 @@ export default function Navbar({
         <button
           type="button"
           onClick={onLogout}
-          className="hidden items-center gap-3 rounded-[1.2rem] border border-slate-200 bg-white px-3 py-2.5 text-left shadow-sm transition hover:border-[#9A528D]/30 hover:shadow-md lg:flex"
+          className="hidden items-center gap-3 rounded-xl bg-slate-100/80 px-2.5 py-2 text-left transition hover:bg-odoo-50 lg:flex"
         >
           <div className="flex h-10 w-10 items-center justify-center rounded-2xl bg-[linear-gradient(135deg,#9A528D,#b878ab)] text-white">
             <IconUser size={18} />
           </div>
           <div>
             <div className="text-sm font-bold text-slate-900">{ROLE_LABELS[role]}</div>
-            <div className="text-xs text-slate-500">odoo Assetflow workspace</div>
+            <div className="text-xs text-slate-500">Account menu</div>
           </div>
         </button>
       </div>

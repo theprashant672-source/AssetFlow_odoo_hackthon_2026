@@ -44,8 +44,7 @@ export default function ModulePage({
       </div>
 
       <div className="mt-8 rounded-[1.75rem] border border-dashed border-slate-300 bg-white/50 p-10 text-center text-sm leading-7 text-slate-600">
-        This module is scaffolded and ready for the next milestone. We will plug in tables, forms, filters,
-        and API integration after the dashboard foundation is approved.
+        Use this workspace to review records, update details, and manage operational actions.
       </div>
     </section>
   );

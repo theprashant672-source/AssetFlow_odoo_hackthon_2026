@@ -38,22 +38,31 @@ export default function AssetsModule({ canRegister = true, scope = "all" }: {
     return list;
   }, [db, query, statusFilter, catFilter, scope, me]);
 
+  const availableCount = db.assets.filter((asset) => asset.status === "Available").length;
+  const allocatedCount = db.assets.filter((asset) => asset.status === "Allocated").length;
+
   return (
     <div className="grid gap-5">
-      {canRegister && scope === "all" && (
-        <div className="flex justify-end">
-          <Button onClick={() => setShowForm((s) => !s)}>
-            {showForm ? "Close form" : "+ Register asset"}
-          </Button>
+      <section className="flex flex-col gap-4 rounded-2xl border border-odoo-100 bg-[linear-gradient(120deg,#fff_0%,#fbf5f9_55%,#f4e8f1_100%)] p-5 sm:flex-row sm:items-center sm:justify-between sm:p-6">
+        <div>
+          <div className="text-[11px] font-bold uppercase tracking-[0.22em] text-odoo-600">Asset register</div>
+          <p className="mt-1 text-sm leading-6 text-slate-600">Track equipment, ownership, location, and lifecycle status from one place.</p>
         </div>
-      )}
+        <div className="flex items-center gap-2.5">
+          <Metric label="Available" value={availableCount} tone="text-emerald-700" />
+          <Metric label="Allocated" value={allocatedCount} tone="text-odoo-700" />
+          {canRegister && scope === "all" && (
+            <Button onClick={() => setShowForm((s) => !s)}>{showForm ? "Close" : "Register asset"}</Button>
+          )}
+        </div>
+      </section>
       {showForm && canRegister && <RegisterForm onDone={() => setShowForm(false)} />}
 
       <Panel
         title={scope === "mine" ? "My assets" : "Asset directory"}
-        subtitle={scope === "mine" ? "Assets currently allocated to you." : "Search by tag, serial number, name or location."}
+        subtitle={scope === "mine" ? "Assets currently allocated to you." : `${assets.length} matching asset${assets.length === 1 ? "" : "s"} in the register.`}
       >
-        <div className="mb-4 grid gap-3 sm:grid-cols-3">
+        <div className="mb-5 grid gap-3 rounded-xl bg-slate-50 p-3 sm:grid-cols-3">
           <input
             className={inputCls}
             value={query}
@@ -61,25 +70,25 @@ export default function AssetsModule({ canRegister = true, scope = "all" }: {
             placeholder="Search AF-0001, serial, name…"
           />
           <select className={inputCls} value={statusFilter} onChange={(e) => setStatusFilter(e.target.value)}>
-            <option value="">All statuses</option>
+            <option value="">All lifecycle statuses</option>
             {ALL_STATUSES.map((s) => <option key={s} value={s}>{s}</option>)}
           </select>
           <select className={inputCls} value={catFilter} onChange={(e) => setCatFilter(e.target.value)}>
-            <option value="">All categories</option>
+            <option value="">All asset categories</option>
             {db.categories.map((c) => <option key={c.id} value={c.id}>{c.name}</option>)}
           </select>
         </div>
 
-        <Table headers={["Tag", "Asset", "Category", "Location", "Holder", "Status", "History"]}>
-          {assets.length === 0 && <EmptyRow span={7} message="No assets match." />}
+        <Table headers={["Tag", "Asset", "Category", "Location", "Holder", "Status", "Details"]}>
+          {assets.length === 0 && <EmptyRow span={7} message="No assets match the selected filters." />}
           {assets.map((a) => {
             const cat = db.categories.find((c) => c.id === a.categoryId);
             return (
-              <tr key={a.id}>
+              <tr key={a.id} className="transition hover:bg-odoo-50/40">
                 <td className="px-4 py-3 font-mono text-xs font-bold text-odoo-700">{a.tag}</td>
                 <td className="px-4 py-3 font-semibold text-slate-900">
                   {a.name}
-                  {a.bookable && <span className="ml-2"><Badge tone="purple">bookable</Badge></span>}
+                  {a.bookable && <span className="ml-2"><Badge tone="purple">Bookable</Badge></span>}
                 </td>
                 <td className="px-4 py-3">{cat?.name ?? "—"}</td>
                 <td className="px-4 py-3">{a.location}</td>
@@ -87,7 +96,7 @@ export default function AssetsModule({ canRegister = true, scope = "all" }: {
                 <td className="px-4 py-3"><StatusBadge status={a.status} /></td>
                 <td className="px-4 py-3">
                   <Button tone="ghost" onClick={() => setSelected(selected?.id === a.id ? null : a)}>
-                    {selected?.id === a.id ? "Hide" : "View"}
+                    {selected?.id === a.id ? "Close" : "Open"}
                   </Button>
                 </td>
               </tr>
@@ -97,6 +106,15 @@ export default function AssetsModule({ canRegister = true, scope = "all" }: {
       </Panel>
 
       {selected && <AssetDetail asset={db.assets.find((a) => a.id === selected.id) ?? selected} canRegister={canRegister} />}
+    </div>
+  );
+}
+
+function Metric({ label, value, tone }: { label: string; value: number; tone: string }) {
+  return (
+    <div className="rounded-xl bg-white px-3 py-2 shadow-sm">
+      <div className="text-[10px] font-bold uppercase tracking-[0.14em] text-slate-400">{label}</div>
+      <div className={`mt-0.5 text-lg font-black ${tone}`}>{value}</div>
     </div>
   );
 }

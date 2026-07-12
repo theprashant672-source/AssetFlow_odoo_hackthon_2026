@@ -23,38 +23,44 @@ type LoginValues = z.infer<typeof loginSchema>;
 
 const DEMO_ACCOUNTS = [
   {
-    email: "superadmin@odoo.com",
+    email: "superadmin@oddo.com",
     role: "founder" as AssetFlowRole,
     title: "Founder",
     note: "Top access",
   },
   {
-    email: "manager@odoo.com",
+    email: "admin@oddo.com",
+    role: "admin" as AssetFlowRole,
+    title: "Admin",
+    note: "Administrator access",
+  },
+  {
+    email: "manager@oddo.com",
     role: "manager" as AssetFlowRole,
     title: "Manager",
     note: "Team control",
   },
   {
-    email: "tl@odoo.com",
+    email: "tl@oddo.com",
     role: "head" as AssetFlowRole,
     title: "TL",
     note: "Task lead",
   },
   {
-    email: "itservice@odoo.com",
+    email: "itservice@oddo.com",
     role: "manager" as AssetFlowRole,
     title: "IT Service",
     note: "Support ops",
   },
   {
-    email: "employee@odoo.com",
+    email: "employee@oddo.com",
     role: "employee" as AssetFlowRole,
     title: "Employee",
     note: "Personal workspace",
   },
 ] as const;
 
-const DEMO_PASSWORD = "ODOO@123";
+const DEMO_PASSWORD = "ODDO@123";
 
 const ROLE_SHORT_LABELS: Record<AssetFlowRole, string> = {
   founder: "Founder",
@@ -72,10 +78,16 @@ function setCookie(name: string, value: string) {
 // when the API is missing or unreachable so the frontend stays fully usable.
 function isBackendUnavailable(error: unknown): boolean {
   const message = error instanceof Error ? error.message : String(error ?? "");
-  return /route not found|request failed \(404\)|failed to fetch|network|unexpected response/i.test(message);
+  return /route not found|request failed \((404|5\d\d)\)|failed to fetch|network|unexpected response/i.test(message);
 }
 
 const LOCAL_OTP_CHALLENGE = "local-demo";
+
+// The existing API demo seed uses the historic `oddo.com` domain. Keep the
+// login screen forgiving for users entering the product name as `odoo.com`.
+function apiIdentifier(identifier: string) {
+  return identifier.trim().replace(/@odoo\.com$/i, "@oddo.com");
+}
 
 export default function LoginPage() {
   const router = useRouter();
@@ -202,7 +214,7 @@ export default function LoginPage() {
     }
 
     try {
-      await apiLogin(values.identifier, values.secret);
+      await apiLogin(apiIdentifier(values.identifier), values.secret);
       applySession(values.role);
     } catch (error) {
       if (isBackendUnavailable(error)) {
@@ -241,7 +253,7 @@ export default function LoginPage() {
               Secure access for every role in one polished workspace.
             </h1>
             <p className="mt-4 max-w-2xl text-base leading-7 text-slate-600">
-              Login works with email and password, or OTP for temporary access. Use the demo emails below to see how the workspace routes by role.
+              Sign in with your work email and password, or use a one-time passcode when temporary access is required.
             </p>
 
             <div className="mt-6 grid gap-3 sm:grid-cols-3">
@@ -265,10 +277,10 @@ export default function LoginPage() {
             <div className="mt-5 rounded-[1.4rem] border border-slate-200 bg-white/85 p-4 shadow-sm">
               <div className="flex items-center justify-between gap-3">
                 <div>
-                  <div className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">Demo accounts</div>
-                  <div className="mt-1 text-sm text-slate-600">Click any card to autofill the email.</div>
+                  <div className="text-xs font-semibold uppercase tracking-[0.28em] text-slate-500">Quick sign-in</div>
+                  <div className="mt-1 text-sm text-slate-600">Select an account to fill in the email address.</div>
                 </div>
-                <span className="rounded-full bg-[#f6ecf4] px-3 py-1 text-xs font-semibold text-[#9A528D]">Demo only</span>
+                <span className="rounded-full bg-[#f6ecf4] px-3 py-1 text-xs font-semibold text-[#9A528D]">Role access</span>
               </div>
               <div className="mt-3 grid gap-2 sm:grid-cols-2 lg:grid-cols-3">
                 {DEMO_ACCOUNTS.map((account) => (
@@ -288,7 +300,7 @@ export default function LoginPage() {
                     <div className="flex items-center justify-between gap-2">
                       <div className="text-sm font-bold text-slate-900">{account.title}</div>
                       <span className="rounded-full bg-slate-100 px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.2em] text-slate-500">
-                        {account.title === "Manager" ? "control" : account.title === "TL" ? "lead" : account.title === "IT Service" ? "support" : "demo"}
+                        {account.title === "Manager" ? "control" : account.title === "TL" ? "lead" : account.title === "IT Service" ? "support" : "access"}
                       </span>
                     </div>
                     <div className="mt-1 break-all text-sm text-slate-600">{account.email}</div>
@@ -309,7 +321,7 @@ export default function LoginPage() {
                 <div className="text-xs font-semibold uppercase tracking-[0.32em] text-white/45">Welcome back</div>
                 <h2 className="mt-2 text-2xl font-black tracking-tight">Sign in to ODOO</h2>
                 <p className="mt-2 max-w-sm text-sm leading-6 text-white/60">
-                  Use the demo email and password below, or switch to OTP to preview the temporary code.
+                  Enter your account credentials, or switch to OTP for time-limited access.
                 </p>
               </div>
               <div className="rounded-2xl bg-white/10 p-3">
@@ -347,7 +359,7 @@ export default function LoginPage() {
                     {...register("identifier")}
                     type="email"
                     className="w-full bg-transparent text-sm text-white placeholder:text-white/35 outline-none"
-                    placeholder="admin@odoo.com"
+                    placeholder="admin@oddo.com"
                   />
                 </div>
                 {errors.identifier && <span className="text-xs font-medium text-[#fca5a5]">{errors.identifier.message}</span>}
@@ -363,7 +375,7 @@ export default function LoginPage() {
                     {...register("secret")}
                     type={showSecret ? "text" : method === "otp" ? "text" : "password"}
                     className="w-full bg-transparent text-sm text-white placeholder:text-white/35 outline-none"
-                    placeholder={method === "otp" ? "Enter OTP" : `Use ${DEMO_PASSWORD} for demo`}
+                    placeholder={method === "otp" ? "Enter OTP" : "Enter your password"}
                   />
                   <button
                     type="button"
@@ -403,7 +415,7 @@ export default function LoginPage() {
                         <div>{demoHint.title}</div>
                       </>
                     ) : (
-                      <div>Demo email required</div>
+                      <div>Select an account</div>
                     )}
                   </div>
                 </div>

@@ -34,7 +34,7 @@ export default function RegisterScreen({ onGoLogin }: { onGoLogin: () => void })
 
   const handleRegister = async () => {
     setError("");
-    if (!form.name || !form.email || !form.mobile || !form.role || !form.password) {
+    if (!form.name || !form.email || !form.mobile || !form.password) {
       setError("All fields are required."); return;
     }
     if (form.password !== form.confirm) {
@@ -46,11 +46,13 @@ export default function RegisterScreen({ onGoLogin }: { onGoLogin: () => void })
 
     setLoading(true);
     try {
+      // Signup always creates an Employee account — roles are assigned only by
+      // the Admin from the Employee Directory (no self-elevation).
       const res = await apiRegister({
         name: form.name,
         email: form.email,
         mobile: form.mobile,
-        role: form.role,
+        role: "Employee",
         password: form.password,
       });
       setSubmittedMessage(res.message);
@@ -133,24 +135,10 @@ export default function RegisterScreen({ onGoLogin }: { onGoLogin: () => void })
             </div>
           ))}
           <div style={{ gridColumn: "1 / -1" }}>
-            <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#475569", marginBottom: 5 }}>Requested Role</label>
-            <select value={form.role} onChange={e => set("role", e.target.value)}
-              style={{ width: "100%", padding: "10px 12px", borderRadius: 9, border: "1.5px solid #e2e8f0", fontSize: 13, background: "#fff", color: "#0f172a", outline: "none" }}
-              onFocus={e => e.target.style.borderColor = "#9A528D"}
-              onBlur={e => e.target.style.borderColor = "#e2e8f0"}
-            >
-              <option value="">Select Role...</option>
-              <option>Admin</option>
-              <option>Inventory</option>
-              <option>Sales</option>
-              <option>Dispatch</option>
-              <option>L1 Engineer</option>
-              <option>L2 Technical Team</option>
-              <option>L3 Advanced OEM Support</option>
-              <option>Warehouse Team</option>
-              <option>Accounts Team</option>
-              <option>Dealer</option>
-            </select>
+            <div style={{ background: "#faf3f8", border: "1px solid #ecd5e6", color: "#714B67", borderRadius: 10, padding: "10px 14px", fontSize: 12.5, lineHeight: 1.6 }}>
+              Signup creates an <b>Employee</b> account. Department Head and Asset Manager roles are
+              assigned only by the Admin from the Employee Directory — no self-assigned roles.
+            </div>
           </div>
           {[
             { label: "Password", key: "password", placeholder: "Min. 8 characters" },

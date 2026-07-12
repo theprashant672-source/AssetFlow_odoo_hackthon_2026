@@ -8,9 +8,9 @@ export function Badge({ children, color }: { children: ReactNode; color?: string
     green: "bg-emerald-50 text-emerald-700 border border-emerald-200",
     red: "bg-red-50 text-red-700 border border-red-200",
     yellow: "bg-amber-50 text-amber-700 border border-amber-200",
-    blue: "bg-blue-50 text-blue-700 border border-blue-200",
+    blue: "bg-odoo-50 text-odoo-700 border border-odoo-200",
     gray: "bg-gray-100 text-gray-600 border border-gray-200",
-    teal: "bg-teal-50 text-teal-700 border border-teal-200",
+    teal: "bg-odoo-50 text-odoo-700 border border-odoo-200",
     orange: "bg-orange-50 text-orange-700 border border-orange-200",
   };
   return (

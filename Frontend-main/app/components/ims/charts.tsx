@@ -34,13 +34,13 @@ export function LineChart({
       {[0.25, 0.5, 0.75, 1].map((f) => (
         <line key={f} x1={PAD} x2={W - PAD} y1={PAD + (1 - f) * (H - PAD * 2)} y2={PAD + (1 - f) * (H - PAD * 2)} stroke="#e5e7eb" strokeWidth={1} />
       ))}
-      {area(raw, "#3b82f6")}
+      {area(raw, "#9A528D")}
       {area(manufactured, "#f59e0b")}
       {area(sales, "#10b981")}
-      {polyline(raw, "#3b82f6")}
+      {polyline(raw, "#9A528D")}
       {polyline(manufactured, "#f59e0b")}
       {polyline(sales, "#10b981")}
-      {pts(raw).map((p, i) => <circle key={i} cx={p.x} cy={p.y} r={3.5} fill="#3b82f6" stroke="white" strokeWidth={1.5} />)}
+      {pts(raw).map((p, i) => <circle key={i} cx={p.x} cy={p.y} r={3.5} fill="#9A528D" stroke="white" strokeWidth={1.5} />)}
       {pts(sales).map((p, i) => <circle key={i} cx={p.x} cy={p.y} r={3.5} fill="#10b981" stroke="white" strokeWidth={1.5} />)}
       {months.map((m, i) => (
         <text key={`${m}-${i}`} x={PAD + (i / (months.length - 1)) * (W - PAD * 2)} y={H - 4} textAnchor="middle" fill="#9ca3af" fontSize={11}>{m}</text>
@@ -51,7 +51,7 @@ export function LineChart({
 
 export function DonutChart({ data }: { data: Array<{ label: string; value: number }> }) {
   const palette: Record<string, string> = {
-    "Open at NovaAssets": "#3b82f6",
+    "Open at NovaAssets": "#9A528D",
     "In Progress at NovaAssets": "#84cc16",
     "Resolved by NovaAssets": "#d1d5db",
     "Pending with Suppliers": "#f59e0b",

@@ -307,11 +307,11 @@ function renderDocumentLinks(documents: Array<CustomerDocument | string> | undef
             href={documentItem.url}
             target="_blank"
             rel="noreferrer"
-            className="inline-flex max-w-[220px] items-center gap-1 rounded-md border border-blue-200 bg-blue-50 px-2 py-1 text-[11px] font-semibold text-blue-700 hover:bg-blue-100"
+            className="inline-flex max-w-[220px] items-center gap-1 rounded-md border border-odoo-200 bg-odoo-50 px-2 py-1 text-[11px] font-semibold text-odoo-700 hover:bg-odoo-100"
             title={documentName(documentItem)}
           >
             <span className="shrink-0">{documentItem.label}</span>
-            <span className="truncate font-normal text-blue-500">{documentName(documentItem)}</span>
+            <span className="truncate font-normal text-odoo-500">{documentName(documentItem)}</span>
           </a>
         );
       })}
@@ -515,7 +515,7 @@ function DefaultDashboardPage({ user }: { user: User }) {
   const stats = useMemo(() => {
     const s = statsRes.data;
     return [
-      { label: "Raw Materials", value: s ? formatNumber(s.rawMaterials.totalAvailable) : "-", icon: <IconPackage size={20} />, color: "from-blue-50 to-white", border: "border-blue-100", accent: "text-blue-600", iconBg: "bg-blue-100 text-blue-700" },
+      { label: "Raw Materials", value: s ? formatNumber(s.rawMaterials.totalAvailable) : "-", icon: <IconPackage size={20} />, color: "from-odoo-50 to-white", border: "border-odoo-100", accent: "text-odoo-600", iconBg: "bg-odoo-100 text-odoo-700" },
       { label: "Manufactured", value: s ? formatNumber(s.manufactured.total) : "-", icon: <IconCog size={20} />, color: "from-amber-50 to-white", border: "border-amber-100", accent: "text-amber-600", iconBg: "bg-amber-100 text-amber-700" },
       { label: "Products Sold", value: s ? formatNumber(s.manufactured.sold) : "-", icon: <IconShoppingCart size={20} />, color: "from-emerald-50 to-white", border: "border-emerald-100", accent: "text-emerald-600", iconBg: "bg-emerald-100 text-emerald-700" },
     ];
@@ -557,7 +557,7 @@ function DefaultDashboardPage({ user }: { user: User }) {
             <h3 className="text-sm font-semibold text-gray-900">Inventory Timeline</h3>
             <div className="flex flex-wrap gap-x-4 gap-y-1 text-xs text-gray-500">
               <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-emerald-500 inline-block rounded" />Sales</span>
-              <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-blue-500 inline-block rounded" />Raw Materials</span>
+              <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-odoo-500 inline-block rounded" />Raw Materials</span>
               <span className="flex items-center gap-1.5"><span className="w-3 h-0.5 bg-amber-500 inline-block rounded" />Manufactured</span>
             </div>
           </div>
@@ -597,7 +597,7 @@ function DefaultDashboardPage({ user }: { user: User }) {
               <TR key={i} zebra={i % 2 === 1}>
                 <TD><span className="w-6 h-6 rounded bg-amber-100 text-amber-700 text-xs font-bold flex items-center justify-center">{i + 1}</span></TD>
                 <TD className="font-medium text-gray-900">{r.customer}</TD>
-                <TD><span className="text-blue-600 text-xs">-</span></TD>
+                <TD><span className="text-odoo-600 text-xs">-</span></TD>
                 <TD className="font-mono text-xs text-amber-700 font-semibold">{r.serial}</TD>
               </TR>
             ))}
@@ -671,12 +671,12 @@ function DashboardStatCard({
 }) {
   const map = {
     amber: "border-amber-100 bg-amber-50 text-amber-700",
-    blue: "border-blue-100 bg-blue-50 text-blue-700",
+    blue: "border-odoo-100 bg-odoo-50 text-odoo-700",
     emerald: "border-emerald-100 bg-emerald-50 text-emerald-700",
     red: "border-red-100 bg-red-50 text-red-700",
     slate: "border-slate-200 bg-slate-50 text-slate-700",
-    violet: "border-violet-100 bg-violet-50 text-violet-700",
-    teal: "border-teal-100 bg-teal-50 text-teal-700",
+    violet: "border-odoo-100 bg-odoo-50 text-odoo-700",
+    teal: "border-odoo-100 bg-odoo-50 text-odoo-700",
   }[color];
   const content = (
     <>
@@ -717,7 +717,7 @@ function DashboardPanel({ title, sub, children, action }: { title: string; sub?:
 }
 
 function ProgressBar({ label, value, tone = "amber" }: { label: string; value: number; tone?: "amber" | "emerald" | "red" | "blue" }) {
-  const color = tone === "emerald" ? "bg-emerald-500" : tone === "red" ? "bg-red-500" : tone === "blue" ? "bg-blue-500" : "bg-amber-500";
+  const color = tone === "emerald" ? "bg-emerald-500" : tone === "red" ? "bg-red-500" : tone === "blue" ? "bg-odoo-500" : "bg-amber-500";
   return (
     <div>
       <div className="mb-1 flex items-center justify-between gap-3 text-xs">
@@ -871,7 +871,7 @@ function InventoryDashboard({ user, variant, onNavigate }: { user: User; variant
   const health = Math.round((pct(rawSummary.length - lowStock.length, Math.max(1, rawSummary.length)) + pct(readyRows.length, Math.max(1, manufacturedRows.length)) + pct(unassignedSerials, Math.max(1, serialRows.length))) / 3);
   const recentManufacturing = manufacturedRows.filter((row) => isSameCalendarDay(row.mfgDate)).slice(0, 5);
   const latestRaw = [...rawRows].sort((a, b) => new Date(b.dateReceived).getTime() - new Date(a.dateReceived).getTime()).slice(0, 5);
-  const materialBars = rawSummary.slice(0, 5).map((row, index) => ({ label: row.material, value: row.available + row.reserved, color: ["bg-blue-500", "bg-amber-500", "bg-teal-500", "bg-violet-500", "bg-emerald-500"][index] }));
+  const materialBars = rawSummary.slice(0, 5).map((row, index) => ({ label: row.material, value: row.available + row.reserved, color: ["bg-odoo-500", "bg-amber-500", "bg-odoo-500", "bg-odoo-500", "bg-emerald-500"][index] }));
 
   const inventoryReports = isAdmin
     ? ["Stock Summary Report", "Raw Material Ledger", "Finished Goods Report", "Manufacturing Register", "Production vs Consumption Report", "Inventory Valuation Report", "Low Stock Report", "Repaired Stock Report", "Faulty Stock Report", "Batch-wise Stock Report", "Supplier Return Report", "Serial Status Report", "BOM Consumption Report"]
@@ -969,7 +969,7 @@ function InventoryDashboard({ user, variant, onNavigate }: { user: User; variant
         </DashboardPanel>
 
         <DashboardPanel title="Ready Stock by Series">
-          <HorizontalBars rows={finishedSummary.slice(0, 5).map((row, index) => ({ label: row.model, value: row.ready, color: ["bg-emerald-500", "bg-blue-500", "bg-amber-500", "bg-teal-500", "bg-violet-500"][index] }))} />
+          <HorizontalBars rows={finishedSummary.slice(0, 5).map((row, index) => ({ label: row.model, value: row.ready, color: ["bg-emerald-500", "bg-odoo-500", "bg-amber-500", "bg-odoo-500", "bg-odoo-500"][index] }))} />
         </DashboardPanel>
       </div>
 
@@ -1112,12 +1112,12 @@ function ServiceCommandDashboard({ onNavigate }: { onNavigate?: DashboardNavigat
     map.set(label, (map.get(label) ?? 0) + 1);
     return map;
   }, new Map<string, number>());
-  const categoryBars = Array.from(categoryCounts.entries()).map(([label, value], index) => ({ label, value, color: ["bg-blue-500", "bg-amber-500", "bg-emerald-500", "bg-violet-500", "bg-teal-500"][index % 5] })).slice(0, 6);
+  const categoryBars = Array.from(categoryCounts.entries()).map(([label, value], index) => ({ label, value, color: ["bg-odoo-500", "bg-amber-500", "bg-emerald-500", "bg-odoo-500", "bg-odoo-500"][index % 5] })).slice(0, 6);
   const sourceBars = Array.from(filtered.reduce((map, row) => {
     const label = row.ticketSource || "Link";
     map.set(label, (map.get(label) ?? 0) + 1);
     return map;
-  }, new Map<string, number>()).entries()).map(([label, value], index) => ({ label, value, color: ["bg-emerald-500", "bg-blue-500", "bg-amber-500"][index % 3] }));
+  }, new Map<string, number>()).entries()).map(([label, value], index) => ({ label, value, color: ["bg-emerald-500", "bg-odoo-500", "bg-amber-500"][index % 3] }));
   const agingRows = [
     { label: "0-24 Hours", value: open.filter((row) => daysSince(row.createdAt ?? row.dateOfComplaint) < 1).length, color: "bg-emerald-500" },
     { label: "24-48 Hours", value: open.filter((row) => daysSince(row.createdAt ?? row.dateOfComplaint) >= 1 && daysSince(row.createdAt ?? row.dateOfComplaint) < 2).length, color: "bg-amber-500" },
@@ -1356,10 +1356,10 @@ function EngineerDashboardPage({ user }: { user: User }) {
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 xl:grid-cols-4 mb-6">
         {[
-          { key: "running", label: "Running Tickets", value: data?.counts.runningTickets ?? 0, color: "from-blue-50 to-white", border: "border-blue-100", accent: "text-blue-700" },
+          { key: "running", label: "Running Tickets", value: data?.counts.runningTickets ?? 0, color: "from-odoo-50 to-white", border: "border-odoo-100", accent: "text-odoo-700" },
           { key: "closed", label: "Closed Tickets", value: data?.counts.closedTickets ?? 0, color: "from-emerald-50 to-white", border: "border-emerald-100", accent: "text-emerald-700" },
           { key: "sla", label: "SLA Monitoring", value: data?.counts.slaMonitoring ?? 0, color: "from-amber-50 to-white", border: "border-amber-100", accent: "text-amber-700" },
-          { key: "onsite", label: "Onsite Tickets", value: data?.counts.onsiteTickets ?? 0, color: "from-indigo-50 to-white", border: "border-indigo-100", accent: "text-indigo-700" },
+          { key: "onsite", label: "Onsite Tickets", value: data?.counts.onsiteTickets ?? 0, color: "from-odoo-50 to-white", border: "border-odoo-100", accent: "text-odoo-700" },
         ].map((card) => (
           <button
             key={card.key}
@@ -3106,7 +3106,7 @@ export function CustomersPage() {
             >
               Pending Approvals
             </button>
-            <label className={`w-full sm:w-auto inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition ${bulkImporting ? "border-gray-200 bg-gray-100 text-gray-400 cursor-wait" : "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"}`}>
+            <label className={`w-full sm:w-auto inline-flex cursor-pointer items-center justify-center gap-2 rounded-lg border px-4 py-2 text-sm font-semibold transition ${bulkImporting ? "border-gray-200 bg-gray-100 text-gray-400 cursor-wait" : "border-odoo-200 bg-odoo-50 text-odoo-700 hover:bg-odoo-100"}`}>
               <IconUpload size={16} />
               {bulkImporting ? "Importing..." : "Bulk Upload Excel"}
               <input
@@ -3125,7 +3125,7 @@ export function CustomersPage() {
           </div>
         }
       />
-      {bulkMessage && <div className="mb-4 rounded-xl border border-blue-100 bg-blue-50 px-4 py-3 text-sm text-blue-700">{bulkMessage}</div>}
+      {bulkMessage && <div className="mb-4 rounded-xl border border-odoo-100 bg-odoo-50 px-4 py-3 text-sm text-odoo-700">{bulkMessage}</div>}
       {approvalOpen && (
         <div className="fixed inset-0 z-[60] flex items-center justify-center p-4">
           <button
@@ -3200,7 +3200,7 @@ export function CustomersPage() {
                             <button
                               type="button"
                               onClick={() => openPendingEdit(requestItem)}
-                              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold border border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 transition"
+                              className="inline-flex items-center gap-1 px-3 py-1.5 rounded-lg text-xs font-bold border border-odoo-200 bg-odoo-50 text-odoo-700 hover:bg-odoo-100 transition"
                             >
                               <IconPencil size={12} /> Edit
                             </button>
@@ -3283,7 +3283,7 @@ export function CustomersPage() {
           {filtered.map((c, i) => (
             <TR key={i} zebra={i % 2 === 1}>
               <TD className="text-gray-400">{i + 1}</TD>
-              <TD><span className="text-blue-600 font-medium hover:text-blue-700 cursor-pointer">{c.name}</span></TD>
+              <TD><span className="text-odoo-600 font-medium hover:text-odoo-700 cursor-pointer">{c.name}</span></TD>
               <TD>{c.type === "Distributor" ? <Badge color="orange">Distributor</Badge> : <Badge color="blue">Individual</Badge>}</TD>
               <TD className="text-gray-500 text-xs">{c.distributorshipType || "-"}</TD>
               <TD className="text-gray-500 text-xs">{c.email || "-"}</TD>
@@ -3474,7 +3474,7 @@ export function CustomersPage() {
                             className={`flex h-9 min-w-9 items-center justify-center rounded-lg border px-3 text-xs font-bold transition ${activeAreaSlotIndex === areaIndex
                               ? "border-amber-400 bg-amber-100 text-amber-800"
                               : areaValue.trim()
-                                ? "border-blue-900 bg-blue-900 text-white hover:bg-blue-800"
+                                ? "border-odoo-900 bg-odoo-900 text-white hover:bg-odoo-800"
                                 : "border-gray-200 bg-white text-gray-400 hover:bg-gray-100"
                               }`}
                           >
@@ -3616,7 +3616,7 @@ export function CustomersPage() {
                           </div>
                           <div className="flex items-center gap-2">
                             {typeof documentItem !== "string" && (
-                              <a href={documentItem.url} target="_blank" rel="noreferrer" className="text-[11px] font-bold text-blue-600 hover:text-blue-700">Open</a>
+                              <a href={documentItem.url} target="_blank" rel="noreferrer" className="text-[11px] font-bold text-odoo-600 hover:text-odoo-700">Open</a>
                             )}
                             {typeof documentItem !== "string" && (
                               <button type="button" onClick={() => removeCustomerDocument(documentItem.id)} className="text-[11px] font-bold text-red-500 hover:text-red-600">Remove</button>
@@ -3864,7 +3864,7 @@ export function SerialsPage() {
             type="button"
             disabled={importing}
             onClick={handleSerialImport}
-            className={`w-full py-2.5 rounded-lg text-white font-semibold text-sm transition shadow-sm ${importing ? "bg-blue-300 cursor-not-allowed" : "bg-blue-600 hover:bg-blue-500"
+            className={`w-full py-2.5 rounded-lg text-white font-semibold text-sm transition shadow-sm ${importing ? "bg-odoo-300 cursor-not-allowed" : "bg-odoo-600 hover:bg-odoo-500"
               }`}
           >
             {importing ? "Importing..." : "Import Serials"}
@@ -3877,7 +3877,7 @@ export function SerialsPage() {
               <select
                 value={filterSeries}
                 onChange={(e) => { setFilterSeries(e.target.value); setPage(1); }}
-                className="h-9 w-[200px] rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                className="h-9 w-[200px] rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-odoo-100"
               >
                 <option value="">All Series</option>
                 {seriesOptions.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -3885,7 +3885,7 @@ export function SerialsPage() {
               <select
                 value={filterStatus}
                 onChange={(e) => { setFilterStatus(e.target.value); setPage(1); }}
-                className="h-9 rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                className="h-9 rounded-lg border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-odoo-100"
               >
                 <option value="">All Statuses</option>
                 <option value="Available">Available</option>
@@ -3926,7 +3926,7 @@ export function SerialsPage() {
             {paginated.map((s, i) => (
               <TR key={i} zebra={i % 2 === 1}>
                 <TD className="font-mono text-xs text-gray-800">{s.serialNumber}</TD>
-                <TD><span className="text-blue-600 text-xs">{s.productSeriesId}</span></TD>
+                <TD><span className="text-odoo-600 text-xs">{s.productSeriesId}</span></TD>
                 <TD><Badge color="gray">{s.status}</Badge></TD>
                 <TD>
                   <button
@@ -3939,7 +3939,7 @@ export function SerialsPage() {
                 </TD>
                 <TD className="text-xs">
                   {s.importFileUrl ? (
-                    <a href={s.importFileUrl} target="_blank" rel="noreferrer" className="font-semibold text-blue-600 hover:text-blue-700">
+                    <a href={s.importFileUrl} target="_blank" rel="noreferrer" className="font-semibold text-odoo-600 hover:text-odoo-700">
                       {s.importFileName || "Open CSV"}
                     </a>
                   ) : (
@@ -4123,19 +4123,19 @@ export function ProductsPage() {
       <PageHeader title="Products" sub="Home / Manage Products" />
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-5 mb-5">
         {seriesCounts.map(([seriesName, count], idx) => {
-          const bgColors = ["bg-indigo-50", "bg-emerald-50", "bg-amber-50", "bg-rose-50", "bg-cyan-50", "bg-fuchsia-50"];
-          const textColors = ["text-indigo-600", "text-emerald-600", "text-amber-600", "text-rose-600", "text-cyan-600", "text-fuchsia-600"];
+          const bgColors = ["bg-odoo-50", "bg-emerald-50", "bg-amber-50", "bg-rose-50", "bg-odoo-50", "bg-odoo-50"];
+          const textColors = ["text-odoo-600", "text-emerald-600", "text-amber-600", "text-rose-600", "text-odoo-600", "text-odoo-600"];
           const colorIdx = idx % bgColors.length;
           return (
             <div key={seriesName} className="rounded-md bg-white border border-gray-100 p-4 shadow-sm">
-              <div className="text-blue-900 text-sm font-medium">
+              <div className="text-odoo-900 text-sm font-medium">
                 {seriesName} {seriesName.toLowerCase().includes("series") ? "" : "Series"}
               </div>
               <div className="mt-5 flex items-center gap-5">
                 <div className={`flex h-14 w-14 items-center justify-center rounded-full ${bgColors[colorIdx]} text-lg font-bold italic ${textColors[colorIdx]}`}>
                   i
                 </div>
-                <div className="text-2xl font-bold text-blue-900">{count}</div>
+                <div className="text-2xl font-bold text-odoo-900">{count}</div>
               </div>
             </div>
           );
@@ -4158,7 +4158,7 @@ export function ProductsPage() {
             <select
               value={pageSize}
               onChange={(event) => setPageSize(Number(event.target.value))}
-              className="h-8 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              className="h-8 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-odoo-100"
             >
               {[8, 16, 24, 50].map((size) => <option key={size} value={size}>{size}</option>)}
             </select>
@@ -4168,7 +4168,7 @@ export function ProductsPage() {
             <select
               value={filterSeries}
               onChange={(e) => setFilterSeries(e.target.value)}
-              className="h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-100"
+              className="h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-odoo-100"
             >
               <option value="">All Series</option>
               {seriesOptions.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -4178,7 +4178,7 @@ export function ProductsPage() {
               <input
                 value={q}
                 onChange={(event) => setQ(event.target.value)}
-                className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-100 sm:w-48"
+                className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-odoo-100 sm:w-48"
               />
             </label>
           </div>
@@ -4186,9 +4186,9 @@ export function ProductsPage() {
         <div className="overflow-x-auto px-4 pb-3">
           <table className="w-full border-collapse text-sm">
             <thead>
-              <tr className="bg-blue-800 text-white">
-                <th className="border-r border-blue-700 px-3 py-1 text-left text-xs font-bold">Product Series</th>
-                <th className="border-r border-blue-700 px-3 py-1 text-left text-xs font-bold">Model Name</th>
+              <tr className="bg-odoo-800 text-white">
+                <th className="border-r border-odoo-700 px-3 py-1 text-left text-xs font-bold">Product Series</th>
+                <th className="border-r border-odoo-700 px-3 py-1 text-left text-xs font-bold">Model Name</th>
                 <th className="px-3 py-1 text-left text-xs font-bold">Manage</th>
               </tr>
             </thead>
@@ -4263,7 +4263,7 @@ export function ProductsPage() {
                 <select
                   value={form.series}
                   onChange={(event) => setForm((f) => ({ ...f, series: event.target.value, newSeries: "" }))}
-                  className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-odoo-100"
                 >
                   <option value="">Select a Product Series</option>
                   {seriesOptions.map((series) => <option key={series} value={series}>{series}</option>)}
@@ -4274,7 +4274,7 @@ export function ProductsPage() {
                 <input
                   value={form.newSeries}
                   onChange={(event) => setForm((f) => ({ ...f, newSeries: event.target.value, series: event.target.value.trim() ? "" : f.series }))}
-                  className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-odoo-100"
                 />
               </div>
               <div>
@@ -4283,7 +4283,7 @@ export function ProductsPage() {
                   value={form.productDescription}
                   onChange={(event) => setForm((f) => ({ ...f, productDescription: event.target.value }))}
                   rows={3}
-                  className="w-full rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-odoo-100"
                 />
               </div>
               <div>
@@ -4291,7 +4291,7 @@ export function ProductsPage() {
                 <input
                   value={form.model}
                   onChange={(event) => setForm((f) => ({ ...f, model: event.target.value }))}
-                  className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-odoo-100"
                 />
               </div>
               <div>
@@ -4300,7 +4300,7 @@ export function ProductsPage() {
                   value={form.modelDescription}
                   onChange={(event) => setForm((f) => ({ ...f, modelDescription: event.target.value }))}
                   rows={3}
-                  className="w-full rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-100"
+                  className="w-full rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-odoo-100"
                 />
               </div>
               {formError && (
@@ -4321,7 +4321,7 @@ export function ProductsPage() {
                 type="button"
                 disabled={saving}
                 onClick={onSave}
-                className="rounded bg-blue-600 px-4 py-2 text-sm text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded bg-odoo-600 px-4 py-2 text-sm text-white hover:bg-odoo-500 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {saving ? "Saving..." : "Save Product"}
               </button>
@@ -4451,7 +4451,7 @@ export function SeriesBOMPage() {
             <div>
               <div className="flex items-center justify-between mb-2">
                 <label className="block text-xs font-semibold text-gray-700">BOM Items</label>
-                <button type="button" onClick={addItem} className="text-xs text-blue-600 hover:text-blue-800">
+                <button type="button" onClick={addItem} className="text-xs text-odoo-600 hover:text-odoo-800">
                   + Add Item
                 </button>
               </div>
@@ -4654,7 +4654,7 @@ function CreatableCombobox({
           ref={inputRef}
           value={open ? query : value}
           placeholder={placeholder}
-          className={inputClassName ?? "w-full h-9 rounded border border-gray-300 bg-white px-3 pr-8 text-sm text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"}
+          className={inputClassName ?? "w-full h-9 rounded border border-gray-300 bg-white px-3 pr-8 text-sm text-gray-800 focus:outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"}
           onFocus={openDropdown}
           onChange={(e) => {
             setQuery(e.target.value);
@@ -4732,7 +4732,7 @@ function CreatableCombobox({
                   setQuery("");
                   onAddNew(nextQuery || undefined);
                 }}
-                className="w-full text-left px-3 py-2 text-sm text-blue-600 font-semibold hover:bg-blue-50 transition-colors border-t border-gray-100 flex items-center gap-1.5"
+                className="w-full text-left px-3 py-2 text-sm text-odoo-600 font-semibold hover:bg-odoo-50 transition-colors border-t border-gray-100 flex items-center gap-1.5"
               >
                 <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                 {addNewLabel}
@@ -5147,7 +5147,7 @@ export function RawMaterialsPage() {
           type="button"
           onClick={() => setActiveView("inventory")}
           className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${activeView === "inventory"
-              ? "border-blue-700 bg-blue-700 text-white"
+              ? "border-odoo-700 bg-odoo-700 text-white"
               : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
             }`}
         >
@@ -5188,7 +5188,7 @@ export function RawMaterialsPage() {
             <select
               value={pageSize}
               onChange={(event) => setPageSize(Number(event.target.value))}
-              className="h-8 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none focus:border-blue-500"
+              className="h-8 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none focus:border-odoo-500"
             >
               {[10, 25, 50, 100].map((size) => (
                 <option key={size} value={size}>{size}</option>
@@ -5200,7 +5200,7 @@ export function RawMaterialsPage() {
             <select
               value={filterSeries}
               onChange={(e) => setFilterSeries(e.target.value)}
-              className="h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-blue-500"
+              className="h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-odoo-500"
             >
               <option value="">All Series</option>
               {seriesOptions.map((s) => <option key={s} value={s}>{s}</option>)}
@@ -5212,7 +5212,7 @@ export function RawMaterialsPage() {
               <input
                 value={q}
                 onChange={(event) => setQ(event.target.value)}
-                className="h-9 w-full sm:w-56 rounded border border-gray-300 bg-white pl-9 pr-3 text-sm text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                className="h-9 w-full sm:w-56 rounded border border-gray-300 bg-white pl-9 pr-3 text-sm text-gray-800 focus:outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
               />
             </div>
           </label>
@@ -5226,11 +5226,11 @@ export function RawMaterialsPage() {
                 {["Product Series", "Material Name", "Date Rcd", "Bill Type", "Ref. No.", "Qty Rcd", "Qty Avl", "Vendor", "Inward", "Batch", "Manage"].map((header) => (
                   <th
                     key={header}
-                    className="bg-blue-800 px-3 py-1 text-left text-xs font-bold uppercase tracking-wide text-white border-r border-blue-700 first:rounded-tl last:rounded-tr"
+                    className="bg-odoo-800 px-3 py-1 text-left text-xs font-bold uppercase tracking-wide text-white border-r border-odoo-700 first:rounded-tl last:rounded-tr"
                   >
                     <span className="flex items-center justify-between gap-2">
                       {header}
-                      <span className="flex flex-col text-blue-500 opacity-50 hover:opacity-100 transition cursor-pointer">
+                      <span className="flex flex-col text-odoo-500 opacity-50 hover:opacity-100 transition cursor-pointer">
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="-mb-1"><path d="m18 15-6-6-6 6" /></svg>
                         <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
                       </span>
@@ -5256,7 +5256,7 @@ export function RawMaterialsPage() {
                 paginated.map((r, i) => (
                   <tr key={r.id} className={i % 2 === 0 ? "bg-gray-100" : "bg-white"}>
                     <td className="border-r border-white px-3 py-1">
-                      <span className="inline-flex rounded bg-cyan-400 px-2 py-0.5 text-[10px] font-bold text-blue-950 whitespace-nowrap">
+                      <span className="inline-flex rounded bg-odoo-400 px-2 py-0.5 text-[10px] font-bold text-odoo-950 whitespace-nowrap">
                         {r.productSeriesId}
                       </span>
                     </td>
@@ -5277,7 +5277,7 @@ export function RawMaterialsPage() {
                     <td className="border-r border-white px-3 py-1 text-gray-800">{r.vendorName}</td>
                     <td className="border-r border-white px-3 py-1">
                       <span
-                        className={`inline-flex rounded px-2 py-0.5 text-[10px] font-bold whitespace-nowrap ${r.inwardMode === "Local" ? "bg-emerald-100 text-emerald-800" : "bg-sky-100 text-sky-800"
+                        className={`inline-flex rounded px-2 py-0.5 text-[10px] font-bold whitespace-nowrap ${r.inwardMode === "Local" ? "bg-emerald-100 text-emerald-800" : "bg-odoo-100 text-odoo-800"
                           }`}
                       >
                         {r.inwardMode ?? "International"}
@@ -5413,7 +5413,7 @@ export function RawMaterialsPage() {
                 paginated.map((r, i) => (
                   <tr key={r.id} className={i % 2 === 0 ? "bg-gray-100" : "bg-white"}>
                     <td className="border-r border-white px-3 py-1">
-                      <span className="inline-flex rounded bg-cyan-400 px-2 py-0.5 text-[10px] font-bold text-blue-950 whitespace-nowrap">
+                      <span className="inline-flex rounded bg-odoo-400 px-2 py-0.5 text-[10px] font-bold text-odoo-950 whitespace-nowrap">
                         {r.productSeriesId}
                       </span>
                     </td>
@@ -5554,7 +5554,7 @@ export function RawMaterialsPage() {
                 paginated.map((r, i) => (
                   <tr key={r.id} className={i % 2 === 0 ? "bg-gray-100" : "bg-white"}>
                     <td className="border-r border-white px-3 py-1">
-                      <span className="inline-flex rounded bg-cyan-400 px-2 py-0.5 text-[10px] font-bold text-blue-950 whitespace-nowrap">
+                      <span className="inline-flex rounded bg-odoo-400 px-2 py-0.5 text-[10px] font-bold text-odoo-950 whitespace-nowrap">
                         {r.productSeriesId}
                       </span>
                     </td>
@@ -5567,7 +5567,7 @@ export function RawMaterialsPage() {
                     <td className="border-r border-white px-3 py-1 text-gray-800">{r.vendorName}</td>
                     <td className="border-r border-white px-3 py-1">
                       <span
-                        className={`inline-flex rounded px-2 py-0.5 text-[10px] font-bold whitespace-nowrap ${r.inwardMode === "Local" ? "bg-emerald-100 text-emerald-800" : "bg-sky-100 text-sky-800"
+                        className={`inline-flex rounded px-2 py-0.5 text-[10px] font-bold whitespace-nowrap ${r.inwardMode === "Local" ? "bg-emerald-100 text-emerald-800" : "bg-odoo-100 text-odoo-800"
                           }`}
                       >
                         {r.inwardMode ?? "International"}
@@ -5662,7 +5662,7 @@ export function RawMaterialsPage() {
                       <select
                         value={form.productSeriesId}
                         onChange={(event) => setForm((f) => ({ ...f, productSeriesId: event.target.value, materialName: "" }))}
-                        className="w-full h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        className="w-full h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                       >
                         <option value="">Select Series</option>
                         {productSeriesOptions.map((series) => (
@@ -5687,7 +5687,7 @@ export function RawMaterialsPage() {
                           }
                           openMaterialAddModal({ mode: "form", seriesId: form.productSeriesId }, name ?? form.materialName);
                         }}
-                        inputClassName="w-full h-9 rounded border border-gray-300 bg-white px-3 pr-8 text-sm text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        inputClassName="w-full h-9 rounded border border-gray-300 bg-white px-3 pr-8 text-sm text-gray-800 focus:outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                       />
                       <div className="mt-1 text-[11px] text-gray-500">
                         Material options come from the Series BOM mapping for {form.productSeriesId || "the selected series"}.
@@ -5712,7 +5712,7 @@ export function RawMaterialsPage() {
                   <select
                     value={form.inwardMode}
                     onChange={(event) => setForm((f) => ({ ...f, inwardMode: event.target.value as "Local" | "International" }))}
-                    className="w-full h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                   >
                     <option value="International">International</option>
                     <option value="Local">Local</option>
@@ -5725,7 +5725,7 @@ export function RawMaterialsPage() {
                     value={form.batch}
                     onChange={(event) => setForm((f) => ({ ...f, batch: event.target.value }))}
                     placeholder="Leave blank for auto generation"
-                    className="w-full h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                   />
                   <div className="mt-1 text-[11px] text-gray-500">If empty, system will create the next batch number automatically.</div>
                 </div>
@@ -5735,7 +5735,7 @@ export function RawMaterialsPage() {
                     <select
                       value={form.billType}
                       onChange={(event) => setForm((f) => ({ ...f, billType: event.target.value }))}
-                      className="w-full h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="w-full h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                     >
                       <option value="">Select Type</option>
                       {billTypeOptions.map((type) => (
@@ -5749,7 +5749,7 @@ export function RawMaterialsPage() {
                       value={form.referenceNo}
                       onChange={(event) => setForm((f) => ({ ...f, referenceNo: event.target.value }))}
                       placeholder="e.g. INV-2024-001"
-                      className="w-full h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="w-full h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                     />
                   </div>
                 </div>
@@ -5759,7 +5759,7 @@ export function RawMaterialsPage() {
                     type="date"
                     value={form.dateReceived}
                     onChange={(event) => setForm((f) => ({ ...f, dateReceived: event.target.value }))}
-                    className="w-full h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                   />
                 </div>
                 {modalMode === "edit" ? (
@@ -5769,7 +5769,7 @@ export function RawMaterialsPage() {
                       inputMode="numeric"
                       value={form.quantityAvailable}
                       onChange={(event) => setForm((f) => ({ ...f, quantityAvailable: event.target.value }))}
-                      className="w-full h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="w-full h-9 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                     />
                   </div>
                 ) : null}
@@ -5780,7 +5780,7 @@ export function RawMaterialsPage() {
                     onChange={(event) => setForm((f) => ({ ...f, notes: event.target.value }))}
                     rows={1}
                     placeholder="Add supplier notes, remarks, or inspection comments"
-                    className="w-full rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-800 focus:outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                   />
                 </div>
               </div>
@@ -6885,7 +6885,7 @@ export function ManufacturedPage() {
             type="button"
             onClick={() => setActiveView("inventory")}
             className={`rounded-full border px-4 py-2 text-sm font-semibold transition ${activeView === "inventory"
-                ? "border-blue-700 bg-blue-700 text-white"
+                ? "border-odoo-700 bg-odoo-700 text-white"
                 : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
               }`}
           >
@@ -6917,7 +6917,7 @@ export function ManufacturedPage() {
       {bomRegistryOpen ? (
         <div className="rounded-lg bg-white border border-gray-100 shadow-sm">
           <div className="flex items-center justify-between border-b border-gray-100 px-4 py-4">
-            <h3 className="text-base font-medium text-blue-900 flex items-center gap-2">
+            <h3 className="text-base font-medium text-odoo-900 flex items-center gap-2">
               <IconClipboardList size={16} />
               Bill of Materials Registry
             </h3>
@@ -6939,7 +6939,7 @@ export function ManufacturedPage() {
                     onChange={(event) =>
                       setBomFiltersDraft((filter) => ({ ...filter, series: event.target.value, batch: "", serialNumber: "" }))
                     }
-                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-blue-500"
+                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-odoo-500"
                   >
                     <option value="">All Series</option>
                     {seriesOptions.map((series) => (
@@ -6954,7 +6954,7 @@ export function ManufacturedPage() {
                     value={bomFiltersDraft.batch}
                     onChange={(event) => setBomFiltersDraft((filter) => ({ ...filter, batch: event.target.value }))}
                     disabled={!bomFiltersDraft.series}
-                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-blue-500 disabled:bg-gray-100 disabled:text-gray-400"
+                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-odoo-500 disabled:bg-gray-100 disabled:text-gray-400"
                   >
                     <option value="">All Batches</option>
                     {bomBatchOptions.map((batch) => (
@@ -6969,7 +6969,7 @@ export function ManufacturedPage() {
                     value={bomFiltersDraft.serialNumber}
                     onChange={(event) => setBomFiltersDraft((filter) => ({ ...filter, serialNumber: event.target.value }))}
                     disabled={!bomFiltersDraft.series}
-                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-blue-500 disabled:bg-gray-100 disabled:text-gray-400"
+                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-odoo-500 disabled:bg-gray-100 disabled:text-gray-400"
                   >
                     <option value="">All Serials</option>
                     {bomSerialOptions.map((serial) => (
@@ -6984,7 +6984,7 @@ export function ManufacturedPage() {
                     setBomFilters(bomFiltersDraft);
                     setBomPage(1);
                   }}
-                  className="mt-5 h-9 rounded bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 flex items-center justify-center"
+                  className="mt-5 h-9 rounded bg-odoo-600 text-white text-sm font-semibold hover:bg-odoo-700 flex items-center justify-center"
                   title="Search BOM"
                 >
                   <IconSearch size={15} />
@@ -7014,7 +7014,7 @@ export function ManufacturedPage() {
                     setBomPageSize(Number(event.target.value));
                     setBomPage(1);
                   }}
-                  className="h-8 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none focus:border-blue-500"
+                  className="h-8 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none focus:border-odoo-500"
                 >
                   {[10, 25, 50, 100].map((size) => (
                     <option key={size} value={size}>{size}</option>
@@ -7030,7 +7030,7 @@ export function ManufacturedPage() {
                     setBomSearch(event.target.value);
                     setBomPage(1);
                   }}
-                  className="h-9 w-full sm:w-56 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-blue-500"
+                  className="h-9 w-full sm:w-56 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-odoo-500"
                 />
               </label>
             </div>
@@ -7040,10 +7040,10 @@ export function ManufacturedPage() {
                 <thead>
                   <tr>
                     {["Serial No.", "Series", "Model", "Mfg. Date", "BOM Used", "Modify BOM"].map((header) => (
-                      <th key={header} className="bg-blue-800 px-3 py-1 text-left text-xs font-bold text-white border-r border-blue-700 first:rounded-tl last:rounded-tr">
+                      <th key={header} className="bg-odoo-800 px-3 py-1 text-left text-xs font-bold text-white border-r border-odoo-700 first:rounded-tl last:rounded-tr">
                         <span className="flex items-center justify-between gap-2">
                           {header}
-                          <span className="flex flex-col text-blue-500 opacity-50 hover:opacity-100 transition cursor-pointer">
+                          <span className="flex flex-col text-odoo-500 opacity-50 hover:opacity-100 transition cursor-pointer">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="-mb-1"><path d="m18 15-6-6-6 6" /></svg>
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
                           </span>
@@ -7095,7 +7095,7 @@ export function ManufacturedPage() {
                                       </span>
                                     ) : null}
                                     {item.inwardMode ? (
-                                      <span className={`rounded px-1.5 py-0.5 text-[9px] font-bold ${item.inwardMode === "Local" ? "bg-emerald-100 text-emerald-800" : "bg-sky-100 text-sky-800"}`}>
+                                      <span className={`rounded px-1.5 py-0.5 text-[9px] font-bold ${item.inwardMode === "Local" ? "bg-emerald-100 text-emerald-800" : "bg-odoo-100 text-odoo-800"}`}>
                                         {item.inwardMode}
                                       </span>
                                     ) : null}
@@ -7146,7 +7146,7 @@ export function ManufacturedPage() {
       ) : (
         <div className="rounded-lg bg-white border border-gray-100 shadow-sm">
           <div className="flex items-center justify-between border-b border-gray-100 px-4 py-4">
-            <h3 className={`text-base font-medium ${activeView === "tracker" ? "text-amber-900" : activeView === "repaired" ? "text-emerald-900" : "text-blue-900"}`}>
+            <h3 className={`text-base font-medium ${activeView === "tracker" ? "text-amber-900" : activeView === "repaired" ? "text-emerald-900" : "text-odoo-900"}`}>
               {activeView === "tracker" ? "Return Tracker" : activeView === "repaired" ? "Repaired Stock" : "Production Ledger"}
             </h3>
           </div>
@@ -7159,7 +7159,7 @@ export function ManufacturedPage() {
                     type="date"
                     value={filtersDraft.fromDate}
                     onChange={(e) => setFiltersDraft((f) => ({ ...f, fromDate: e.target.value }))}
-                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-blue-500"
+                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-odoo-500"
                   />
                 </div>
                 <div>
@@ -7168,7 +7168,7 @@ export function ManufacturedPage() {
                     type="date"
                     value={filtersDraft.toDate}
                     onChange={(e) => setFiltersDraft((f) => ({ ...f, toDate: e.target.value }))}
-                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-blue-500"
+                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-odoo-500"
                   />
                 </div>
                 <div>
@@ -7176,7 +7176,7 @@ export function ManufacturedPage() {
                   <select
                     value={filtersDraft.customerId}
                     onChange={(e) => setFiltersDraft((f) => ({ ...f, customerId: e.target.value }))}
-                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-blue-500"
+                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-odoo-500"
                   >
                     <option value="">All Distributors</option>
                     {(customersRes.data?.data ?? []).map((c) => (
@@ -7195,7 +7195,7 @@ export function ManufacturedPage() {
                         model: f.model && productByModel.get(f.model)?.series === e.target.value ? f.model : "",
                       }))
                     }
-                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-blue-500"
+                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-odoo-500"
                   >
                     <option value="">All Series</option>
                     {seriesOptions.map((s) => (
@@ -7208,7 +7208,7 @@ export function ManufacturedPage() {
                   <select
                     value={filtersDraft.model}
                     onChange={(e) => setFiltersDraft((f) => ({ ...f, model: e.target.value }))}
-                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-blue-500"
+                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-odoo-500"
                   >
                     <option value="">All Models</option>
                     {modelOptions.map((m) => (
@@ -7221,7 +7221,7 @@ export function ManufacturedPage() {
                   <select
                     value={filtersDraft.returnReason}
                     onChange={(e) => setFiltersDraft((f) => ({ ...f, returnReason: e.target.value }))}
-                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-blue-500"
+                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-odoo-500"
                   >
                     <option value="">All</option>
                     {returnReasonOptions.map((r) => (
@@ -7234,7 +7234,7 @@ export function ManufacturedPage() {
                   <select
                     value={filtersDraft.status}
                     onChange={(e) => setFiltersDraft((f) => ({ ...f, status: e.target.value }))}
-                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-blue-500"
+                    className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-700 focus:outline-none focus:border-odoo-500"
                   >
                     <option value="">All Statuses</option>
                     <option value="In Stock">In Stock</option>
@@ -7248,7 +7248,7 @@ export function ManufacturedPage() {
                 <button
                   type="button"
                   onClick={() => setFilters(filtersDraft)}
-                  className="h-9 rounded bg-blue-600 text-white text-sm font-semibold hover:bg-blue-700 flex items-center justify-center gap-2"
+                  className="h-9 rounded bg-odoo-600 text-white text-sm font-semibold hover:bg-odoo-700 flex items-center justify-center gap-2"
                 >
                   <IconSearch size={15} />
                 </button>
@@ -7271,7 +7271,7 @@ export function ManufacturedPage() {
                 <select
                   value={pageSize}
                   onChange={(event) => setPageSize(Number(event.target.value))}
-                  className="h-8 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none focus:border-blue-500"
+                  className="h-8 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none focus:border-odoo-500"
                 >
                   {[10, 25, 50, 100].map((size) => (
                     <option key={size} value={size}>{size}</option>
@@ -7284,7 +7284,7 @@ export function ManufacturedPage() {
                 <input
                   value={q}
                   onChange={(event) => setQ(event.target.value)}
-                  className="h-9 w-full sm:w-56 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-blue-500"
+                  className="h-9 w-full sm:w-56 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-odoo-500"
                 />
               </label>
             </div>
@@ -7306,12 +7306,12 @@ export function ManufacturedPage() {
                             ? "bg-amber-700 border-amber-600"
                             : activeView === "repaired"
                             ? "bg-emerald-700 border-emerald-600"
-                            : "bg-blue-800 border-blue-700"
+                            : "bg-odoo-800 border-odoo-700"
                         } px-3 py-1 text-left text-xs font-bold text-white border-r first:rounded-tl last:rounded-tr`}
                       >
                         <span className="flex items-center justify-between gap-2">
                           {header}
-                          <span className="flex flex-col text-blue-500 opacity-50 hover:opacity-100 transition cursor-pointer">
+                          <span className="flex flex-col text-odoo-500 opacity-50 hover:opacity-100 transition cursor-pointer">
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" className="-mb-1"><path d="m18 15-6-6-6 6" /></svg>
                             <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path d="m6 9 6 6 6-6" /></svg>
                           </span>
@@ -7354,7 +7354,7 @@ export function ManufacturedPage() {
                                     productId: form.productId && productByModel.get(form.productId)?.series === series ? form.productId : "",
                                   }));
                                 }}
-                                className="w-full min-w-56 rounded border border-gray-300 bg-white px-2 py-2 text-sm text-gray-800 focus:outline-none focus:border-blue-500"
+                                className="w-full min-w-56 rounded border border-gray-300 bg-white px-2 py-2 text-sm text-gray-800 focus:outline-none focus:border-odoo-500"
                               >
                                 <option value="">Choose Series...</option>
                                 {seriesOptions.map((series) => (
@@ -7362,7 +7362,7 @@ export function ManufacturedPage() {
                                 ))}
                               </select>
                             ) : (
-                              <span className="inline-flex rounded border border-cyan-400 bg-cyan-100 px-2 py-0.5 text-[10px] font-bold text-blue-900 whitespace-nowrap">
+                              <span className="inline-flex rounded border border-odoo-400 bg-odoo-100 px-2 py-0.5 text-[10px] font-bold text-odoo-900 whitespace-nowrap">
                                 {productByModel.get(m.productId)?.series ?? "-"}
                               </span>
                             )}
@@ -7372,7 +7372,7 @@ export function ManufacturedPage() {
                               <select
                                 value={rowEditForm.productId}
                                 onChange={(event) => setRowEditForm((form) => ({ ...form, productId: event.target.value }))}
-                                className="w-full min-w-36 rounded border border-gray-300 bg-white px-2 py-2 text-sm text-gray-800 focus:outline-none focus:border-blue-500"
+                                className="w-full min-w-36 rounded border border-gray-300 bg-white px-2 py-2 text-sm text-gray-800 focus:outline-none focus:border-odoo-500"
                               >
                                 <option value="">Select Model...</option>
                                 {rowModelOptions.map((model) => (
@@ -7388,7 +7388,7 @@ export function ManufacturedPage() {
                               <input
                                 value={rowEditForm.serialNumber}
                                 onChange={(event) => setRowEditForm((form) => ({ ...form, serialNumber: event.target.value }))}
-                                className="w-full min-w-40 rounded border border-gray-300 bg-white px-2 py-2 font-mono text-xs text-gray-800 focus:outline-none focus:border-blue-500"
+                                className="w-full min-w-40 rounded border border-gray-300 bg-white px-2 py-2 font-mono text-xs text-gray-800 focus:outline-none focus:border-odoo-500"
                               />
                             ) : (
                               m.serialNumber
@@ -7400,7 +7400,7 @@ export function ManufacturedPage() {
                                 type="date"
                                 value={rowEditForm.mfgDate}
                                 onChange={(event) => setRowEditForm((form) => ({ ...form, mfgDate: event.target.value }))}
-                                className="w-full min-w-36 rounded border border-gray-300 bg-white px-2 py-2 text-xs text-gray-800 focus:outline-none focus:border-blue-500"
+                                className="w-full min-w-36 rounded border border-gray-300 bg-white px-2 py-2 text-xs text-gray-800 focus:outline-none focus:border-odoo-500"
                               />
                             ) : (
                               formatDateOnly(m.mfgDate)
@@ -7414,7 +7414,7 @@ export function ManufacturedPage() {
                             ) : m.status === "Faulty" ? (
                               <span className="rounded bg-orange-100 px-2 py-1 text-[10px] font-bold text-orange-700 border border-orange-300">Faulty</span>
                             ) : m.status === "Repaired" ? (
-                              <span className="rounded bg-blue-100 px-2 py-1 text-[10px] font-bold text-blue-700 border border-blue-300">Repaired</span>
+                              <span className="rounded bg-odoo-100 px-2 py-1 text-[10px] font-bold text-odoo-700 border border-odoo-300">Repaired</span>
                             ) : (
                               <span className="rounded bg-gray-600 px-2 py-1 text-[10px] font-bold text-white">In Stock</span>
                             )}
@@ -7424,7 +7424,7 @@ export function ManufacturedPage() {
                               <input
                                 value={rowEditForm.invoiceNo}
                                 onChange={(event) => setRowEditForm((form) => ({ ...form, invoiceNo: event.target.value }))}
-                                className="w-full min-w-40 rounded border border-gray-300 bg-white px-2 py-2 text-xs text-gray-800 focus:outline-none focus:border-blue-500"
+                                className="w-full min-w-40 rounded border border-gray-300 bg-white px-2 py-2 text-xs text-gray-800 focus:outline-none focus:border-odoo-500"
                               />
                             ) : (
                               m.invoiceNo || "N/A"
@@ -7435,7 +7435,7 @@ export function ManufacturedPage() {
                               <select
                                 value={rowEditForm.paymentStatus}
                                 onChange={(event) => setRowEditForm((form) => ({ ...form, paymentStatus: event.target.value }))}
-                                className="w-full min-w-32 rounded border border-gray-300 bg-white px-2 py-2 text-xs text-gray-800 focus:outline-none focus:border-blue-500"
+                                className="w-full min-w-32 rounded border border-gray-300 bg-white px-2 py-2 text-xs text-gray-800 focus:outline-none focus:border-odoo-500"
                               >
                                 {paymentOptions.map((payment) => (
                                   <option key={payment} value={payment}>{payment}</option>
@@ -7516,21 +7516,21 @@ export function ManufacturedPage() {
                                   <button
                                     type="button"
                                     onClick={() => openEdit(m)}
-                                    className="w-7 h-7 border border-blue-500 text-blue-600 bg-white hover:bg-blue-50 flex items-center justify-center"
+                                    className="w-7 h-7 border border-odoo-500 text-odoo-600 bg-white hover:bg-odoo-50 flex items-center justify-center"
                                     title="Edit">
                                     <IconPencil size={14} />
                                   </button>
                                   <button
                                     type="button"
                                     onClick={() => setBomViewRecord(m)}
-                                    className="w-7 h-7 border border-cyan-400 text-cyan-600 bg-white hover:bg-cyan-50 flex items-center justify-center"
+                                    className="w-7 h-7 border border-odoo-400 text-odoo-600 bg-white hover:bg-odoo-50 flex items-center justify-center"
                                     title="View BOM">
                                     <IconEye size={14} />
                                   </button>
                                   <button
                                     type="button"
                                     onClick={() => setQrSerial(m.serialNumber)}
-                                    className="h-7 rounded border border-teal-400 bg-teal-50 px-2 text-[10px] font-bold text-teal-700 hover:bg-teal-100"
+                                    className="h-7 rounded border border-odoo-400 bg-odoo-50 px-2 text-[10px] font-bold text-odoo-700 hover:bg-odoo-100"
                                     title="Generate customer support QR">
                                     QR
                                   </button>
@@ -7573,7 +7573,7 @@ export function ManufacturedPage() {
           <button
             type="button"
             onClick={() => setBomRegistryOpen(true)}
-            className="inline-flex items-center gap-2 rounded-full border border-blue-500 bg-white px-4 py-2 text-sm font-medium text-blue-600 shadow-sm hover:bg-blue-50">
+            className="inline-flex items-center gap-2 rounded-full border border-odoo-500 bg-white px-4 py-2 text-sm font-medium text-odoo-600 shadow-sm hover:bg-odoo-50">
             <IconClipboardList size={15} />
             Manage BOM
           </button>
@@ -7584,7 +7584,7 @@ export function ManufacturedPage() {
       {bomViewRecord && (
         <div className="fixed inset-0 z-50 bg-black/45 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-4xl rounded-lg bg-white border-4 border-gray-900 shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between bg-cyan-400 px-4 py-3 text-gray-950">
+            <div className="flex items-center justify-between bg-odoo-400 px-4 py-3 text-gray-950">
               <div className="flex items-center gap-3 text-lg">
                 <span className="opacity-50">
                   <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="8" y1="6" x2="21" y2="6"></line><line x1="8" y1="12" x2="21" y2="12"></line><line x1="8" y1="18" x2="21" y2="18"></line><line x1="3" y1="6" x2="3.01" y2="6"></line><line x1="3" y1="12" x2="3.01" y2="12"></line><line x1="3" y1="18" x2="3.01" y2="18"></line></svg>
@@ -7596,7 +7596,7 @@ export function ManufacturedPage() {
               <button
                 type="button"
                 onClick={() => setBomViewRecord(null)}
-                className="text-cyan-100 hover:text-white"
+                className="text-odoo-100 hover:text-white"
                 aria-label="Close BOM">
                 -
               </button>
@@ -7607,7 +7607,7 @@ export function ManufacturedPage() {
                   <thead>
                     <tr>
                       {["Material Name", "Batch No.", "Invoice No.", "Vendor", "Qty Used"].map((header) => (
-                        <th key={header} className="bg-blue-800 border-r border-white px-3 py-1 text-left text-xs font-bold text-white">
+                        <th key={header} className="bg-odoo-800 border-r border-white px-3 py-1 text-left text-xs font-bold text-white">
                           {header}
                         </th>
                       ))}
@@ -7629,7 +7629,7 @@ export function ManufacturedPage() {
                               {item.batch || "-"}
                             </span>
                           </td>
-                          <td className="border-r border-white px-3 py-1 font-bold text-blue-600">{item.invoiceNo || "-"}</td>
+                          <td className="border-r border-white px-3 py-1 font-bold text-odoo-600">{item.invoiceNo || "-"}</td>
                           <td className="border-r border-white px-3 py-1 text-gray-900">{item.vendorName || "-"}</td>
                           <td className="px-3 py-1 text-center font-bold text-gray-900">{item.quantityUsed}</td>
                         </tr>
@@ -7654,7 +7654,7 @@ export function ManufacturedPage() {
       {bomEditRecord && (
         <div className="fixed inset-0 z-[60] bg-black/55 backdrop-blur-sm flex items-start justify-center p-4 pt-8">
           <div className="w-full max-w-4xl rounded-lg bg-white border-4 border-gray-900 shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between bg-blue-600 px-4 py-3 text-white">
+            <div className="flex items-center justify-between bg-odoo-600 px-4 py-3 text-white">
               <div className="flex min-w-0 items-center gap-3 text-lg">
                 <IconClipboardList size={18} />
                 <span className="truncate">
@@ -7664,7 +7664,7 @@ export function ManufacturedPage() {
               <button
                 type="button"
                 onClick={() => setBomEditRecord(null)}
-                className="text-blue-100 hover:text-white"
+                className="text-odoo-100 hover:text-white"
                 aria-label="Close Modify BOM">
                 -
               </button>
@@ -7686,7 +7686,7 @@ export function ManufacturedPage() {
                         <select
                           value={row.rawMaterialId}
                           onChange={(event) => updateBomEditRow(row.id, { rawMaterialId: event.target.value })}
-                          className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none focus:border-blue-500">
+                          className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none focus:border-odoo-500">
                           <option value="">Select Material</option>
                           {materialOptionsForBomEditRow(row.id).map((entry) => (
                             <option key={entry.id} value={entry.id}>
@@ -7700,7 +7700,7 @@ export function ManufacturedPage() {
                         <select
                           value={row.rawMaterialId}
                           onChange={(event) => updateBomEditRow(row.id, { rawMaterialId: event.target.value })}
-                          className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none focus:border-blue-500">
+                          className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none focus:border-odoo-500">
                           <option value="">-- Select Batch --</option>
                           {batchOptions.map((entry) => (
                             <option key={entry.id} value={entry.id}>
@@ -7715,7 +7715,7 @@ export function ManufacturedPage() {
                           inputMode="numeric"
                           value={row.quantity}
                           onChange={(event) => updateBomEditRow(row.id, { quantity: event.target.value })}
-                          className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none focus:border-blue-500"
+                          className="w-full h-9 rounded border border-gray-300 bg-white px-2 text-sm text-gray-800 focus:outline-none focus:border-odoo-500"
                         />
                       </div>
                       <button
@@ -7732,7 +7732,7 @@ export function ManufacturedPage() {
               <button
                 type="button"
                 onClick={addBomEditRow}
-                className="mt-5 rounded border border-blue-500 px-3 py-1 text-sm text-blue-600 hover:bg-blue-50">
+                className="mt-5 rounded border border-odoo-500 px-3 py-1 text-sm text-odoo-600 hover:bg-odoo-50">
                 + Add Material Row
               </button>
               {bomEditError && (
@@ -7770,7 +7770,7 @@ export function ManufacturedPage() {
       {modalOpen && (
         <div className="fixed inset-0 z-50 bg-black/45 backdrop-blur-sm flex items-center justify-center p-4">
           <div className="w-full max-w-5xl rounded-lg bg-white border-4 border-gray-900 shadow-2xl overflow-hidden">
-            <div className="flex items-center justify-between px-4 py-3 bg-blue-600 text-white">
+            <div className="flex items-center justify-between px-4 py-3 bg-odoo-600 text-white">
               <div className="flex items-center gap-2 text-lg font-bold">
                 <IconCog size={18} />
                 {modalMode === "create" ? "Add Manufactured Product" : "Edit Manufactured Product"}
@@ -7778,13 +7778,13 @@ export function ManufacturedPage() {
               <button
                 type="button"
                 onClick={() => setModalOpen(false)}
-                className="text-blue-100 hover:text-white"
+                className="text-odoo-100 hover:text-white"
                 aria-label="Close">
                 x
               </button>
             </div>
 
-            <div className="bg-gradient-to-br from-cyan-50 via-emerald-50 to-amber-50 px-4 py-4">
+            <div className="bg-gradient-to-br from-odoo-50 via-emerald-50 to-amber-50 px-4 py-4">
               <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
                 <div>
                   <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Product Series</label>
@@ -7799,7 +7799,7 @@ export function ManufacturedPage() {
                         serialNumbers: [],
                       }));
                     }}
-                    className="w-full h-10 rounded border border-blue-500 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-100">
+                    className="w-full h-10 rounded border border-odoo-500 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-odoo-100">
                     <option value="">Choose Series...</option>
                     {seriesOptions.map((series) => (
                       <option key={series} value={series}>{series}</option>
@@ -7814,7 +7814,7 @@ export function ManufacturedPage() {
                     onChange={(event) => {
                       const productId = event.target.value;
                       setForm((f) => ({ ...f, productId, serialNumbers: [] }));
-                    }} className="w-full h-10 rounded border border-blue-500 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-blue-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:text-gray-400">
+                    }} className="w-full h-10 rounded border border-odoo-500 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:ring-2 focus:ring-odoo-100 disabled:bg-gray-50 disabled:border-gray-200 disabled:text-gray-400">
                     <option value="">{productionSeries ? "Choose Model..." : "Select Series First"}</option>
                     {productionModelOptions.map((product) => (
                       <option key={product.id} value={product.id}>{product.model}</option>
@@ -7825,7 +7825,7 @@ export function ManufacturedPage() {
                   <label className="block text-xs font-bold text-gray-700 uppercase mb-2">Serial Number(s)</label>
                   <div
                     className={`w-full min-h-10 rounded border bg-white px-3 py-2 text-sm text-gray-800 cursor-pointer flex items-center justify-between ${
-                      !form.productId ? "bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed" : "border-blue-500"
+                      !form.productId ? "bg-gray-50 border-gray-200 text-gray-400 cursor-not-allowed" : "border-odoo-500"
                     }`}
                     onClick={() => {
                       if (form.productId) {
@@ -7839,7 +7839,7 @@ export function ManufacturedPage() {
                         <span className="text-gray-500">Select serial(s)...</span>
                       ) : (
                         form.serialNumbers.map((serial) => (
-                          <span key={serial} className="inline-flex items-center gap-1 rounded bg-blue-100 px-2 py-0.5 text-xs text-blue-800">
+                          <span key={serial} className="inline-flex items-center gap-1 rounded bg-odoo-100 px-2 py-0.5 text-xs text-odoo-800">
                             {serial}
                             <button
                               type="button"
@@ -7847,7 +7847,7 @@ export function ManufacturedPage() {
                                 e.stopPropagation();
                                 setForm((f) => ({ ...f, serialNumbers: f.serialNumbers.filter((s) => s !== serial) }));
                               }}
-                              className="hover:text-blue-600">
+                              className="hover:text-odoo-600">
                               ×
                             </button>
                           </span>
@@ -7867,7 +7867,7 @@ export function ManufacturedPage() {
                           placeholder="Search serials..."
                           value={serialSearch}
                           onChange={(e) => setSerialSearch(e.target.value)}
-                          className="w-full rounded text-black border border-gray-300 px-2 py-1 text-sm focus:border-blue-500 focus:outline-none"
+                          className="w-full rounded text-black border border-gray-300 px-2 py-1 text-sm focus:border-odoo-500 focus:outline-none"
                         />
                       </div>
                       <div className="max-h-48 overflow-y-auto custom-scrollbar p-1">
@@ -7880,7 +7880,7 @@ export function ManufacturedPage() {
                               <label key={serial} className="flex items-center gap-2 rounded px-2 py-1.5 hover:bg-gray-50 cursor-pointer">
                                 <input
                                   type="checkbox"
-                                  className="accent-blue-600 cursor-pointer"
+                                  className="accent-odoo-600 cursor-pointer"
                                   checked={form.serialNumbers.includes(serial)}
                                   onChange={(e) => {
                                     if (modalMode === "edit") {
@@ -7915,7 +7915,7 @@ export function ManufacturedPage() {
                     type="date"
                     value={form.mfgDate}
                     onChange={(event) => setForm((f) => ({ ...f, mfgDate: event.target.value }))}
-                    className="w-full h-10 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full h-10 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                   />
                 </div>
                 <div>
@@ -7923,7 +7923,7 @@ export function ManufacturedPage() {
                   <select
                     value={form.status}
                     onChange={(event) => setForm((f) => ({ ...f, status: event.target.value }))}
-                    className="w-full h-10 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                    className="w-full h-10 rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 focus:outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                   >
                     {statusOptions.map((s) => (
                       <option key={s} value={s}>{s === "In Stock" ? "Passed" : "Failed"}</option>
@@ -7940,7 +7940,7 @@ export function ManufacturedPage() {
 
               {productionSeries && form.serialNumbers.length > 0 && bomsRes.data && (
                 <div className="mt-5 border-t border-gray-200 pt-4">
-                  <h4 className="text-sm font-bold text-gray-800 mb-2">BOM Requirements per Unit ({productionSeries}) {form.serialNumbers.length > 1 && <span className="text-blue-600">x {form.serialNumbers.length} units</span>}</h4>
+                  <h4 className="text-sm font-bold text-gray-800 mb-2">BOM Requirements per Unit ({productionSeries}) {form.serialNumbers.length > 1 && <span className="text-odoo-600">x {form.serialNumbers.length} units</span>}</h4>
                   {(() => {
                     const activeBom = bomsRes.data.find(b => b.series === productionSeries);
                     if (!activeBom || activeBom.items.length === 0) {
@@ -7959,7 +7959,7 @@ export function ManufacturedPage() {
                             {activeBom.items.map((item, idx) => (
                               <tr key={idx} className={idx % 2 === 0 ? "bg-white" : "bg-gray-50"}>
                                 <td className="border-r border-gray-200 px-3 py-1 text-gray-800 font-medium">{item.materialName}</td>
-                                <td className="px-3 py-1 text-center font-bold text-blue-600">
+                                <td className="px-3 py-1 text-center font-bold text-odoo-600">
                                   {item.quantity} {form.serialNumbers.length > 1 && <span className="text-gray-500 font-normal text-xs">(Total: {Number(item.quantity) * form.serialNumbers.length})</span>}
                                 </td>
                               </tr>
@@ -7996,7 +7996,7 @@ export function ManufacturedPage() {
           {seriesAlertOpen && (
             <div className="fixed inset-0 z-[70] flex items-center justify-center bg-black/45 p-4">
               <div className="w-full max-w-md rounded bg-white px-8 py-9 text-center shadow-2xl">
-                <div className="mx-auto mb-7 flex h-20 w-20 items-center justify-center rounded-full border-4 border-sky-400 text-5xl font-light text-sky-400">
+                <div className="mx-auto mb-7 flex h-20 w-20 items-center justify-center rounded-full border-4 border-odoo-400 text-5xl font-light text-odoo-400">
                   i
                 </div>
                 <div className="mb-4 text-2xl font-bold text-gray-700">Series Required</div>
@@ -8004,7 +8004,7 @@ export function ManufacturedPage() {
                 <button
                   type="button"
                   onClick={() => setSeriesAlertOpen(false)}
-                  className="rounded bg-blue-950 px-6 py-2 text-sm font-semibold text-white hover:bg-blue-900"
+                  className="rounded bg-odoo-950 px-6 py-2 text-sm font-semibold text-white hover:bg-odoo-900"
                 >
                   OK
                 </button>
@@ -9061,19 +9061,19 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
   return (
     <div className="min-h-full bg-[#f3f7ff] -m-3 sm:-m-5 p-4 sm:p-7 text-[#0b2e6f]">
       <div className="mb-4">
-        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#002b6f]">Sales Record</h1>
-        <div className="text-xs font-semibold text-blue-300">Home / <span className="text-[#0b2e6f]">Sales Record</span></div>
+        <h1 className="text-xl sm:text-2xl font-bold tracking-tight text-[#714B67]">Sales Record</h1>
+        <div className="text-xs font-semibold text-odoo-300">Home / <span className="text-[#0b2e6f]">Sales Record</span></div>
       </div>
 
-      <div className="rounded-md border border-blue-50 bg-white shadow-sm">
+      <div className="rounded-md border border-odoo-50 bg-white shadow-sm">
         <div className="flex items-center justify-between border-b border-gray-200 px-4 py-5">
-          <div className="text-base font-medium text-[#002b6f]">Sales History Ledger</div>
+          <div className="text-base font-medium text-[#714B67]">Sales History Ledger</div>
         </div>
 
         {!showLedger ? (
           <div className="p-3 sm:p-4">
             <div className="rounded-md border border-gray-100 bg-white shadow-sm">
-              <div className="flex items-center gap-2 border-b border-gray-200 px-4 py-7 text-base font-bold text-blue-600">
+              <div className="flex items-center gap-2 border-b border-gray-200 px-4 py-7 text-base font-bold text-odoo-600">
                 <IconShoppingCart size={17} /> New Sales Transaction
               </div>
 
@@ -9087,7 +9087,7 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                     <select
                       value={serialNumber}
                       onChange={(event) => setSerialNumber(event.target.value)}
-                      className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                     >
                       <option value="">Search or Select Serial...</option>
                       {inStockSerials.map((item) => {
@@ -9105,7 +9105,7 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                     <select
                       value={documentType}
                       onChange={(event) => setDocumentType(event.target.value as (typeof SALES_ENTRY_DOCUMENT_TYPES)[number])}
-                      className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                     >
                       {SALES_ENTRY_DOCUMENT_TYPES.map((option) => <option key={option}>{option}</option>)}
                     </select>
@@ -9116,7 +9116,7 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                       value={referenceNo}
                       onChange={(event) => setReferenceNo(event.target.value)}
                       placeholder={`INV-${new Date().getFullYear()}-XXXX`}
-                      className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                     />
                   </label>
                   <label className="block">
@@ -9128,7 +9128,7 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                         setSaleDate(event.target.value);
                         setReferenceNo(nextSalesEntryReference(salesRows, event.target.value));
                       }}
-                      className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                     />
                   </label>
                 </div>
@@ -9137,7 +9137,7 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                   <div className="flex items-center gap-2 text-xs font-bold uppercase text-gray-600">
                     <IconUsers size={14} /> Customer Information
                   </div>
-                  <label className="inline-flex cursor-pointer items-center gap-2 text-xs font-semibold normal-case text-blue-600">
+                  <label className="inline-flex cursor-pointer items-center gap-2 text-xs font-semibold normal-case text-odoo-600">
                     <input
                       type="checkbox"
                       checked={newCustomer}
@@ -9151,7 +9151,7 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                       }}
                       className="peer sr-only"
                     />
-                    <span className="relative h-4 w-8 rounded-full bg-gray-200 transition peer-checked:bg-blue-500 after:absolute after:left-0.5 after:top-0.5 after:h-3 after:w-3 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-4" />
+                    <span className="relative h-4 w-8 rounded-full bg-gray-200 transition peer-checked:bg-odoo-500 after:absolute after:left-0.5 after:top-0.5 after:h-3 after:w-3 after:rounded-full after:bg-white after:shadow after:transition peer-checked:after:translate-x-4" />
                     New Customer?
                   </label>
                 </div>
@@ -9162,7 +9162,7 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                     <select
                       value={customerType}
                       onChange={(event) => setCustomerType(event.target.value as (typeof SALES_ENTRY_CUSTOMER_TYPES)[number])}
-                      className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                      className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                     >
                       <option value="">Select Type...</option>
                       {SALES_ENTRY_CUSTOMER_TYPES.map((option) => <option key={option}>{option}</option>)}
@@ -9176,13 +9176,13 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                         value={customerEmail}
                         onChange={(event) => setCustomerEmail(event.target.value)}
                         placeholder="Enter new customer email..."
-                        className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                       />
                     ) : (
                       <select
                         value={customerId}
                         onChange={(event) => selectExistingCustomer(event.target.value)}
-                        className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100"
+                        className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100"
                       >
                         <option value="">Select existing email...</option>
                         {customers.map((customer) => (
@@ -9200,7 +9200,7 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                       onChange={(event) => setCustomerName(event.target.value)}
                       disabled={!newCustomer}
                       placeholder="Full Name"
-                      className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-gray-50"
+                      className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100 disabled:bg-gray-50"
                     />
                   </label>
                   <label className="block lg:col-span-2">
@@ -9210,7 +9210,7 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                       onChange={(event) => setContactNumber(event.target.value)}
                       disabled={!newCustomer}
                       placeholder="+91 XXXXX XXXXX"
-                      className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-gray-50"
+                      className="h-9 w-full rounded border border-gray-300 bg-white px-3 text-sm text-gray-800 shadow-sm outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100 disabled:bg-gray-50"
                     />
                   </label>
                   <label className="block lg:col-span-3">
@@ -9219,13 +9219,13 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                       value={customerAddress}
                       onChange={(event) => setCustomerAddress(event.target.value)}
                       disabled={!newCustomer}
-                      className="min-h-20 w-full rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-800 shadow-sm outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-100 disabled:bg-gray-50"
+                      className="min-h-20 w-full rounded border border-gray-300 bg-white px-3 py-1 text-sm text-gray-800 shadow-sm outline-none focus:border-odoo-500 focus:ring-2 focus:ring-odoo-100 disabled:bg-gray-50"
                     />
                   </label>
                 </div>
 
                 {selectedProductName && (
-                  <div className="mt-4 rounded-md border border-blue-100 bg-blue-50 px-3 py-1 text-xs font-semibold text-blue-700">
+                  <div className="mt-4 rounded-md border border-odoo-100 bg-odoo-50 px-3 py-1 text-xs font-semibold text-odoo-700">
                     Selected product: {selectedProductName}
                   </div>
                 )}
@@ -9285,7 +9285,7 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                     {modelOptions.map((model) => <option key={model}>{model}</option>)}
                   </select>
                 </label>
-                <button type="button" className="mt-6 flex h-8 items-center justify-center rounded bg-blue-600 text-white hover:bg-blue-500">
+                <button type="button" className="mt-6 flex h-8 items-center justify-center rounded bg-odoo-600 text-white hover:bg-odoo-500">
                   <IconSearch size={15} />
                 </button>
                 <button
@@ -9301,7 +9301,7 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
               </div>
             </div>
 
-            <div className="mt-8 text-base font-medium text-[#002b6f]">Sold Product Details</div>
+            <div className="mt-8 text-base font-medium text-[#714B67]">Sold Product Details</div>
             <div className="mt-5 flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <label className="text-sm text-gray-700">
                 <select value={pageSize} onChange={(event) => setPageSize(Number(event.target.value))} className="mr-1 h-8 rounded border border-gray-300 text-sm text-gray-800">
@@ -9346,14 +9346,14 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                         <td className="border-r border-white px-3 py-1 font-mono text-[11px] font-bold">{saleItem.serialNumber || "-"}</td>
                         <td className="border-r border-white px-3 py-1">{product?.model || saleItem.materialName || "-"}</td>
                         <td className="border-r border-white px-3 py-1"><Badge color="gray">{saleItem.documentType}</Badge></td>
-                        <td className="border-r border-white px-3 py-1 font-semibold text-blue-600">{saleItem.referenceNo}</td>
+                        <td className="border-r border-white px-3 py-1 font-semibold text-odoo-600">{saleItem.referenceNo}</td>
                         <td className="border-r border-white px-3 py-1 text-center">{salesEntryDate(saleItem.saleDate)}</td>
                         <td className="px-3 py-1 text-center">
                           <button
                             type="button"
                             title="Edit sale"
                             onClick={() => openEditSale(saleItem)}
-                            className="inline-flex h-8 w-8 items-center justify-center rounded border border-blue-500 text-blue-600 hover:bg-blue-50"
+                            className="inline-flex h-8 w-8 items-center justify-center rounded border border-odoo-500 text-odoo-600 hover:bg-odoo-50"
                           >
                             <IconPencil size={14} />
                           </button>
@@ -9401,7 +9401,7 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/40 p-4">
           <div className="w-full max-w-lg rounded-md bg-white shadow-xl">
             <div className="flex items-center justify-between border-b border-gray-200 px-5 py-4">
-              <div className="text-base font-bold text-[#002b6f]">Edit Sale</div>
+              <div className="text-base font-bold text-[#714B67]">Edit Sale</div>
               <button type="button" onClick={closeEditSale} className="text-gray-400 hover:text-gray-600">
                 <IconX size={18} />
               </button>
@@ -9457,12 +9457,12 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                   className="h-9 w-full rounded border border-gray-300 bg-white px-2 text-sm text-gray-800"
                 />
               </label>
-              <label className="inline-flex items-center gap-2 text-xs font-semibold text-blue-600">
+              <label className="inline-flex items-center gap-2 text-xs font-semibold text-odoo-600">
                 <input
                   type="checkbox"
                   checked={editIsRegistered}
                   onChange={(event) => setEditIsRegistered(event.target.checked)}
-                  className="accent-blue-500"
+                  className="accent-odoo-500"
                 />
                 Registered customer
               </label>
@@ -9588,7 +9588,7 @@ export function InventorySalesEntryPage({ currentUser }: { currentUser?: User })
                 type="button"
                 onClick={saveEditSale}
                 disabled={editSaving}
-                className="rounded bg-blue-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-blue-500 disabled:cursor-not-allowed disabled:opacity-60"
+                className="rounded bg-odoo-600 px-4 py-1.5 text-sm font-semibold text-white hover:bg-odoo-500 disabled:cursor-not-allowed disabled:opacity-60"
               >
                 {editSaving ? "Saving..." : "Save Changes"}
               </button>
@@ -10822,7 +10822,7 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
           <button
             type="button"
             onClick={() => setSalesModalOpen(true)}
-            className="text-sm text-blue-600 hover:text-blue-700 transition font-medium flex items-center gap-1"
+            className="text-sm text-odoo-600 hover:text-odoo-700 transition font-medium flex items-center gap-1"
           >
                     {activeSalesTab === "distributor" ? "Pending Distributors" : activeSalesTab === "pi" || activeSalesTab === "dispatch" ? "View PI" : "View Sales Data"} <IconChevronRight size={16} />
                   </button>
@@ -10851,7 +10851,7 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
                       refreshPiItemPricing(nextCategory, stateRegion);
                     }}
                     className={`rounded-lg border px-4 py-2 text-sm font-bold transition ${dealerRegistered === option
-                      ? "border-blue-900 bg-blue-900 text-white"
+                      ? "border-odoo-900 bg-odoo-900 text-white"
                       : "border-gray-200 bg-white text-gray-600 hover:bg-gray-100"
                       }`}
                   >
@@ -11445,8 +11445,8 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
                 />
               </div>
               <div className="xl:col-span-4">
-                <div className="rounded-xl border border-blue-200 bg-blue-50 px-4 py-3 text-xs text-blue-800">
-                  <div className="font-semibold text-blue-950 mb-1">Accounts Checklist</div>
+                <div className="rounded-xl border border-odoo-200 bg-odoo-50 px-4 py-3 text-xs text-odoo-800">
+                  <div className="font-semibold text-odoo-950 mb-1">Accounts Checklist</div>
                   <div>Dispatch Team forwards the PI here for payment verification.</div>
                   <div>Tax Invoice and E-Way Bill upload happens after vehicle number sharing / Dispatch Ready.</div>
                 </div>
@@ -11462,7 +11462,7 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
                 <div className="text-xs font-bold text-gray-400 uppercase tracking-widest">Distributor KYC Details</div>
                 <div className="flex items-center gap-2">
                   <div className="text-[11px] text-gray-400">Sales person fills request; final approval remains with Admin.</div>
-                  <label className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-1 text-xs font-semibold transition ${bulkDistributorImporting ? "border-gray-200 bg-gray-100 text-gray-400 cursor-wait" : "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"}`}>
+                  <label className={`inline-flex cursor-pointer items-center gap-2 rounded-lg border px-3 py-1 text-xs font-semibold transition ${bulkDistributorImporting ? "border-gray-200 bg-gray-100 text-gray-400 cursor-wait" : "border-odoo-200 bg-odoo-50 text-odoo-700 hover:bg-odoo-100"}`}>
                     <IconUpload size={14} />
                     {bulkDistributorImporting ? "Importing..." : "Bulk Upload Excel"}
                     <input
@@ -11480,7 +11480,7 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
                 </div>
               </div>
               {bulkDistributorImportMessage && (
-                <div className="mb-3 rounded-lg border border-blue-100 bg-blue-50 px-3 py-2 text-xs text-blue-700">
+                <div className="mb-3 rounded-lg border border-odoo-100 bg-odoo-50 px-3 py-2 text-xs text-odoo-700">
                   {bulkDistributorImportMessage}
                 </div>
               )}
@@ -11663,7 +11663,7 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
                           className={`flex h-9 min-w-9 items-center justify-center rounded-lg border px-3 text-xs font-bold transition ${activeAreaSlotIndex === areaIndex
                             ? "border-amber-400 bg-amber-100 text-amber-800"
                             : areaValue.trim()
-                              ? "border-blue-900 bg-blue-900 text-white hover:bg-blue-800"
+                              ? "border-odoo-900 bg-odoo-900 text-white hover:bg-odoo-800"
                               : "border-gray-200 bg-white text-gray-400 hover:bg-gray-100"
                             }`}
                         >
@@ -11769,7 +11769,7 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
                                   href={documentItem.url}
                                   target="_blank"
                                   rel="noreferrer"
-                                  className="text-[11px] font-bold text-blue-600 hover:text-blue-700"
+                                  className="text-[11px] font-bold text-odoo-600 hover:text-odoo-700"
                                 >
                                   Open file
                                 </a>
@@ -12245,7 +12245,7 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
                   type="button"
                   onClick={savePendingPiDraft}
                   disabled={editingPiId === pendingPiDraft.saleId || approvingPiId === pendingPiDraft.saleId}
-                  className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700 hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-lg border border-odoo-200 bg-odoo-50 px-4 py-2 text-sm font-bold text-odoo-700 hover:bg-odoo-100 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {editingPiId === pendingPiDraft.saleId ? "Saving..." : "Save Update"}
                 </button>
@@ -12368,7 +12368,7 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
                         type="button"
                         onClick={() => setPiRecordDispatchFilter(filter)}
                         className={`inline-flex items-center gap-2 rounded-lg border px-4 py-2 text-sm font-bold transition ${piRecordDispatchFilter === filter
-                          ? "border-blue-900 bg-blue-900 text-white"
+                          ? "border-odoo-900 bg-odoo-900 text-white"
                           : "border-gray-200 bg-white text-gray-600 hover:bg-gray-50"
                           }`}
                       >
@@ -12446,7 +12446,7 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
                               href={saleItem.piAttachmentUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="font-mono text-xs font-semibold text-blue-600 hover:text-blue-700"
+                              className="font-mono text-xs font-semibold text-odoo-600 hover:text-odoo-700"
                             >
                               {saleItem.referenceNo}
                             </a>
@@ -12471,7 +12471,7 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
                               href={saleItem.courierDocketAttachmentUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="text-blue-600 hover:text-blue-700 font-semibold"
+                              className="text-odoo-600 hover:text-odoo-700 font-semibold"
                             >
                               {saleItem.courierDocketAttachmentName || "Open docket"}
                             </a>
@@ -12481,7 +12481,7 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
                                 href={saleItem.piAttachmentUrl}
                                 target="_blank"
                                 rel="noreferrer"
-                                className="text-blue-600 hover:text-blue-700 font-semibold"
+                                className="text-odoo-600 hover:text-odoo-700 font-semibold"
                               >
                                 {saleItem.piAttachmentName || "Open PI"}
                               </a>
@@ -12533,7 +12533,7 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
                                 type="button"
                                 onClick={() => openPendingPiEditor(saleItem)}
                                 disabled={editingPiId === saleItem.id || approvingPiId === saleItem.id}
-                                className="px-3 py-1.5 rounded-lg border border-blue-200 bg-blue-50 text-xs font-bold text-blue-700 hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
+                                className="px-3 py-1.5 rounded-lg border border-odoo-200 bg-odoo-50 text-xs font-bold text-odoo-700 hover:bg-odoo-100 disabled:cursor-not-allowed disabled:opacity-60"
                               >
                                 Edit PI
                               </button>
@@ -12553,7 +12553,7 @@ export function SalesPage({ initialTab, currentUser }: { initialTab: SalesTabId;
                               <button
                                 type="button"
                                 onClick={() => downloadGeneratedPi(saleItem, customerById)}
-                                className="inline-flex items-center rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 hover:bg-blue-100"
+                                className="inline-flex items-center rounded-lg border border-odoo-200 bg-odoo-50 px-3 py-1.5 text-xs font-bold text-odoo-700 hover:bg-odoo-100"
                               >
                                 Download PI
                               </button>
@@ -12847,13 +12847,13 @@ export function AccountsTeamPage() {
                       <button
                         type="button"
                         onClick={() => selectSale(saleItem.id)}
-                        className={`font-mono text-xs font-bold ${selectedSaleId === saleItem.id ? "text-amber-700" : "text-blue-600 hover:text-blue-700"}`}
+                        className={`font-mono text-xs font-bold ${selectedSaleId === saleItem.id ? "text-amber-700" : "text-odoo-600 hover:text-odoo-700"}`}
                       >
                         {saleItem.referenceNo}
                       </button>
                       <div className="mt-1 text-[10px] text-gray-400">Req: {formatDateOnly(saleItem.accountsRequestAt || saleItem.createdAt || saleItem.saleDate)}</div>
                       {saleItem.piAttachmentUrl ? (
-                        <a href={saleItem.piAttachmentUrl} target="_blank" rel="noreferrer" className="mt-1 block text-[11px] font-bold text-blue-600 hover:text-blue-700">
+                        <a href={saleItem.piAttachmentUrl} target="_blank" rel="noreferrer" className="mt-1 block text-[11px] font-bold text-odoo-600 hover:text-odoo-700">
                           Open PI
                         </a>
                       ) : null}
@@ -12889,7 +12889,7 @@ export function AccountsTeamPage() {
               </div>
 
               {selectedSale?.piAttachmentUrl ? (
-                <a href={selectedSale.piAttachmentUrl} target="_blank" rel="noreferrer" className="inline-flex rounded-lg border border-blue-200 bg-blue-50 px-3 py-1 text-sm font-bold text-blue-700 hover:bg-blue-100">
+                <a href={selectedSale.piAttachmentUrl} target="_blank" rel="noreferrer" className="inline-flex rounded-lg border border-odoo-200 bg-odoo-50 px-3 py-1 text-sm font-bold text-odoo-700 hover:bg-odoo-100">
                   Open PI
                 </a>
               ) : null}
@@ -12911,7 +12911,7 @@ export function AccountsTeamPage() {
                     }}
                   />
                 </label>
-                {taxInvoiceUrl ? <a href={taxInvoiceUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block text-xs font-bold text-blue-700 hover:text-blue-800">Open Tax Invoice</a> : null}
+                {taxInvoiceUrl ? <a href={taxInvoiceUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block text-xs font-bold text-odoo-700 hover:text-odoo-800">Open Tax Invoice</a> : null}
               </div>
 
               <div>
@@ -12931,7 +12931,7 @@ export function AccountsTeamPage() {
                     }}
                   />
                 </label>
-                {ewayBillUrl ? <a href={ewayBillUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block text-xs font-bold text-blue-700 hover:text-blue-800">Open E-Way Bill</a> : null}
+                {ewayBillUrl ? <a href={ewayBillUrl} target="_blank" rel="noreferrer" className="mt-1 inline-block text-xs font-bold text-odoo-700 hover:text-odoo-800">Open E-Way Bill</a> : null}
               </div>
 
               {formError && <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-1 text-sm text-red-700">{formError}</div>}
@@ -13578,7 +13578,7 @@ export function DispatchTeamPage() {
                           <button
                             type="button"
                             onClick={() => selectSale(saleItem.id)}
-                            className={`font-mono text-xs font-bold ${selectedSaleId === saleItem.id ? "text-amber-700" : "text-blue-600 hover:text-blue-700"}`}
+                            className={`font-mono text-xs font-bold ${selectedSaleId === saleItem.id ? "text-amber-700" : "text-odoo-600 hover:text-odoo-700"}`}
                           >
                             {saleItem.referenceNo}
                           </button>
@@ -13588,7 +13588,7 @@ export function DispatchTeamPage() {
                               href={saleItem.piAttachmentUrl}
                               target="_blank"
                               rel="noreferrer"
-                              className="mt-1 inline-block text-[11px] font-bold text-blue-600 hover:text-blue-700"
+                              className="mt-1 inline-block text-[11px] font-bold text-odoo-600 hover:text-odoo-700"
                             >
                               Open PI
                             </a>
@@ -13604,10 +13604,10 @@ export function DispatchTeamPage() {
                         <TD><Badge color={saleItem.paymentStatus === "Confirmed" ? "green" : "yellow"}>{paymentStatusLabel(saleItem.paymentStatus)}</Badge></TD>
                         <TD className="text-xs">
                           {saleItem.taxInvoiceAttachmentUrl ? (
-                            <a href={saleItem.taxInvoiceAttachmentUrl} target="_blank" rel="noreferrer" className="block font-bold text-blue-600 hover:text-blue-700">Tax Invoice</a>
+                            <a href={saleItem.taxInvoiceAttachmentUrl} target="_blank" rel="noreferrer" className="block font-bold text-odoo-600 hover:text-odoo-700">Tax Invoice</a>
                           ) : <div className="text-gray-400">Tax Invoice -</div>}
                           {saleItem.ewayBillAttachmentUrl ? (
-                            <a href={saleItem.ewayBillAttachmentUrl} target="_blank" rel="noreferrer" className="block font-bold text-blue-600 hover:text-blue-700">E-Way Bill</a>
+                            <a href={saleItem.ewayBillAttachmentUrl} target="_blank" rel="noreferrer" className="block font-bold text-odoo-600 hover:text-odoo-700">E-Way Bill</a>
                           ) : <div className="text-gray-400">E-Way -</div>}
                         </TD>
                       </TR>
@@ -13663,7 +13663,7 @@ export function DispatchTeamPage() {
                             type="button"
                             onClick={() => selectServiceComplaint(complaint.id, activeDispatchTab === "replacement")}
                             disabled={spareActionId === complaint.id}
-                            className={`rounded-lg px-3 py-1.5 text-xs font-bold disabled:cursor-not-allowed disabled:opacity-60 ${selectedServiceComplaintId === complaint.id ? "bg-amber-100 text-amber-800" : "bg-blue-700 text-white hover:bg-blue-600"}`}
+                            className={`rounded-lg px-3 py-1.5 text-xs font-bold disabled:cursor-not-allowed disabled:opacity-60 ${selectedServiceComplaintId === complaint.id ? "bg-amber-100 text-amber-800" : "bg-odoo-700 text-white hover:bg-odoo-600"}`}
                           >
                             {selectedServiceComplaintId === complaint.id ? "Selected" : "Select"}
                           </button>
@@ -13734,7 +13734,7 @@ export function DispatchTeamPage() {
                       return (
                         <TR key={m.id} zebra={index % 2 === 1}>
                           <TD>
-                            <span className="inline-flex rounded border border-cyan-400 bg-cyan-100 px-2 py-0.5 text-[10px] font-bold text-blue-900 whitespace-nowrap">
+                            <span className="inline-flex rounded border border-odoo-400 bg-odoo-100 px-2 py-0.5 text-[10px] font-bold text-odoo-900 whitespace-nowrap">
                               {prod?.series ?? "-"}
                             </span>
                           </TD>
@@ -13799,8 +13799,8 @@ export function DispatchTeamPage() {
                     isLrDisabled
                       ? "border-gray-200 bg-gray-100 text-gray-400 cursor-not-allowed"
                       : docketUploading
-                        ? "border-blue-200 bg-blue-50 text-blue-500 cursor-wait"
-                        : "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100 cursor-pointer"
+                        ? "border-odoo-200 bg-odoo-50 text-odoo-500 cursor-wait"
+                        : "border-odoo-200 bg-odoo-50 text-odoo-700 hover:bg-odoo-100 cursor-pointer"
                     }`}>
                     <span>{docketUploading ? "Uploading LR copy..." : courierDocketAttachmentName || "Upload LR Copy"}</span>
                     <input
@@ -13817,7 +13817,7 @@ export function DispatchTeamPage() {
                   <div className="mt-1 text-[11px] text-gray-400">Any format allowed. Max 5 MB.</div>
                   {docketUploadError && <div className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-1 text-xs text-red-700">{docketUploadError}</div>}
                   {courierDocketAttachment && (
-                    <a href={courierDocketAttachment.url} target="_blank" rel="noreferrer" className="mt-2 inline-block text-xs font-bold text-blue-700 hover:text-blue-800">
+                    <a href={courierDocketAttachment.url} target="_blank" rel="noreferrer" className="mt-2 inline-block text-xs font-bold text-odoo-700 hover:text-odoo-800">
                       Open uploaded docket
                     </a>
                   )}
@@ -13944,7 +13944,7 @@ export function DispatchTeamPage() {
                         href={selectedSale.piAttachmentUrl}
                         target="_blank"
                         rel="noreferrer"
-                        className="mt-2 inline-flex rounded-md border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 hover:bg-blue-100"
+                        className="mt-2 inline-flex rounded-md border border-odoo-200 bg-odoo-50 px-3 py-1.5 text-xs font-bold text-odoo-700 hover:bg-odoo-100"
                       >
                         Open PI
                       </a>
@@ -14039,7 +14039,7 @@ export function DispatchTeamPage() {
                   </div>
                 )}
                 <div>
-                  <label className={`inline-flex min-h-10 w-full cursor-pointer items-center justify-center rounded-lg border px-4 py-2 text-sm font-semibold transition ${serviceDocketUploading ? "border-blue-200 bg-blue-50 text-blue-500 cursor-wait" : "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
+                  <label className={`inline-flex min-h-10 w-full cursor-pointer items-center justify-center rounded-lg border px-4 py-2 text-sm font-semibold transition ${serviceDocketUploading ? "border-odoo-200 bg-odoo-50 text-odoo-500 cursor-wait" : "border-odoo-200 bg-odoo-50 text-odoo-700 hover:bg-odoo-100"
                     }`}>
                     <span>{serviceDocketUploading ? "Uploading LR copy..." : serviceLrCopyName || "Upload LR Copy"}</span>
                     <input
@@ -14056,7 +14056,7 @@ export function DispatchTeamPage() {
                   <div className="mt-1 text-[11px] text-gray-400">Any format allowed. Max 5 MB.</div>
                   {serviceDocketUploadError && <div className="mt-2 rounded-lg border border-red-200 bg-red-50 px-3 py-1 text-xs text-red-700">{serviceDocketUploadError}</div>}
                   {serviceLrCopyUrl && (
-                    <a href={serviceLrCopyUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-xs font-bold text-blue-700 hover:text-blue-800">
+                    <a href={serviceLrCopyUrl} target="_blank" rel="noreferrer" className="mt-2 inline-block text-xs font-bold text-odoo-700 hover:text-odoo-800">
                       Open uploaded LR copy
                     </a>
                   )}
@@ -15102,14 +15102,14 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
     ].filter(Boolean);
 
     return (
-      <div className="mb-4 rounded-xl border border-blue-200 bg-blue-50 p-4">
+      <div className="mb-4 rounded-xl border border-odoo-200 bg-odoo-50 p-4">
         <div className="mb-3 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <div className="text-xs font-bold uppercase tracking-widest text-blue-700">L1 Handoff Summary</div>
+            <div className="text-xs font-bold uppercase tracking-widest text-odoo-700">L1 Handoff Summary</div>
             <div className="mt-1 text-sm font-semibold text-gray-900">
               L1 has submitted the report for {pickedComplaint.productSerialNo || "No serial"} and forwarded it to L2.
             </div>
-            <div className="mt-1 text-xs text-blue-700">
+            <div className="mt-1 text-xs text-odoo-700">
               Escalated by: <b>{pickedComplaint.escalatedByName || pickedComplaint.assignedEngineerName || "L1 Engineer"}</b>
               {pickedComplaint.escalatedAt ? ` at ${new Date(pickedComplaint.escalatedAt).toLocaleString()}` : ""}
             </div>
@@ -15122,7 +15122,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
           </div>
         </div>
         <div className="grid grid-cols-1 gap-3 lg:grid-cols-3">
-          <div className="rounded-lg border border-blue-100 bg-white p-3">
+          <div className="rounded-lg border border-odoo-100 bg-white p-3">
             <div className="mb-2 text-xs font-bold uppercase tracking-widest text-gray-400">L1 filled</div>
             <div className="space-y-1 text-sm text-gray-700">
               <div>Error: <b>{inspection.errorCode || "Missing"}</b></div>
@@ -15132,7 +15132,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
               <div>Battery readings: <b>{filledCount([...L1_BATTERY_FIELDS], inspection.batteryReadings)}/{L1_BATTERY_FIELDS.length}</b></div>
             </div>
           </div>
-          <div className="rounded-lg border border-blue-100 bg-white p-3">
+          <div className="rounded-lg border border-odoo-100 bg-white p-3">
             <div className="mb-2 text-xs font-bold uppercase tracking-widest text-gray-400">Left / gaps</div>
             <div className="space-y-1 text-sm text-gray-700">
               {missingL1.length ? missingL1.map((item) => (
@@ -15142,7 +15142,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
               )}
             </div>
           </div>
-          <div className="rounded-lg border border-blue-100 bg-white p-3">
+          <div className="rounded-lg border border-odoo-100 bg-white p-3">
             <div className="mb-2 text-xs font-bold uppercase tracking-widest text-gray-400">L2 next work</div>
             <div className="space-y-1 text-sm text-gray-700">
               {l2Pending.map((item) => (
@@ -16270,7 +16270,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
             <button
               type="button"
               onClick={() => setListOpen(true)}
-              className="text-sm text-blue-600 hover:text-blue-700 transition font-medium"
+              className="text-sm text-odoo-600 hover:text-odoo-700 transition font-medium"
             >
               View Complaints ?
             </button>
@@ -16688,7 +16688,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
                         <img src={picture.url} alt={picture.fileName || "Customer photo"} className="h-full w-full object-cover" />
                       </a>
                       <div className="flex items-center justify-between gap-2 px-3 py-1">
-                        <a href={picture.url} target="_blank" rel="noreferrer" className="truncate text-xs font-semibold text-blue-700 hover:text-blue-800">
+                        <a href={picture.url} target="_blank" rel="noreferrer" className="truncate text-xs font-semibold text-odoo-700 hover:text-odoo-800">
                           {picture.fileName || "Customer photo"}
                         </a>
                       </div>
@@ -16966,7 +16966,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
                   type="button"
                   onClick={() => saveOnsiteInspection()}
                   disabled={!selectedComplaint || serviceActionId === selectedComplaint?.id}
-                  className="rounded-lg border border-blue-200 bg-blue-50 px-3 py-1.5 text-xs font-bold text-blue-700 hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-lg border border-odoo-200 bg-odoo-50 px-3 py-1.5 text-xs font-bold text-odoo-700 hover:bg-odoo-100 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {serviceActionId === selectedComplaint?.id ? "Updating..." : "Update Onsite Form"}
                 </button>
@@ -17004,7 +17004,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
                         <img src={picture.url} alt={picture.fileName || "Customer photo"} className="h-full w-full object-cover" />
                       </a>
                       <div className="flex items-center justify-between gap-2 px-3 py-1">
-                        <a href={picture.url} target="_blank" rel="noreferrer" className="truncate text-xs font-semibold text-blue-700 hover:text-blue-800">
+                        <a href={picture.url} target="_blank" rel="noreferrer" className="truncate text-xs font-semibold text-odoo-700 hover:text-odoo-800">
                           {picture.fileName || "Customer photo"}
                         </a>
                       </div>
@@ -17014,13 +17014,13 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
               </div>
             )}
 
-            <div className="mb-4 rounded-lg border border-blue-100 bg-white p-3">
+            <div className="mb-4 rounded-lg border border-odoo-100 bg-white p-3">
               <div className="mb-2 flex flex-col gap-2 sm:flex-row sm:items-center sm:justify-between">
                 <div>
                   <label className="block text-xs font-semibold text-gray-500">Inverter Pictures</label>
                   <div className="mt-1 text-[11px] text-gray-400">Upload onsite inverter photos at the top. Maximum 5 MB per image.</div>
                 </div>
-                <label className={`inline-flex min-h-9 cursor-pointer items-center justify-center rounded-lg border px-4 py-2 text-xs font-bold transition ${inverterPictureUploading ? "border-blue-200 bg-blue-50 text-blue-500 cursor-wait" : "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
+                <label className={`inline-flex min-h-9 cursor-pointer items-center justify-center rounded-lg border px-4 py-2 text-xs font-bold transition ${inverterPictureUploading ? "border-odoo-200 bg-odoo-50 text-odoo-500 cursor-wait" : "border-odoo-200 bg-odoo-50 text-odoo-700 hover:bg-odoo-100"
                   }`}>
                   <span>{inverterPictureUploading ? "Uploading..." : "Upload Pictures"}</span>
                   <input
@@ -17047,7 +17047,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
                         <img src={picture.url} alt={picture.fileName || "Inverter picture"} className="h-full w-full object-cover" />
                       </a>
                       <div className="flex items-center justify-between gap-2 px-3 py-1">
-                        <a href={picture.url} target="_blank" rel="noreferrer" className="truncate text-xs font-semibold text-blue-700 hover:text-blue-800">
+                        <a href={picture.url} target="_blank" rel="noreferrer" className="truncate text-xs font-semibold text-odoo-700 hover:text-odoo-800">
                           {picture.fileName || "Inverter photo"}
                         </a>
                         <button
@@ -17377,7 +17377,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
                   type="button"
                   onClick={sendForOnsite}
                   disabled={serviceActionId === selectedServiceComplaint.id}
-                  className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700 hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-lg border border-odoo-200 bg-odoo-50 px-4 py-2 text-sm font-bold text-odoo-700 hover:bg-odoo-100 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {serviceActionId === selectedServiceComplaint.id ? "Sending..." : "Send"}
                 </button>
@@ -17465,7 +17465,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
                   type="button"
                   onClick={saveWarehouseWork}
                   disabled={serviceActionId === selectedServiceComplaint.id}
-                  className="rounded-lg bg-teal-600 px-4 py-2 text-sm font-bold text-white hover:bg-teal-500 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-lg bg-odoo-600 px-4 py-2 text-sm font-bold text-white hover:bg-odoo-500 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {serviceActionId === selectedServiceComplaint.id ? "Saving..." : "Save Dispatch Update"}
                 </button>
@@ -17853,7 +17853,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
                   type="button"
                   onClick={saveL3Notes}
                   disabled={serviceActionId === selectedServiceComplaint.id}
-                  className="rounded-lg border border-blue-200 bg-blue-50 px-4 py-2 text-sm font-bold text-blue-700 hover:bg-blue-100 disabled:cursor-not-allowed disabled:opacity-60"
+                  className="rounded-lg border border-odoo-200 bg-odoo-50 px-4 py-2 text-sm font-bold text-odoo-700 hover:bg-odoo-100 disabled:cursor-not-allowed disabled:opacity-60"
                 >
                   {serviceActionId === selectedServiceComplaint.id ? "Updating..." : "Update Notes"}
                 </button>
@@ -18256,12 +18256,12 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
                 </div>
               )}
               {complaintListTab === "team" && (
-                <div className="mb-3 rounded-xl border border-blue-200 bg-blue-50 p-4">
-                  <div className="mb-2 text-xs font-bold uppercase tracking-widest text-blue-700">
+                <div className="mb-3 rounded-xl border border-odoo-200 bg-odoo-50 p-4">
+                  <div className="mb-2 text-xs font-bold uppercase tracking-widest text-odoo-700">
                     {currentRole === "L2 Technical Team" ? "L2 Manager Reassign" : "L3 Manager Reassign"}
                   </div>
                   {!reassignTargetComplaint ? (
-                    <div className="rounded-lg border border-dashed border-blue-200 bg-white px-3 py-1 text-sm text-gray-500">
+                    <div className="rounded-lg border border-dashed border-odoo-200 bg-white px-3 py-1 text-sm text-gray-500">
                       {currentRole === "L2 Technical Team"
                         ? "Select a ticket below (any ticket from an L1 engineer in your team) to view its SLA and reassign it to another L1 engineer."
                         : "Select a ticket below (any L1 or L2 ticket) to view its SLA and reassign it to another engineer."}
@@ -18287,7 +18287,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
                               setReassignTargetRole(event.target.value as ServiceAssignmentRole);
                               setReassignTargetEngineerId("");
                             }}
-                            className="w-full px-3 py-1 rounded-lg bg-white border border-blue-100 text-gray-700 text-sm focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100"
+                            className="w-full px-3 py-1 rounded-lg bg-white border border-odoo-100 text-gray-700 text-sm focus:outline-none focus:border-odoo-400 focus:ring-2 focus:ring-odoo-100"
                           >
                             {reassignRoleChoices.map((role) => (
                               <option key={role} value={role}>{role}</option>
@@ -18300,7 +18300,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
                             value={reassignTargetEngineerId}
                             onChange={(event) => setReassignTargetEngineerId(event.target.value)}
                             disabled={serviceEngineersRes.loading}
-                            className="w-full px-3 py-1 rounded-lg bg-white border border-blue-100 text-gray-700 text-sm focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 disabled:bg-gray-50 disabled:text-gray-400"
+                            className="w-full px-3 py-1 rounded-lg bg-white border border-odoo-100 text-gray-700 text-sm focus:outline-none focus:border-odoo-400 focus:ring-2 focus:ring-odoo-100 disabled:bg-gray-50 disabled:text-gray-400"
                           >
                             <option value="">
                               {serviceEngineersRes.loading
@@ -18319,7 +18319,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
                             type="button"
                             onClick={reassignSelectedTeamTicket}
                             disabled={serviceActionId === reassignTargetComplaint.id || !reassignTargetEngineerId}
-                            className="w-full rounded-lg bg-blue-700 px-4 py-2 text-sm font-bold text-white hover:bg-blue-600 disabled:cursor-not-allowed disabled:opacity-60"
+                            className="w-full rounded-lg bg-odoo-700 px-4 py-2 text-sm font-bold text-white hover:bg-odoo-600 disabled:cursor-not-allowed disabled:opacity-60"
                           >
                             {serviceActionId === reassignTargetComplaint.id ? "Reassigning..." : "Reassign"}
                           </button>
@@ -18406,8 +18406,8 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
                               setReassignTargetEngineerId("");
                             }}
                             className={`px-3 py-1.5 rounded-lg text-xs font-bold border transition ${reassignComplaintId === c.id
-                              ? "border-blue-300 bg-blue-100 text-blue-700"
-                              : "border-blue-200 bg-blue-50 text-blue-700 hover:bg-blue-100"
+                              ? "border-odoo-300 bg-odoo-100 text-odoo-700"
+                              : "border-odoo-200 bg-odoo-50 text-odoo-700 hover:bg-odoo-100"
                               }`}
                           >
                             {reassignComplaintId === c.id ? "Selected" : "Select to Reassign"}
@@ -18453,7 +18453,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
                         {isServiceEngineerRole && complaintListTab === "onsite" ? (
                           <>
                             <div className="font-semibold text-gray-900">{c.engineerName || currentUser?.name || "Onsite Engineer"}</div>
-                            <div className="text-blue-600">Assigned by {c.siteVisitAssignedByName || c.assignedEngineerName || "L2 Team"}</div>
+                            <div className="text-odoo-600">Assigned by {c.siteVisitAssignedByName || c.assignedEngineerName || "L2 Team"}</div>
                             <div className="text-gray-500">
                               Visit: {c.siteVisitScheduledDate ? new Date(c.siteVisitScheduledDate).toLocaleDateString() : "Date pending"}
                             </div>
@@ -18462,7 +18462,7 @@ export function ComplaintsConsumerPage({ currentUser }: { currentUser?: User }) 
                           <>
                             <div className="font-semibold text-gray-900">{c.assignedEngineerName || c.engineerName || "Waiting Lobby"}</div>
                             {c.escalatedByName && (
-                              <div className="text-blue-600">Escalated by {c.escalatedByName}</div>
+                              <div className="text-odoo-600">Escalated by {c.escalatedByName}</div>
                             )}
                             <div className="text-gray-500">
                               {c.assignmentStatus === "Waiting" ? "Waiting Lobby" : "Assigned"}
@@ -18685,7 +18685,7 @@ export function ComplaintsSupplierPage() {
           <button
             type="button"
             onClick={() => setListOpen(true)}
-            className="text-sm text-blue-600 hover:text-blue-700 transition font-medium"
+            className="text-sm text-odoo-600 hover:text-odoo-700 transition font-medium"
           >
             View Warranty Claims ?
           </button>
@@ -19057,13 +19057,13 @@ export function DistributorsPage() {
     <div>
       <PageHeader title="Distributors" sub="NovaAssets Distributors" action={<PrimaryBtn onClick={openCreate}>+ Add Distributor</PrimaryBtn>} />
       <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
-        <div className="rounded-2xl bg-gradient-to-br from-blue-50 to-white border border-blue-100 p-5 flex items-center gap-5 shadow-sm">
-          <div className="w-12 h-12 rounded-xl bg-blue-100 flex items-center justify-center text-blue-700">
+        <div className="rounded-2xl bg-gradient-to-br from-odoo-50 to-white border border-odoo-100 p-5 flex items-center gap-5 shadow-sm">
+          <div className="w-12 h-12 rounded-xl bg-odoo-100 flex items-center justify-center text-odoo-700">
             <IconUsers size={22} />
           </div>
           <div>
             <div className="text-xs text-gray-500 font-medium uppercase tracking-wide mb-1">Active Distributors</div>
-            <div className="text-4xl font-black text-blue-600">{activeCount}</div>
+            <div className="text-4xl font-black text-odoo-600">{activeCount}</div>
             <div className="text-xs text-gray-400 mt-0.5">Registered Partners</div>
           </div>
         </div>
@@ -19113,7 +19113,7 @@ export function DistributorsPage() {
               </TD>
               <TD>
                 <button
-                  className="w-7 h-7 rounded bg-sky-100 text-sky-700 hover:bg-sky-200 transition flex items-center justify-center border border-sky-200"
+                  className="w-7 h-7 rounded bg-odoo-100 text-odoo-700 hover:bg-odoo-200 transition flex items-center justify-center border border-odoo-200"
                   type="button"
                   onClick={() => openView(d)}
                   title="View"
@@ -19227,7 +19227,7 @@ export function DistributorsPage() {
                         className={`flex h-9 min-w-9 items-center justify-center rounded-lg border px-3 text-xs font-bold transition ${activeAreaSlotIndex === areaIndex
                           ? "border-amber-400 bg-amber-100 text-amber-800"
                           : areaValue.trim()
-                            ? "border-blue-900 bg-blue-900 text-white hover:bg-blue-800"
+                            ? "border-odoo-900 bg-odoo-900 text-white hover:bg-odoo-800"
                             : "border-gray-200 bg-white text-gray-400 hover:bg-gray-100"
                           }`}
                       >

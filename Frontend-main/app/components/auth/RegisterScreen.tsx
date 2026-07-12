@@ -71,7 +71,7 @@ export default function RegisterScreen({ onGoLogin }: { onGoLogin: () => void })
 
   if (submitted) {
     return (
-      <div style={{ height: "100dvh", minHeight: "100vh", width: "100%", overflow: "auto", display: "flex", alignItems: "center", justifyContent: "center", background: "#0f1629" }}>
+      <div style={{ height: "100dvh", minHeight: "100vh", width: "100%", overflow: "auto", display: "flex", alignItems: "center", justifyContent: "center", background: "#241322" }}>
         <div style={{
           background: "#fff", borderRadius: 20, padding: "48px 40px", maxWidth: 400, width: "90%",
           textAlign: "center", boxShadow: "0 20px 60px rgba(0,0,0,0.3)"
@@ -79,7 +79,7 @@ export default function RegisterScreen({ onGoLogin }: { onGoLogin: () => void })
           <div style={{ marginBottom: 16, display: "flex", justifyContent: "center" }}>
             <IconCheckCircle size={54} style={{ color: "#16a34a" }} />
           </div>
-          <div style={{ fontSize: 22, fontWeight: 800, color: "#1e3a5f", marginBottom: 8 }}>Registration Request Sent</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: "#714B67", marginBottom: 8 }}>Registration Request Sent</div>
           <div style={{ color: "#64748b", fontSize: 14, lineHeight: 1.7, marginBottom: 28 }}>
             {submittedMessage || (
               <>
@@ -90,7 +90,7 @@ export default function RegisterScreen({ onGoLogin }: { onGoLogin: () => void })
           </div>
           <button onClick={onGoLogin} style={{
             padding: "12px 32px", borderRadius: 10, border: "none", cursor: "pointer",
-            background: "linear-gradient(135deg, #1e3a8a, #2563eb)", color: "#fff",
+            background: "linear-gradient(135deg, #714B67, #9A528D)", color: "#fff",
             fontWeight: 700, fontSize: 14,
           }}>
             Back to Login
@@ -101,11 +101,11 @@ export default function RegisterScreen({ onGoLogin }: { onGoLogin: () => void })
   }
 
   return (
-    <div style={{ height: "100dvh", minHeight: "100vh", width: "100%", overflow: "auto", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #0e1f3d 0%, #1a3a6b 100%)", padding: 20 }}>
+    <div style={{ height: "100dvh", minHeight: "100vh", width: "100%", overflow: "auto", display: "flex", alignItems: "center", justifyContent: "center", background: "linear-gradient(135deg, #2a1626 0%, #4f2b49 100%)", padding: 20 }}>
       <div style={{ width: "100%", maxWidth: 480, background: "#fff", borderRadius: 20, padding: isMobile ? "28px 20px" : "40px 36px", boxShadow: "0 24px 80px rgba(0,0,0,0.3)" }}>
         <div style={{ textAlign: "center", marginBottom: 28 }}>
           <NovaAssetsLogo size={52} />
-          <div style={{ fontSize: 22, fontWeight: 800, color: "#1e3a5f", marginTop: 12 }}>Create Account</div>
+          <div style={{ fontSize: 22, fontWeight: 800, color: "#714B67", marginTop: 12 }}>Create Account</div>
           <div style={{ color: "#64748b", fontSize: 13, marginTop: 4 }}>Only whitelisted users may register</div>
         </div>
 
@@ -127,7 +127,7 @@ export default function RegisterScreen({ onGoLogin }: { onGoLogin: () => void })
               <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#475569", marginBottom: 5 }}>{label}</label>
               <input type={type} value={form[key as keyof RegisterForm]} onChange={e => set(key as keyof RegisterForm, e.target.value)} placeholder={placeholder}
                 style={{ width: "100%", padding: "10px 12px", borderRadius: 9, border: "1.5px solid #e2e8f0", fontSize: 13, boxSizing: "border-box", outline: "none", background: "#fff", color: "#0f172a" }}
-                onFocus={e => e.target.style.borderColor = "#3b82f6"}
+                onFocus={e => e.target.style.borderColor = "#9A528D"}
                 onBlur={e => e.target.style.borderColor = "#e2e8f0"}
               />
             </div>
@@ -136,7 +136,7 @@ export default function RegisterScreen({ onGoLogin }: { onGoLogin: () => void })
             <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#475569", marginBottom: 5 }}>Requested Role</label>
             <select value={form.role} onChange={e => set("role", e.target.value)}
               style={{ width: "100%", padding: "10px 12px", borderRadius: 9, border: "1.5px solid #e2e8f0", fontSize: 13, background: "#fff", color: "#0f172a", outline: "none" }}
-              onFocus={e => e.target.style.borderColor = "#3b82f6"}
+              onFocus={e => e.target.style.borderColor = "#9A528D"}
               onBlur={e => e.target.style.borderColor = "#e2e8f0"}
             >
               <option value="">Select Role...</option>
@@ -160,7 +160,7 @@ export default function RegisterScreen({ onGoLogin }: { onGoLogin: () => void })
               <label style={{ display: "block", fontSize: 12, fontWeight: 600, color: "#475569", marginBottom: 5 }}>{label}</label>
               <input type="password" value={form[key as keyof RegisterForm]} onChange={e => set(key as keyof RegisterForm, e.target.value)} placeholder={placeholder}
                 style={{ width: "100%", padding: "10px 12px", borderRadius: 9, border: "1.5px solid #e2e8f0", fontSize: 13, boxSizing: "border-box", outline: "none", background: "#fff", color: "#0f172a" }}
-                onFocus={e => e.target.style.borderColor = "#3b82f6"}
+                onFocus={e => e.target.style.borderColor = "#9A528D"}
                 onBlur={e => e.target.style.borderColor = "#e2e8f0"}
               />
             </div>
@@ -169,7 +169,7 @@ export default function RegisterScreen({ onGoLogin }: { onGoLogin: () => void })
 
         <button onClick={handleRegister} style={{
           width: "100%", marginTop: 20, padding: "13px", borderRadius: 10, border: "none", cursor: "pointer",
-          background: "linear-gradient(135deg, #1e3a8a, #2563eb)", color: "#fff", fontWeight: 700, fontSize: 15,
+          background: "linear-gradient(135deg, #714B67, #9A528D)", color: "#fff", fontWeight: 700, fontSize: 15,
           boxShadow: "0 4px 14px rgba(37,99,235,0.3)"
         }} disabled={loading}>
           {loading ? "Submitting..." : "Submit Registration Request"}
@@ -177,7 +177,7 @@ export default function RegisterScreen({ onGoLogin }: { onGoLogin: () => void })
 
         <div style={{ textAlign: "center", marginTop: 16, fontSize: 13, color: "#64748b" }}>
           Already have an account?{" "}
-          <button onClick={onGoLogin} style={{ background: "none", border: "none", color: "#3b82f6", cursor: "pointer", fontWeight: 600, textDecoration: "underline" }}>
+          <button onClick={onGoLogin} style={{ background: "none", border: "none", color: "#9A528D", cursor: "pointer", fontWeight: 600, textDecoration: "underline" }}>
             Sign In
           </button>
         </div>

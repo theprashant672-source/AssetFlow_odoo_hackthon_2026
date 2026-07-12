@@ -34,7 +34,7 @@ export default function LogoutScreen({
         }}>
           <IconLogout size={34} style={{ color: "#dc2626" }} />
         </div>
-        <div style={{ fontSize: 22, fontWeight: 800, color: "#1e3a5f", marginBottom: 8 }}>Signing Out</div>
+        <div style={{ fontSize: 22, fontWeight: 800, color: "#714B67", marginBottom: 8 }}>Signing Out</div>
         <div style={{ color: "#64748b", fontSize: 14, lineHeight: 1.7, marginBottom: 8 }}>
           You are signed in as <b>{user?.name}</b>
         </div>

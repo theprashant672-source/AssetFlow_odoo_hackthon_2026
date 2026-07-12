@@ -219,11 +219,11 @@ export default function LoginPage() {
 
   return (
     <main className="min-h-screen overflow-hidden bg-[#f6f7fb] text-slate-900">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(154,82,141,0.16),_transparent_32%),radial-gradient(circle_at_85%_15%,_rgba(14,165,233,0.12),_transparent_28%),radial-gradient(circle_at_70%_85%,_rgba(22,163,74,0.08),_transparent_24%),linear-gradient(180deg,_#f8fafc_0%,_#f6ecf4_100%)]" />
+      <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(154,82,141,0.16),_transparent_32%),radial-gradient(circle_at_85%_15%,_rgba(184,120,171,0.12),_transparent_28%),radial-gradient(circle_at_70%_85%,_rgba(154,82,141,0.08),_transparent_24%),linear-gradient(180deg,_#f8fafc_0%,_#f6ecf4_100%)]" />
       <div className="mx-auto grid min-h-screen w-full max-w-7xl gap-6 px-4 py-5 sm:px-6 lg:grid-cols-[1fr_0.92fr] lg:px-8 lg:py-6">
         <section className="relative overflow-hidden rounded-[2.4rem] border border-white/70 bg-white/70 p-6 shadow-[0_30px_90px_rgba(15,23,42,0.08)] backdrop-blur-xl sm:p-8 lg:p-10">
           <div className="absolute -left-20 top-10 h-64 w-64 rounded-full bg-[#9A528D]/10 blur-3xl" />
-          <div className="absolute bottom-4 right-6 h-52 w-52 rounded-full bg-[#16a34a]/10 blur-3xl" />
+          <div className="absolute bottom-4 right-6 h-52 w-52 rounded-full bg-[#9A528D]/10 blur-3xl" />
 
           <div className="relative z-10 flex items-center justify-between gap-4">
             <AssetFlowLogo />
@@ -300,9 +300,9 @@ export default function LoginPage() {
           </div>
         </section>
 
-        <section className="relative flex items-center justify-center overflow-hidden rounded-[2.4rem] border border-[#101b3d]/15 bg-[#0d1328] px-4 py-6 text-white shadow-[0_30px_100px_rgba(15,23,42,0.36)] sm:px-6 lg:px-8">
+        <section className="relative flex items-center justify-center overflow-hidden rounded-[2.4rem] border border-[#2b1629]/15 bg-[#221124] px-4 py-6 text-white shadow-[0_30px_100px_rgba(15,23,42,0.36)] sm:px-6 lg:px-8">
           <div className="absolute -left-8 top-8 h-40 w-40 rounded-full bg-[#9A528D]/30 blur-3xl" />
-          <div className="absolute bottom-0 right-0 h-56 w-56 rounded-full bg-[#14b8a6]/15 blur-3xl" />
+          <div className="absolute bottom-0 right-0 h-56 w-56 rounded-full bg-[#b878ab]/15 blur-3xl" />
           <div className="relative w-full max-w-md rounded-[2rem] border border-white/10 bg-white/6 p-5 shadow-[0_30px_100px_rgba(15,23,42,0.5)] backdrop-blur-xl sm:p-7">
             <div className="flex items-start justify-between gap-4">
               <div>
@@ -419,7 +419,7 @@ export default function LoginPage() {
               )}
 
               {statusMessage && (
-                <div className="rounded-2xl border border-sky-300/40 bg-sky-50 px-4 py-3 text-sm text-sky-900">
+                <div className="rounded-2xl border border-odoo-300/40 bg-odoo-50 px-4 py-3 text-sm text-odoo-900">
                   {statusMessage}
                 </div>
               )}

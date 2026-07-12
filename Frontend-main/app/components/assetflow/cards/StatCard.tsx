@@ -15,7 +15,7 @@ export default function StatCard({
     tone === "violet"
       ? "from-[#9A528D] to-[#b878ab]"
       : tone === "sky"
-        ? "from-sky-500 to-cyan-500"
+        ? "from-odoo-500 to-odoo-500"
         : tone === "emerald"
           ? "from-emerald-500 to-lime-500"
           : "from-amber-500 to-orange-500";

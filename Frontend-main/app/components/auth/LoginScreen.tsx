@@ -173,7 +173,7 @@ export default function LoginScreen({
                 <NovaAssetsLogo size={42} />
               </div>
             </div>
-            <div style={{ fontSize: 24, fontWeight: 900, color: "#101d4d", letterSpacing: 0.4 }}>IMS Login</div>
+            <div style={{ fontSize: 24, fontWeight: 900, color: "#3a2136", letterSpacing: 0.4 }}>IMS Login</div>
           </div>
 
           {error && (
@@ -188,7 +188,7 @@ export default function LoginScreen({
           )}
 
           <div style={{ marginBottom: 16 }}>
-            <label style={{ display: "block", fontSize: 13, fontWeight: 700, color: "#101d4d", marginBottom: 6 }}>
+            <label style={{ display: "block", fontSize: 13, fontWeight: 700, color: "#3a2136", marginBottom: 6 }}>
               e-Mail
             </label>
             <input
@@ -209,13 +209,13 @@ export default function LoginScreen({
                 outline: "none",
                 transition: "border-color 0.2s, box-shadow 0.2s",
               }}
-              onFocus={(e) => { e.target.style.borderColor = "#1747c7"; e.target.style.boxShadow = "0 0 0 4px rgba(23,71,199,0.12)"; }}
+              onFocus={(e) => { e.target.style.borderColor = "#9A528D"; e.target.style.boxShadow = "0 0 0 4px rgba(23,71,199,0.12)"; }}
               onBlur={(e) => { e.target.style.borderColor = "#cbd5e1"; e.target.style.boxShadow = "none"; }}
             />
           </div>
 
           <div style={{ marginBottom: 14, position: "relative" }}>
-            <label style={{ display: "block", fontSize: 13, fontWeight: 700, color: "#101d4d", marginBottom: 6 }}>
+            <label style={{ display: "block", fontSize: 13, fontWeight: 700, color: "#3a2136", marginBottom: 6 }}>
               Password
             </label>
             <div style={{ position: "relative" }}>
@@ -237,7 +237,7 @@ export default function LoginScreen({
                   outline: "none",
                   transition: "border-color 0.2s, box-shadow 0.2s",
                 }}
-                onFocus={(e) => { e.target.style.borderColor = "#1747c7"; e.target.style.boxShadow = "0 0 0 4px rgba(23,71,199,0.12)"; }}
+                onFocus={(e) => { e.target.style.borderColor = "#9A528D"; e.target.style.boxShadow = "0 0 0 4px rgba(23,71,199,0.12)"; }}
                 onBlur={(e) => { e.target.style.borderColor = "#cbd5e1"; e.target.style.boxShadow = "none"; }}
               />
               <button
@@ -272,7 +272,7 @@ export default function LoginScreen({
                 type="checkbox"
                 checked={rememberMe}
                 onChange={(e) => setRememberMe(e.target.checked)}
-                style={{ width: 15, height: 15, accentColor: "#1747c7", cursor: "pointer" }}
+                style={{ width: 15, height: 15, accentColor: "#9A528D", cursor: "pointer" }}
               />
               Remember Me
             </label>
@@ -287,7 +287,7 @@ export default function LoginScreen({
               borderRadius: 12,
               border: "none",
               cursor: loading ? "not-allowed" : "pointer",
-              background: loading ? "#64748b" : "linear-gradient(135deg, #16215c, #0c1440)",
+              background: loading ? "#64748b" : "linear-gradient(135deg, #5a3a54, #0c1440)",
               color: "#fff",
               fontWeight: 800,
               fontSize: 15,
@@ -308,8 +308,8 @@ export default function LoginScreen({
               onClick={onGoRegister}
               style={{
                 background: "#fff",
-                border: "1.5px solid #16215c",
-                color: "#16215c",
+                border: "1.5px solid #5a3a54",
+                color: "#5a3a54",
                 borderRadius: 999,
                 padding: "6px 14px",
                 cursor: "pointer",

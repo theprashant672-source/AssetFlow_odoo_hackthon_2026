@@ -30,7 +30,7 @@ export default function HomePage() {
       </header>
 
       <section className="relative overflow-hidden">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(154,82,141,0.18),_transparent_32%),radial-gradient(circle_at_85%_20%,_rgba(14,165,233,0.14),_transparent_30%),linear-gradient(180deg,_#f6ecf4_0%,_#f8fafc_55%,_#f8fafc_100%)]" />
+        <div className="absolute inset-0 bg-[radial-gradient(circle_at_top_left,_rgba(154,82,141,0.18),_transparent_32%),radial-gradient(circle_at_85%_20%,_rgba(184,120,171,0.14),_transparent_30%),linear-gradient(180deg,_#f6ecf4_0%,_#f8fafc_55%,_#f8fafc_100%)]" />
         <div className="mx-auto grid min-h-[calc(100vh-82px)] w-full max-w-7xl gap-10 px-4 py-12 sm:px-6 lg:grid-cols-[1.15fr_0.85fr] lg:px-8 lg:py-16">
           <div className="relative z-10 flex flex-col justify-center">
             <div className="inline-flex w-fit items-center gap-2 rounded-full border border-[#9A528D]/15 bg-white/80 px-3 py-1 text-xs font-semibold uppercase tracking-[0.3em] text-[#9A528D] shadow-sm backdrop-blur">

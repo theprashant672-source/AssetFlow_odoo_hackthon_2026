@@ -82,7 +82,7 @@ const roleContent: Record<AssetFlowRole, {
     metrics: founderMetrics,
     activities: [
       { title: "New department created", description: "Product Growth was added under the corporate hierarchy.", time: "4m ago", tone: "bg-[#9A528D]" },
-      { title: "Policy update approved", description: "Access rules were updated for asset custody and audit cycles.", time: "26m ago", tone: "bg-sky-500" },
+      { title: "Policy update approved", description: "Access rules were updated for asset custody and audit cycles.", time: "26m ago", tone: "bg-odoo-500" },
       { title: "Audit cycle closed", description: "Quarterly audit closed with 98.2% compliance.", time: "1h ago", tone: "bg-emerald-500" },
     ],
     statusSeries: [
@@ -93,7 +93,7 @@ const roleContent: Record<AssetFlowRole, {
     ],
     departmentSeries: [
       { label: "Engineering", value: 1880, color: "#9A528D" },
-      { label: "Sales", value: 1240, color: "#0ea5e9" },
+      { label: "Sales", value: 1240, color: "#b878ab" },
       { label: "Operations", value: 980, color: "#16a34a" },
       { label: "Facilities", value: 540, color: "#f59e0b" },
       { label: "Finance", value: 320, color: "#ef4444" },
@@ -105,7 +105,7 @@ const roleContent: Record<AssetFlowRole, {
     metrics: adminMetrics,
     activities: [
       { title: "Department approval pending", description: "Finance and Procurement are waiting for admin sign-off.", time: "8m ago", tone: "bg-[#9A528D]" },
-      { title: "Asset registration completed", description: "12 new devices were added to the company inventory.", time: "31m ago", tone: "bg-sky-500" },
+      { title: "Asset registration completed", description: "12 new devices were added to the company inventory.", time: "31m ago", tone: "bg-odoo-500" },
       { title: "Maintenance request escalated", description: "Two laptops are awaiting service approval.", time: "58m ago", tone: "bg-amber-500" },
     ],
     statusSeries: [
@@ -116,7 +116,7 @@ const roleContent: Record<AssetFlowRole, {
     ],
     departmentSeries: [
       { label: "Engineering", value: 1460, color: "#9A528D" },
-      { label: "Sales", value: 940, color: "#0ea5e9" },
+      { label: "Sales", value: 940, color: "#b878ab" },
       { label: "Operations", value: 720, color: "#16a34a" },
       { label: "HR", value: 430, color: "#f59e0b" },
       { label: "Finance", value: 360, color: "#ef4444" },
@@ -128,7 +128,7 @@ const roleContent: Record<AssetFlowRole, {
     metrics: headMetrics,
     activities: [
       { title: "Approval waiting on head", description: "A laptop allocation request needs your review.", time: "6m ago", tone: "bg-[#9A528D]" },
-      { title: "Upcoming booking", description: "Conference Room B is reserved tomorrow at 11:00 AM.", time: "18m ago", tone: "bg-sky-500" },
+      { title: "Upcoming booking", description: "Conference Room B is reserved tomorrow at 11:00 AM.", time: "18m ago", tone: "bg-odoo-500" },
       { title: "Employee added to team", description: "Two new members joined the design department.", time: "1h ago", tone: "bg-emerald-500" },
     ],
     statusSeries: [
@@ -139,7 +139,7 @@ const roleContent: Record<AssetFlowRole, {
     ],
     departmentSeries: [
       { label: "Your Dept", value: 860, color: "#9A528D" },
-      { label: "Cross-Team", value: 220, color: "#0ea5e9" },
+      { label: "Cross-Team", value: 220, color: "#b878ab" },
       { label: "Reserve", value: 110, color: "#16a34a" },
     ],
   },
@@ -149,7 +149,7 @@ const roleContent: Record<AssetFlowRole, {
     metrics: managerMetrics,
     activities: [
       { title: "Transfer request raised", description: "Three laptops are moving from HQ to field sales.", time: "11m ago", tone: "bg-[#9A528D]" },
-      { title: "Maintenance assigned", description: "IT support has accepted two repair tickets.", time: "25m ago", tone: "bg-sky-500" },
+      { title: "Maintenance assigned", description: "IT support has accepted two repair tickets.", time: "25m ago", tone: "bg-odoo-500" },
       { title: "Return overdue alert", description: "Four assets need return confirmation today.", time: "49m ago", tone: "bg-amber-500" },
     ],
     statusSeries: [
@@ -160,7 +160,7 @@ const roleContent: Record<AssetFlowRole, {
     ],
     departmentSeries: [
       { label: "Allocated", value: 430, color: "#9A528D" },
-      { label: "Transfers", value: 102, color: "#0ea5e9" },
+      { label: "Transfers", value: 102, color: "#b878ab" },
       { label: "Returns", value: 74, color: "#16a34a" },
     ],
   },
@@ -170,18 +170,18 @@ const roleContent: Record<AssetFlowRole, {
     metrics: employeeMetrics,
     activities: [
       { title: "Laptop assigned", description: "Your primary work laptop is now active in inventory.", time: "15m ago", tone: "bg-[#9A528D]" },
-      { title: "Meeting room booked", description: "Conference Room C is reserved for your team sync.", time: "2h ago", tone: "bg-sky-500" },
+      { title: "Meeting room booked", description: "Conference Room C is reserved for your team sync.", time: "2h ago", tone: "bg-odoo-500" },
       { title: "Maintenance requested", description: "Your headset replacement request is awaiting approval.", time: "Today", tone: "bg-amber-500" },
     ],
     statusSeries: [
       { label: "Assigned", value: 6, color: "#9A528D" },
-      { label: "Bookings", value: 2, color: "#0ea5e9" },
+      { label: "Bookings", value: 2, color: "#b878ab" },
       { label: "Maintenance", value: 1, color: "#f59e0b" },
       { label: "Unread", value: 8, color: "#16a34a" },
     ],
     departmentSeries: [
       { label: "My Assets", value: 6, color: "#9A528D" },
-      { label: "Bookings", value: 2, color: "#0ea5e9" },
+      { label: "Bookings", value: 2, color: "#b878ab" },
       { label: "Requests", value: 1, color: "#16a34a" },
     ],
   },
@@ -209,7 +209,7 @@ export default function RoleDashboard({ role }: { role: AssetFlowRole }) {
           <div className="grid gap-3">
             {[
               { title: "Pending approvals", description: "Items waiting for your next action.", tone: "text-amber-700 bg-amber-50" },
-              { title: "Due reminders", description: "Asset returns, bookings, and maintenance due soon.", tone: "text-sky-700 bg-sky-50" },
+              { title: "Due reminders", description: "Asset returns, bookings, and maintenance due soon.", tone: "text-odoo-700 bg-odoo-50" },
               { title: "System status", description: "Workspace sync and policies are healthy.", tone: "text-emerald-700 bg-emerald-50" },
             ].map((item) => (
               <div key={item.title} className={`rounded-2xl border border-slate-200 p-4 shadow-sm ${item.tone}`}>

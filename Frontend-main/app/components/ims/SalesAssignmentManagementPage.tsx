@@ -245,9 +245,9 @@ export default function SalesAssignmentManagementPage() {
       />
 
       <div className="grid grid-cols-1 gap-4 sm:grid-cols-3">
-        <div className="rounded-2xl border border-blue-100 bg-gradient-to-br from-blue-50 to-white p-5 shadow-sm">
-          <div className="text-xs font-semibold uppercase tracking-[0.24em] text-blue-500">Sales Accounts</div>
-          <div className="mt-2 text-4xl font-black text-blue-700">{salesUsers.length}</div>
+        <div className="rounded-2xl border border-odoo-100 bg-gradient-to-br from-odoo-50 to-white p-5 shadow-sm">
+          <div className="text-xs font-semibold uppercase tracking-[0.24em] text-odoo-500">Sales Accounts</div>
+          <div className="mt-2 text-4xl font-black text-odoo-700">{salesUsers.length}</div>
         </div>
         <div className="rounded-2xl border border-emerald-100 bg-gradient-to-br from-emerald-50 to-white p-5 shadow-sm">
           <div className="text-xs font-semibold uppercase tracking-[0.24em] text-emerald-500">Demo Login</div>

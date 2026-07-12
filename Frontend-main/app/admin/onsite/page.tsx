@@ -415,7 +415,7 @@ const styles: Record<string, React.CSSProperties> = {
     display: "flex",
     alignItems: "center",
     justifyContent: "center",
-    background: "#0f1629",
+    background: "#241322",
   },
   spinner: {
     width: 40,
@@ -603,7 +603,7 @@ const styles: Record<string, React.CSSProperties> = {
   statusBadge: {
     display: "inline-block",
     background: "#eff6ff",
-    color: "#2563eb",
+    color: "#9A528D",
     padding: "2px 8px",
     borderRadius: 6,
     fontSize: 11,
@@ -706,7 +706,7 @@ const styles: Record<string, React.CSSProperties> = {
     alignItems: "center",
     justifyContent: "center",
     padding: "8px 20px",
-    background: "linear-gradient(135deg, #3b82f6, #2563eb)",
+    background: "linear-gradient(135deg, #9A528D, #9A528D)",
     color: "#fff",
     border: "none",
     borderRadius: 10,
@@ -754,7 +754,7 @@ const styles: Record<string, React.CSSProperties> = {
   pictureName: {
     fontSize: 12,
     fontWeight: 600,
-    color: "#3b82f6",
+    color: "#9A528D",
     overflow: "hidden",
     textOverflow: "ellipsis",
     whiteSpace: "nowrap" as const,

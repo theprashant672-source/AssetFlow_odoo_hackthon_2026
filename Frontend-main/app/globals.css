@@ -22,6 +22,21 @@
   --font-mono: var(--font-geist);
 }
 
+/* Odoo brand purple scale — used app-wide instead of blue/sky/teal accents */
+@theme {
+  --color-odoo-50: #faf3f8;
+  --color-odoo-100: #f6ecf4;
+  --color-odoo-200: #ecd5e6;
+  --color-odoo-300: #ddb3d2;
+  --color-odoo-400: #c489b4;
+  --color-odoo-500: #a8639a;
+  --color-odoo-600: #9a528d;
+  --color-odoo-700: #7d4272;
+  --color-odoo-800: #68385f;
+  --color-odoo-900: #572f50;
+  --color-odoo-950: #351b31;
+}
+
 [data-theme="dark"] {
   --background: #0f172a;
   --foreground: #e2e8f0;
@@ -39,7 +54,7 @@ body {
   min-height: 100vh;
   background-image:
     radial-gradient(circle at top left, rgba(154, 82, 141, 0.12), transparent 32%),
-    radial-gradient(circle at 90% 10%, rgba(59, 130, 246, 0.10), transparent 24%),
+    radial-gradient(circle at 90% 10%, rgba(154, 82, 141, 0.10), transparent 24%),
     linear-gradient(180deg, rgba(248, 250, 252, 0.9), rgba(248, 250, 252, 1));
 }
 

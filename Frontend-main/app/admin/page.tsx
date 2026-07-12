@@ -89,14 +89,14 @@ export default function NovaAssetsIMS() {
 
   if (screen === "login") {
     return (
-      <div className="fixed inset-0 z-[9999] overflow-hidden bg-[#0f1629]">
+      <div className="fixed inset-0 z-[9999] overflow-hidden bg-[#241322]">
         <LoginScreen onLogin={handleLogin} onGoRegister={() => setScreen("register")} />
       </div>
     );
   }
   if (screen === "register") {
     return (
-      <div className="fixed inset-0 z-[9999] overflow-hidden bg-[#0f1629]">
+      <div className="fixed inset-0 z-[9999] overflow-hidden bg-[#241322]">
         <RegisterScreen onGoLogin={() => setScreen("login")} />
       </div>
     );

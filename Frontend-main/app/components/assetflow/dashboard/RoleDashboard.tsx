@@ -166,29 +166,7 @@ export default function RoleDashboard({ role }: { role: AssetFlowRole }) {
   const config = roleContent[role];
 
   return (
-    <div className="grid gap-6">
-      <div className="grid gap-4 md:grid-cols-3 mb-6">
-        <button className="flex items-center justify-center gap-2 rounded-xl bg-[#5b3df5] px-4 py-3 font-semibold text-white shadow-sm hover:bg-[#4b30d6] transition-colors">
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-          </svg>
-          Register Asset
-        </button>
-        <button className="flex items-center justify-center gap-2 rounded-xl bg-sky-500 px-4 py-3 font-semibold text-white shadow-sm hover:bg-sky-600 transition-colors">
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M8 7V3m8 4V3m-9 8h10M5 21h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v12a2 2 0 002 2z" />
-          </svg>
-          Book Resource
-        </button>
-        <button className="flex items-center justify-center gap-2 rounded-xl bg-amber-500 px-4 py-3 font-semibold text-white shadow-sm hover:bg-amber-600 transition-colors">
-          <svg className="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
-            <path strokeLinecap="round" strokeLinejoin="round" d="M10.325 4.317c.426-1.756 2.924-1.756 3.35 0a1.724 1.724 0 002.573 1.066c1.543-.94 3.31.826 2.37 2.37a1.724 1.724 0 001.065 2.572c1.756.426 1.756 2.924 0 3.35a1.724 1.724 0 00-1.066 2.573c.94 1.543-.826 3.31-2.37 2.37a1.724 1.724 0 00-2.572 1.065c-.426 1.756-2.924 1.756-3.35 0a1.724 1.724 0 00-2.573-1.066c-1.543.94-3.31-.826-2.37-2.37a1.724 1.724 0 00-1.065-2.572c-1.756-.426-1.756-2.924 0-3.35a1.724 1.724 0 001.066-2.573c-.94-1.543.826-3.31 2.37-2.37.996.608 2.296.07 2.572-1.065z" />
-            <path strokeLinecap="round" strokeLinejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
-          </svg>
-          Raise Maintenance Request
-        </button>
-      </div>
-
+    <div className="grid gap-4">
       <SectionPanel title={config.title} subtitle={config.subtitle}>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-4">
           {config.metrics.map((metric) => (
@@ -197,7 +175,7 @@ export default function RoleDashboard({ role }: { role: AssetFlowRole }) {
         </div>
       </SectionPanel>
 
-      <section className="grid gap-6 xl:grid-cols-[1.15fr_0.85fr]">
+      <section className="grid gap-4 xl:grid-cols-[1.15fr_0.85fr]">
         <SectionPanel title="Recent Activity" subtitle="Live role-specific operations">
           <ActivityFeed items={config.activities} />
         </SectionPanel>
@@ -209,7 +187,7 @@ export default function RoleDashboard({ role }: { role: AssetFlowRole }) {
               { title: "Due reminders", description: "Asset returns, bookings, and maintenance due soon.", tone: "text-odoo-700 bg-odoo-50" },
               { title: "System status", description: "Workspace sync and policies are healthy.", tone: "text-emerald-700 bg-emerald-50" },
             ].map((item) => (
-              <div key={item.title} className={`rounded-2xl border border-slate-200 p-4 shadow-sm ${item.tone}`}>
+              <div key={item.title} className={`rounded-xl border border-slate-200 p-3.5 shadow-sm ${item.tone}`}>
                 <div className="text-sm font-bold">{item.title}</div>
                 <div className="mt-1 text-sm leading-6 opacity-90">{item.description}</div>
               </div>
@@ -218,7 +196,7 @@ export default function RoleDashboard({ role }: { role: AssetFlowRole }) {
         </SectionPanel>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-2">
+      <section className="grid gap-4 xl:grid-cols-2">
         <SectionPanel title="Asset Status" subtitle="Current operational split">
           <AssetStatusChart data={config.statusSeries} />
         </SectionPanel>
@@ -227,7 +205,7 @@ export default function RoleDashboard({ role }: { role: AssetFlowRole }) {
         </SectionPanel>
       </section>
 
-      <section className="grid gap-6 xl:grid-cols-[1.35fr_0.95fr]">
+      <section className="grid gap-4 xl:grid-cols-[1.35fr_0.95fr]">
         <SectionPanel title="Recent Assets" subtitle="Latest asset records">
           <RecentAssetsTable rows={sharedAssets} />
         </SectionPanel>
@@ -272,7 +250,7 @@ export default function RoleDashboard({ role }: { role: AssetFlowRole }) {
 
 function InfoCard({ title, description }: { title: string; description: string }) {
   return (
-    <div className="rounded-3xl border border-slate-200 bg-white/80 p-4 shadow-sm">
+    <div className="rounded-2xl border border-slate-200 bg-white/80 p-3.5 shadow-sm">
       <div className="text-sm font-bold text-slate-900">{title}</div>
       <p className="mt-2 text-sm leading-6 text-slate-600">{description}</p>
     </div>

@@ -11,14 +11,14 @@ function KpiCard({ label, value, href, highlight }: {
   return (
     <Link
       href={href}
-      className={`glass-panel soft-shadow block rounded-[1.4rem] p-4 transition hover:-translate-y-0.5 hover:shadow-lg ${
+      className={`glass-panel soft-shadow block rounded-2xl p-3.5 transition hover:-translate-y-0.5 hover:shadow-lg ${
         highlight ? "border-2 border-red-300 bg-red-50/70" : ""
       }`}
     >
       <div className={`text-xs font-bold uppercase tracking-[0.14em] ${highlight ? "text-red-600" : "text-slate-500"}`}>
         {label}
       </div>
-      <div className={`mt-2 text-3xl font-black tracking-tight ${highlight ? "text-red-700" : "text-slate-900"}`}>
+      <div className={`mt-1.5 text-2xl font-black tracking-tight ${highlight ? "text-red-700" : "text-slate-900"}`}>
         {value}
       </div>
     </Link>
@@ -37,11 +37,11 @@ export default function DashboardModule({ role }: { role: AssetFlowRole }) {
 
   return (
     <div className="grid gap-5">
-      <section className="overflow-hidden rounded-2xl bg-[#341d2d] px-5 py-6 text-white shadow-[0_18px_42px_rgba(52,29,45,0.22)] sm:px-7 sm:py-7">
-        <div className="flex flex-col justify-between gap-5 lg:flex-row lg:items-end">
+      <section className="overflow-hidden rounded-2xl bg-[#341d2d] px-4 py-5 text-white shadow-[0_18px_42px_rgba(52,29,45,0.22)] sm:px-5 sm:py-5">
+        <div className="flex flex-col justify-between gap-4 lg:flex-row lg:items-end">
           <div>
             <div className="text-[11px] font-bold uppercase tracking-[0.26em] text-white/55">AssetFlow operations</div>
-            <h2 className="mt-2 text-2xl font-black tracking-tight sm:text-3xl">Stay ahead of the day&apos;s asset activity.</h2>
+            <h2 className="mt-2 text-xl font-black tracking-tight sm:text-2xl">Stay ahead of the day&apos;s asset activity.</h2>
             <p className="mt-2 max-w-2xl text-sm leading-6 text-white/65">Review availability, requests, returns, and the actions that need attention.</p>
           </div>
           <div className="flex flex-wrap gap-2">

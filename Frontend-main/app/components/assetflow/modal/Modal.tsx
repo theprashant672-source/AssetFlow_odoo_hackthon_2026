@@ -12,7 +12,7 @@ export default function Modal({
   if (!open) return null;
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-950/50 p-4 backdrop-blur-sm">
-      <div className="glass-panel soft-shadow w-full max-w-lg rounded-[2rem] p-6">
+      <div className="glass-panel soft-shadow w-full max-w-lg rounded-2xl p-4 sm:p-5">
         <h3 className="text-lg font-black text-slate-900">{title}</h3>
         <div className="mt-4">{children}</div>
       </div>

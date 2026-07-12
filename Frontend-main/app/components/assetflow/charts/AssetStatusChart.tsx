@@ -12,17 +12,17 @@ export default function AssetStatusChart({
   }, []);
 
   return (
-    <div className="grid gap-6 lg:grid-cols-[0.95fr_1.05fr]">
+    <div className="grid gap-4 lg:grid-cols-[0.95fr_1.05fr]">
       <div className="flex items-center justify-center">
         <div
-          className="relative h-56 w-56 rounded-full shadow-[inset_0_0_0_14px_rgba(255,255,255,0.8)]"
+          className="relative h-48 w-48 rounded-full shadow-[inset_0_0_0_12px_rgba(255,255,255,0.8)]"
           style={{
             background: `conic-gradient(${segments.map((item) => `${item.color} ${item.start}% ${item.end}%`).join(",")})`,
           }}
         >
-          <div className="absolute inset-10 rounded-full bg-white/90 backdrop-blur flex flex-col items-center justify-center text-center">
+          <div className="absolute inset-8 rounded-full bg-white/90 backdrop-blur flex flex-col items-center justify-center text-center">
             <div className="text-xs font-semibold uppercase tracking-[0.25em] text-slate-500">Total assets</div>
-            <div className="mt-2 text-4xl font-black tracking-tight text-slate-900">{total.toLocaleString()}</div>
+            <div className="mt-1.5 text-3xl font-black tracking-tight text-slate-900">{total.toLocaleString()}</div>
           </div>
         </div>
       </div>
@@ -31,7 +31,7 @@ export default function AssetStatusChart({
         {data.map((item) => {
           const percent = Math.round((item.value / total) * 100);
           return (
-            <div key={item.label} className="rounded-2xl border border-slate-200 bg-white/80 p-4 shadow-sm">
+            <div key={item.label} className="rounded-xl border border-slate-200 bg-white/80 p-3.5 shadow-sm">
               <div className="flex items-center justify-between">
                 <div className="flex items-center gap-3">
                   <span className="h-3.5 w-3.5 rounded-full" style={{ backgroundColor: item.color }} />

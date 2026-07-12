@@ -23,13 +23,11 @@ export default function StatCard({
             : "from-amber-500 to-orange-500";
 
   return (
-    <div className="rounded-[1.5rem] border border-slate-200 bg-white/90 p-4 shadow-sm">
-      <div className={`mb-4 h-2 w-16 rounded-full bg-gradient-to-r ${toneClass}`} />
-      <div className="text-xs font-semibold uppercase tracking-[0.24em] text-slate-500">{label}</div>
-      <div className="mt-2 text-2xl font-black tracking-tight text-slate-900">{value}</div>
-      <div className={`mt-3 inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-xs font-semibold ${
-        tone === "rose" ? "bg-rose-50 text-rose-700" : "bg-emerald-50 text-emerald-700"
-      }`}>
+    <div className="rounded-2xl border border-slate-200 bg-white/90 p-3.5 shadow-sm">
+      <div className={`mb-3 h-1.5 w-12 rounded-full bg-gradient-to-r ${toneClass}`} />
+      <div className="text-[11px] font-semibold uppercase tracking-[0.2em] text-slate-500">{label}</div>
+      <div className="mt-1.5 text-xl font-black tracking-tight text-slate-900">{value}</div>
+      <div className="mt-2.5 inline-flex items-center gap-1 rounded-full bg-emerald-50 px-2 py-0.5 text-[11px] font-semibold text-emerald-700">
         <IconArrowUpRight size={13} />
         {delta}
       </div>

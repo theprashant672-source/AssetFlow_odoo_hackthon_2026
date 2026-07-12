@@ -36,19 +36,20 @@ export default function Sidebar({
         onClick={onClose}
       />
       <aside
-        className={`fixed inset-y-0 left-0 z-50 flex w-[280px] flex-col bg-[#271621] px-3 py-3 text-white shadow-[16px_0_45px_rgba(39,22,33,0.12)] transition-transform duration-300 lg:translate-x-0 ${open ? "translate-x-0" : "-translate-x-full"
-          }`}
+        className={`fixed inset-y-0 left-0 z-50 flex w-[244px] flex-col bg-[#271621] px-2.5 py-2.5 text-white shadow-[16px_0_45px_rgba(39,22,33,0.12)] transition-transform duration-300 lg:translate-x-0 ${
+          open ? "translate-x-0" : "-translate-x-full"
+        }`}
       >
-        <div className="flex items-center justify-between gap-3 px-4 py-4">
-          <AssetFlowLogo />
+        <div className="flex items-center justify-between gap-2 px-3 py-3">
+          <AssetFlowLogo size={38} />
         </div>
 
-        <div className="mx-2 rounded-2xl border border-white/10 bg-white/[0.06] px-3 py-3">
+        <div className="mx-1.5 rounded-xl border border-white/10 bg-white/[0.06] px-3 py-2.5">
           <div className="text-[10px] font-bold uppercase tracking-[0.24em] text-white/45">Active workspace</div>
-          <div className="mt-1 text-sm font-bold text-white">{ROLE_LABELS[role]}</div>
+          <div className="mt-1 text-xs font-bold text-white">{ROLE_LABELS[role]}</div>
         </div>
 
-        <div className="flex-1 overflow-y-auto px-2 py-6">
+        <div className="flex-1 overflow-y-auto px-1.5 py-4">
           <div className="mb-3 px-3 text-[10px] font-bold uppercase tracking-[0.28em] text-white/40">
             Navigation
           </div>
@@ -62,12 +63,13 @@ export default function Sidebar({
                   key={item.slug}
                   href={href}
                   onClick={onClose}
-                  className={`group flex items-center gap-3 rounded-xl px-3.5 py-2.5 text-sm font-medium transition ${active
+                  className={`group flex items-center gap-2.5 rounded-lg px-3 py-2 text-xs font-medium transition ${
+                    active
                       ? "bg-[#9A528D] text-white shadow-[0_12px_26px_rgba(154,82,141,0.35)]"
                       : "text-white/65 hover:bg-white/[0.09] hover:text-white"
                     }`}
                 >
-                  <Icon size={18} />
+                  <Icon size={16} />
                   <span className="flex-1">{item.label}</span>
                   {active && <span className="h-1.5 w-1.5 rounded-full bg-white" />}
                 </Link>

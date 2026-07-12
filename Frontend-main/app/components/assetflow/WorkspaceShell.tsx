@@ -42,7 +42,7 @@ export default function WorkspaceShell({
   return (
     <div className="min-h-screen bg-transparent text-slate-900">
       <Sidebar role={role} pathname={pathname} open={sidebarOpen} onClose={() => setSidebarOpen(false)} />
-      <div className="flex min-h-screen flex-1 flex-col lg:pl-[280px]">
+      <div className="flex min-h-screen flex-1 flex-col lg:pl-[244px]">
         <Navbar
           role={role}
           onMenuClick={() => setSidebarOpen((current) => !current)}
@@ -50,8 +50,8 @@ export default function WorkspaceShell({
           onThemeToggle={toggleTheme}
           theme={theme}
         />
-        <main className="flex-1 px-4 pb-10 pt-3 sm:px-6 lg:px-10">
-          <div className="mx-auto flex w-full max-w-[1480px] flex-col gap-6">{children}</div>
+        <main className="flex-1 px-3 pb-8 pt-2.5 sm:px-4 lg:px-6">
+          <div className="mx-auto flex w-full max-w-[1320px] flex-col gap-4">{children}</div>
         </main>
       </div>
     </div>

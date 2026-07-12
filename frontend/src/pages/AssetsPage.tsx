@@ -59,73 +59,86 @@ export default function AssetsPage() {
 
   return (
     <div className="assets-page">
-      <h1>AssetFlow</h1>
+      <div className="assets-page-header">
+        <h1>Assets</h1>
+        <p>Track and manage every asset your organization owns.</p>
+      </div>
 
-      <form onSubmit={handleSubmit} className="asset-form">
-        <input
-          name="name"
-          placeholder="Asset name"
-          value={form.name}
-          onChange={handleChange}
-          required
-        />
-        <input
-          name="category"
-          placeholder="Category"
-          value={form.category}
-          onChange={handleChange}
-          required
-        />
-        <input
-          name="serialNumber"
-          placeholder="Serial number"
-          value={form.serialNumber}
-          onChange={handleChange}
-          required
-        />
-        <input
-          name="value"
-          type="number"
-          placeholder="Value"
-          value={form.value}
-          onChange={handleChange}
-        />
-        <button type="submit">Add Asset</button>
-      </form>
+      <div className="asset-card">
+        <h2>Add a new asset</h2>
+        <form onSubmit={handleSubmit} className="asset-form">
+          <input
+            name="name"
+            placeholder="Asset name"
+            value={form.name}
+            onChange={handleChange}
+            required
+          />
+          <input
+            name="category"
+            placeholder="Category"
+            value={form.category}
+            onChange={handleChange}
+            required
+          />
+          <input
+            name="serialNumber"
+            placeholder="Serial number"
+            value={form.serialNumber}
+            onChange={handleChange}
+            required
+          />
+          <input
+            name="value"
+            type="number"
+            placeholder="Value"
+            value={form.value}
+            onChange={handleChange}
+          />
+          <button type="submit">Add Asset</button>
+        </form>
+      </div>
 
       {error && <p className="error">{error}</p>}
-      {loading ? (
-        <p>Loading assets...</p>
-      ) : (
-        <table>
-          <thead>
-            <tr>
-              <th>Name</th>
-              <th>Category</th>
-              <th>Serial No.</th>
-              <th>Status</th>
-              <th>Value</th>
-              <th></th>
-            </tr>
-          </thead>
-          <tbody>
-            {assets.map((asset) => (
-              <tr key={asset._id}>
-                <td>{asset.name}</td>
-                <td>{asset.category}</td>
-                <td>{asset.serialNumber}</td>
-                <td>{asset.status}</td>
-                <td>{asset.value}</td>
-                <td>
-                  <button onClick={() => handleDelete(asset._id)}>
-                    Delete
-                  </button>
-                </td>
+
+      <div className="table-wrapper">
+        {loading ? (
+          <p className="empty-state">Loading assets...</p>
+        ) : assets.length === 0 ? (
+          <p className="empty-state">No assets yet. Add your first one above.</p>
+        ) : (
+          <table>
+            <thead>
+              <tr>
+                <th>Name</th>
+                <th>Category</th>
+                <th>Serial No.</th>
+                <th>Status</th>
+                <th>Value</th>
+                <th></th>
               </tr>
-            ))}
-          </tbody>
-        </table>
-      )}
+            </thead>
+            <tbody>
+              {assets.map((asset) => (
+                <tr key={asset._id}>
+                  <td>{asset.name}</td>
+                  <td>{asset.category}</td>
+                  <td>{asset.serialNumber}</td>
+                  <td>
+                    <span className="status-badge">{asset.status}</span>
+                  </td>
+                  <td>{asset.value}</td>
+                  <td>
+                    <button className="delete-btn" onClick={() => handleDelete(asset._id)}>
+                      Delete
+                    </button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+        )}
+      </div>
     </div>
   );
 }

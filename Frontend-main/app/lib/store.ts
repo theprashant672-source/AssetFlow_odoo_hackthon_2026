@@ -155,7 +155,7 @@ export type DB = {
   activity: ActivityEntry[];
 };
 
-const KEY = "assetflow:db:v3";
+const KEY = "assetflow:db:v4";
 
 let db: DB | null = null;
 const listeners = new Set<() => void>();
@@ -180,8 +180,8 @@ function seed(): DB {
     id, name, headEmail, parentId, status: "Active",
   });
   const departments: Department[] = [
-    dep("d-it", "IT", "tl@oddo.com"),
-    dep("d-ops", "Operations", "manager@oddo.com"),
+    dep("d-it", "IT", "tl@odoo.com"),
+    dep("d-ops", "Operations", "manager@odoo.com"),
     dep("d-hr", "HR"),
     dep("d-fin", "Finance", undefined, "d-ops"),
   ];
@@ -196,14 +196,14 @@ function seed(): DB {
     id: uid(), name, email, departmentId, role, status: "Active",
   });
   const employees: Employee[] = [
-    emp("Super Admin", "superadmin@oddo.com", "d-it", "Admin"),
-    emp("Asset Manager", "manager@oddo.com", "d-ops", "Asset Manager"),
-    emp("Team Lead", "tl@oddo.com", "d-it", "Department Head"),
-    emp("IT Service", "itservice@oddo.com", "d-it", "Asset Manager"),
-    emp("Employee One", "employee@oddo.com", "d-ops", "Employee"),
-    emp("Priya Sharma", "priya@oddo.com", "d-it", "Employee"),
-    emp("Raj Verma", "raj@oddo.com", "d-ops", "Employee"),
-    emp("Neha Gupta", "neha@oddo.com", "d-hr", "Employee"),
+    emp("Super Admin", "superadmin@odoo.com", "d-it", "Admin"),
+    emp("Asset Manager", "manager@odoo.com", "d-ops", "Asset Manager"),
+    emp("Team Lead", "tl@odoo.com", "d-it", "Department Head"),
+    emp("IT Service", "itservice@odoo.com", "d-it", "Asset Manager"),
+    emp("Employee One", "employee@odoo.com", "d-ops", "Employee"),
+    emp("Priya Sharma", "priya@odoo.com", "d-it", "Employee"),
+    emp("Raj Verma", "raj@odoo.com", "d-ops", "Employee"),
+    emp("Neha Gupta", "neha@odoo.com", "d-hr", "Employee"),
   ];
   let tagCounter = 0;
   const asset = (
@@ -227,10 +227,10 @@ function seed(): DB {
   };
   const assets: Asset[] = [
     asset("Dell Latitude 5440", "c-elec", 78000, "HQ Floor 2", "Allocated", {
-      holderEmail: "priya@oddo.com", expectedReturn: daysFromNow(-2),
+      holderEmail: "priya@odoo.com", expectedReturn: daysFromNow(-2),
     }),
     asset("MacBook Pro 14", "c-elec", 195000, "HQ Floor 2", "Allocated", {
-      holderEmail: "employee@oddo.com", expectedReturn: daysFromNow(12),
+      holderEmail: "employee@odoo.com", expectedReturn: daysFromNow(12),
     }),
     asset("HP LaserJet Printer", "c-elec", 32000, "HQ Floor 1", "Available"),
     asset("Ergo Chair", "c-furn", 12000, "HQ Floor 3", "Available"),
@@ -252,36 +252,36 @@ function seed(): DB {
 
   const allocations: AllocationRecord[] = [
     {
-      id: uid(), assetId: laptop.id, holderEmail: "priya@oddo.com",
-      allocatedAt: daysFromNow(-40), expectedReturn: daysFromNow(-2), allocatedBy: "manager@oddo.com",
+      id: uid(), assetId: laptop.id, holderEmail: "priya@odoo.com",
+      allocatedAt: daysFromNow(-40), expectedReturn: daysFromNow(-2), allocatedBy: "manager@odoo.com",
     },
     {
-      id: uid(), assetId: assets[1].id, holderEmail: "employee@oddo.com",
-      allocatedAt: daysFromNow(-10), expectedReturn: daysFromNow(12), allocatedBy: "manager@oddo.com",
+      id: uid(), assetId: assets[1].id, holderEmail: "employee@odoo.com",
+      allocatedAt: daysFromNow(-10), expectedReturn: daysFromNow(12), allocatedBy: "manager@odoo.com",
     },
     {
       id: uid(), assetId: assets[4].id, departmentId: "d-hr",
-      allocatedAt: daysFromNow(-20), expectedReturn: daysFromNow(30), allocatedBy: "manager@oddo.com",
+      allocatedAt: daysFromNow(-20), expectedReturn: daysFromNow(30), allocatedBy: "manager@odoo.com",
     },
     {
-      id: uid(), assetId: assets[10].id, holderEmail: "raj@oddo.com",
+      id: uid(), assetId: assets[10].id, holderEmail: "raj@odoo.com",
       allocatedAt: daysFromNow(-90), returnedAt: daysFromNow(-30),
-      checkinNotes: "Returned in good condition", allocatedBy: "manager@oddo.com",
+      checkinNotes: "Returned in good condition", allocatedBy: "manager@odoo.com",
     },
   ];
   const bookings: Booking[] = [
     {
-      id: uid(), assetId: roomB2.id, bookedBy: "employee@oddo.com",
+      id: uid(), assetId: roomB2.id, bookedBy: "employee@odoo.com",
       start: daysFromNow(1, 9), end: daysFromNow(1, 10),
       purpose: "Sprint planning", status: "Upcoming",
     },
     {
-      id: uid(), assetId: roomB2.id, bookedBy: "neha@oddo.com",
+      id: uid(), assetId: roomB2.id, bookedBy: "neha@odoo.com",
       start: daysFromNow(1, 14), end: daysFromNow(1, 15),
       purpose: "HR interviews", status: "Upcoming",
     },
     {
-      id: uid(), assetId: projector.id, bookedBy: "raj@oddo.com",
+      id: uid(), assetId: projector.id, bookedBy: "raj@odoo.com",
       start: daysFromNow(2, 11), end: daysFromNow(2, 13),
       purpose: "Client demo", status: "Upcoming",
     },
@@ -289,12 +289,12 @@ function seed(): DB {
   const maintenance: MaintenanceRequest[] = [
     {
       id: uid(), assetId: dslr.id, issue: "Lens autofocus not working",
-      priority: "High", raisedBy: "raj@oddo.com", raisedAt: daysFromNow(-3),
-      status: "In Progress", technician: "itservice@oddo.com", decidedBy: "manager@oddo.com",
+      priority: "High", raisedBy: "raj@odoo.com", raisedAt: daysFromNow(-3),
+      status: "In Progress", technician: "itservice@odoo.com", decidedBy: "manager@odoo.com",
     },
     {
       id: uid(), assetId: assets[2].id, issue: "Paper jam on tray 2",
-      priority: "Low", raisedBy: "neha@oddo.com", raisedAt: daysFromNow(0, 9),
+      priority: "Low", raisedBy: "neha@odoo.com", raisedAt: daysFromNow(0, 9),
       status: "Pending",
     },
   ];
@@ -302,7 +302,7 @@ function seed(): DB {
     {
       id: uid(), name: "Q3 IT Audit", scope: "IT / HQ Floor 2",
       startDate: daysFromNow(-5).slice(0, 10), endDate: daysFromNow(9).slice(0, 10),
-      auditors: ["tl@oddo.com"], status: "Open",
+      auditors: ["tl@odoo.com"], status: "Open",
       items: assets
         .filter((a) => a.location === "HQ Floor 2")
         .map((a, i) => ({ assetId: a.id, result: i === 0 ? "Verified" : "Pending" as AuditItemResult })),
@@ -323,13 +323,13 @@ function seed(): DB {
     },
   ];
   const activity: ActivityEntry[] = [
-    { id: uid(), at: daysFromNow(-1, 12), actor: "employee@oddo.com", action: "Booked Meeting Room B2 (Sprint planning)" },
-    { id: uid(), at: daysFromNow(-3, 10), actor: "manager@oddo.com", action: "Approved maintenance for Canon DSLR Kit" },
-    { id: uid(), at: daysFromNow(-10, 11), actor: "manager@oddo.com", action: "Allocated MacBook Pro 14 to employee@oddo.com" },
+    { id: uid(), at: daysFromNow(-1, 12), actor: "employee@odoo.com", action: "Booked Meeting Room B2 (Sprint planning)" },
+    { id: uid(), at: daysFromNow(-3, 10), actor: "manager@odoo.com", action: "Approved maintenance for Canon DSLR Kit" },
+    { id: uid(), at: daysFromNow(-10, 11), actor: "manager@odoo.com", action: "Allocated MacBook Pro 14 to employee@odoo.com" },
   ];
 
   return {
-    version: 3,
+    version: 4,
     departments, categories, employees, assets, allocations,
     transfers: [], bookings, maintenance, audits, notifications, activity,
   };
@@ -342,7 +342,7 @@ function load(): DB {
     const raw = window.localStorage.getItem(KEY);
     if (raw) {
       const parsed = JSON.parse(raw) as DB;
-      if (parsed.version === 3) {
+      if (parsed.version === 4) {
         db = parsed;
         return db;
       }
@@ -693,7 +693,7 @@ export function advanceMaintenance(
       pushNotification(d, "Maintenance Rejected", `${a?.name ?? "Asset"} request rejected.`);
     } else if (action === "assign" && r.status === "Approved") {
       r.status = "Technician Assigned";
-      r.technician = technician || "itservice@oddo.com";
+      r.technician = technician || "itservice@odoo.com";
     } else if (action === "start" && r.status === "Technician Assigned") {
       r.status = "In Progress";
     } else if (action === "resolve" && (r.status === "In Progress" || r.status === "Technician Assigned")) {

@@ -189,7 +189,7 @@ function EmployeesTab({ canEdit }: { canEdit: boolean }) {
                 <input className={inputCls} value={name} onChange={(e) => setName(e.target.value)} placeholder="e.g. Aman Singh" />
               </Field>
               <Field label="Email">
-                <input className={inputCls} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="aman@oddo.com" />
+                <input className={inputCls} value={email} onChange={(e) => setEmail(e.target.value)} placeholder="aman@odoo.com" />
               </Field>
               <Field label="Department">
                 <select className={inputCls} value={dept} onChange={(e) => setDept(e.target.value)}>

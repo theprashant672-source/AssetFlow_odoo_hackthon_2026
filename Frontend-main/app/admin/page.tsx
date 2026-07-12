@@ -6,8 +6,8 @@ import { useRouter } from "next/navigation";
 import AssetFlowLogo from "@/app/components/assetflow/AssetFlowLogo";
 import { IconEye, IconEyeOff, IconLock, IconMail, IconShield, IconSparkles } from "@/app/components/icons/Icons";
 
-const ADMIN_EMAIL = "superadmin@oddo.com";
-const ADMIN_PASSWORD = "ODDO@123";
+const ADMIN_EMAIL = "superadmin@odoo.com";
+const ADMIN_PASSWORD = "ODOO@123";
 
 function setCookie(name: string, value: string) {
   document.cookie = `${name}=${encodeURIComponent(value)}; path=/; max-age=86400; samesite=lax`;
@@ -44,7 +44,7 @@ export default function AdminPortalPage() {
     setCookie("assetflow_role", "admin");
     setCookie("assetflow_identity", ADMIN_EMAIL);
     setCookie("assetflow_auth_method", "password");
-    setCookie("assetflow_company", "ODDO Technologies Pvt. Ltd.");
+    setCookie("assetflow_company", "ODOO Technologies Pvt. Ltd.");
     router.push("/admin/dashboard");
   };
 

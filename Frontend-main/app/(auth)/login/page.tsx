@@ -23,38 +23,38 @@ type LoginValues = z.infer<typeof loginSchema>;
 
 const DEMO_ACCOUNTS = [
   {
-    email: "superadmin@oddo.com",
+    email: "superadmin@odoo.com",
     role: "founder" as AssetFlowRole,
     title: "Founder",
     note: "Top access",
   },
   {
-    email: "manager@oddo.com",
+    email: "manager@odoo.com",
     role: "manager" as AssetFlowRole,
     title: "Manager",
     note: "Team control",
   },
   {
-    email: "tl@oddo.com",
+    email: "tl@odoo.com",
     role: "head" as AssetFlowRole,
     title: "TL",
     note: "Task lead",
   },
   {
-    email: "itservice@oddo.com",
+    email: "itservice@odoo.com",
     role: "manager" as AssetFlowRole,
     title: "IT Service",
     note: "Support ops",
   },
   {
-    email: "employee@oddo.com",
+    email: "employee@odoo.com",
     role: "employee" as AssetFlowRole,
     title: "Employee",
     note: "Personal workspace",
   },
 ] as const;
 
-const DEMO_PASSWORD = "ODDO@123";
+const DEMO_PASSWORD = "ODOO@123";
 
 const ROLE_SHORT_LABELS: Record<AssetFlowRole, string> = {
   founder: "Founder",
@@ -83,7 +83,7 @@ export default function LoginPage() {
   const [otpSent, setOtpSent] = useState(false);
   const [otpChallengeId, setOtpChallengeId] = useState("");
   const [otpPreview, setOtpPreview] = useState("");
-  const [companyHint, setCompanyHint] = useState("ODDO Technologies Pvt. Ltd.");
+  const [companyHint, setCompanyHint] = useState("ODOO Technologies Pvt. Ltd.");
   const [statusMessage, setStatusMessage] = useState("");
   const [demoHint, setDemoHint] = useState<typeof DEMO_ACCOUNTS[number] | null>(DEMO_ACCOUNTS[1]);
 
@@ -97,7 +97,7 @@ export default function LoginPage() {
     resolver: zodResolver(loginSchema),
     defaultValues: {
       method: "password",
-      identifier: "superadmin@oddo.com",
+      identifier: "superadmin@odoo.com",
       secret: DEMO_PASSWORD,
       role: "founder",
     },
@@ -235,7 +235,7 @@ export default function LoginPage() {
           <div className="relative z-10 mt-12 max-w-2xl">
             <div className="inline-flex items-center gap-2 rounded-full border border-[#9A528D]/15 bg-white px-3 py-1 text-xs font-semibold uppercase tracking-[0.28em] text-[#9A528D] shadow-sm">
               <IconSparkles size={14} />
-              ODDO access control
+              ODOO access control
             </div>
             <h1 className="mt-5 max-w-xl text-4xl font-black tracking-tight text-slate-950 sm:text-5xl">
               Secure access for every role in one polished workspace.
@@ -307,7 +307,7 @@ export default function LoginPage() {
             <div className="flex items-start justify-between gap-4">
               <div>
                 <div className="text-xs font-semibold uppercase tracking-[0.32em] text-white/45">Welcome back</div>
-                <h2 className="mt-2 text-2xl font-black tracking-tight">Sign in to ODDO</h2>
+                <h2 className="mt-2 text-2xl font-black tracking-tight">Sign in to ODOO</h2>
                 <p className="mt-2 max-w-sm text-sm leading-6 text-white/60">
                   Use the demo email and password below, or switch to OTP to preview the temporary code.
                 </p>
@@ -347,7 +347,7 @@ export default function LoginPage() {
                     {...register("identifier")}
                     type="email"
                     className="w-full bg-transparent text-sm text-white placeholder:text-white/35 outline-none"
-                    placeholder="admin@oddo.com"
+                    placeholder="admin@odoo.com"
                   />
                 </div>
                 {errors.identifier && <span className="text-xs font-medium text-[#fca5a5]">{errors.identifier.message}</span>}

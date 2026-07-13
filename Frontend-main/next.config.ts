@@ -3,6 +3,9 @@ import type { NextConfig } from "next";
 import { normalizeApiBaseUrl } from "./app/lib/apiBaseUrl";
 
 const nextConfig: NextConfig = {
+  // The repo root contains a stray lockfile, which makes Next.js infer the
+  // wrong workspace root and breaks output tracing on Vercel. Pin it here.
+  outputFileTracingRoot: path.resolve(__dirname),
   // Fix for Windows case-insensitive filesystem: webpack sometimes resolves
   // the same node_modules directory via two different path casings (e.g.
   // "Frontend" vs "frontend"), causing duplicate Next.js internals to be
@@ -22,7 +25,7 @@ const nextConfig: NextConfig = {
     // - Production/Vercel: proxy to the deployed backend domain.
     const defaultTarget =
       process.env.VERCEL || process.env.NODE_ENV === "production"
-        ? "https://backend-liard-eta-86.vercel.app"
+        ? "https://asset-flow-odoo-hackthon-2026.vercel.app"
         : "http://localhost:5000";
 
     const target = normalizeApiBaseUrl(envTarget || defaultTarget);

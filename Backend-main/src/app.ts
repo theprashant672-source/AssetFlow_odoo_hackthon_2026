@@ -49,7 +49,12 @@ function createCorsOptions() {
   return {
     origin: (requestOrigin: string | undefined, callback: (err: Error | null, allow?: boolean) => void) => {
       if (!requestOrigin) return callback(null, true);
-      return callback(null, allowedOriginSet.has(requestOrigin.replace(/\/+$/, "")));
+      const origin = requestOrigin.replace(/\/+$/, "");
+      // Allow any Vercel preview/production deployment of this project.
+      if (/^https:\/\/[a-z0-9-]+(\.[a-z0-9-]+)*\.vercel\.app$/i.test(origin)) {
+        return callback(null, true);
+      }
+      return callback(null, allowedOriginSet.has(origin));
     },
     credentials: true,
     methods: ["GET", "POST", "PUT", "PATCH", "DELETE", "OPTIONS"],

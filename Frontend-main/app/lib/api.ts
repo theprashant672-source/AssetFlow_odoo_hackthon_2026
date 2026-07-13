@@ -1,6 +1,6 @@
 "use client";
 
-import { normalizeApiBaseUrl } from "./apiBaseUrl";
+import { resolveApiBase } from "./apiBaseUrl";
 
 export type AuthUser = {
   id: string;
@@ -18,16 +18,7 @@ type ApiFail = { success: false; message: string };
 const TOKEN_KEY = "novaassets:token";
 
 function apiBaseUrl(): string {
-  const raw = process.env.NEXT_PUBLIC_API_BASE_URL;
-  const base = normalizeApiBaseUrl(raw ?? "");
-
-  if (base) return base;
-
-  if (typeof window !== "undefined") {
-    return window.location.origin;
-  }
-
-  return "http://localhost:5000";
+  return resolveApiBase();
 }
 
 function joinUrl(base: string, pathname: string): string {
